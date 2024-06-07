@@ -50,7 +50,7 @@ return new class extends Migration
                 "name" => "Administrador",
                 "email" => "admin@morrosdevops.com",
                 "email_verified_at" => \Carbon\Carbon::now(),
-                "password" => \Illuminate\Support\Facades\Hash::make("morrosdevops.*"),
+                "password" => \Illuminate\Support\Facades\Hash::make("atibana.*"),
                 "role" => 1,
                 "created_at" => \Carbon\Carbon::now(),
                 "updated_at" => \Carbon\Carbon::now(),
