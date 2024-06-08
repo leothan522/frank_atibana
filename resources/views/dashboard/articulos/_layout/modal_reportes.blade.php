@@ -43,7 +43,7 @@
                                     </div>
                                     <select class="form-control form-group-sm" name="reporte">
                                         <option value="unidades">Articulos con sus Unidades</option>
-                                        <option value="precios">Articulos con sus Precios</option>
+                                        {{--<option value="precios">Articulos con sus Precios</option>--}}
                                         {{--<option value="identificadores">Articulos con sus Identificadores</option>--}}
                                     </select>
                                     @error('reporte')

@@ -69,7 +69,7 @@
         </button>
 
         <button type="button" class="btn btn-default btn-sm" wire:click="destroy()"
-                @if(!comprobarPermisos() || !$ajuste_estatus) disabled @endif>
+                @if(!comprobarPermisos()) disabled @endif>
             <i class="fas fa-trash-alt"></i> Borrar
         </button>
 

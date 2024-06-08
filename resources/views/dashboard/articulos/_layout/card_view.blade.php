@@ -53,14 +53,6 @@
             @include('dashboard.articulos._layout.modal_reportes')
         </div>
 
-        {{--@include('dashboard.articulos.view_show')
-        @include('dashboard.articulos.view_form')
-        @include('dashboard.articulos.view_unidad')
-        @include('dashboard.articulos.view_precios')
-        @include('dashboard.articulos.view_identificadores')
-        @include('dashboard.articulos.view_existencias')
-        @include('dashboard.articulos.view_imagen')--}}
-
     </div>
 
     <div class="card-footer text-center @if(!$footer) d-none @endif">
@@ -71,17 +63,17 @@
             <i class="fas fa-weight-hanging"></i> Unidad
         </button>
 
-        <button type="button" class="btn btn-default btn-sm" wire:click="btnPrecios" onclick="verArticulosPrecios()"
+        {{--<button type="button" class="btn btn-default btn-sm" wire:click="btnPrecios" onclick="verArticulosPrecios()"
                 data-toggle="modal" data-target="#modal-sm-articulos-precios"
                 @if(!$estatus) disabled @endif>
             <i class="fas fa-money-bill-wave"></i> Precios
-        </button>
+        </button>--}}
 
-        <button type="button" class="btn btn-default btn-sm" wire:click="btnIdentificadores" onclick="verArticulosIdentificadores()"
+        {{--<button type="button" class="btn btn-default btn-sm" wire:click="btnIdentificadores" onclick="verArticulosIdentificadores()"
                 data-toggle="modal" data-target="#modal-sm-articulos-identificadores"
                 @if(!$estatus) disabled @endif>
             <i class="fas fa-barcode"></i> Identificadores
-        </button>
+        </button>--}}
 
         <button type="button" class="btn btn-default btn-sm" wire:click="btnExistencias"
                 @if(!$estatus) disabled @endif>

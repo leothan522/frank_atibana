@@ -91,6 +91,7 @@ class StockComponent extends Component
         $almacen = Almacen::find($this->getAlmacen);
         $this->getNombre = $almacen->nombre;
         $this->getAjustes = Ajuste::where('empresas_id', $this->empresas_id)
+            ->where('estatus', 1)
             ->orderBy('fecha', 'DESC')
             ->limit($this->limit)
             ->get();

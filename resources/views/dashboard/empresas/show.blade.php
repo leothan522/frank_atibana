@@ -41,7 +41,7 @@
                     @if($verDefault)
                         <li class="list-group-item text-muted text-center">
                             <i class="fas fa-certificate text-muted text-xs"></i>
-                            Tienda Default
+                            Empresa Default
                         </li>
                     @endif
                 </ul>

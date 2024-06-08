@@ -1051,6 +1051,7 @@ class AjustesComponent extends Component
     public function confirmedBorrarAjuste()
     {
         $ajuste = Ajuste::find($this->ajuste_id);
+        $estatus = $ajuste->estatus;
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
@@ -1067,50 +1068,56 @@ class AjustesComponent extends Component
             ]);
         } else {
 
-            $listarDetalles = AjusDetalle::where('ajustes_id', $ajuste->id)->get();
+            if ($estatus){
 
-            foreach ($listarDetalles as $detalle) {
+                $listarDetalles = AjusDetalle::where('ajustes_id', $ajuste->id)->get();
 
-                $db_articulo_id = $detalle->articulos_id;
-                $db_almacen_id = $detalle->almacenes_id;
-                $db_unidad_id = $detalle->unidades_id;
-                $db_cantidad = $detalle->cantidad;
-                $db_accion = $detalle->tipo->tipo;
+                foreach ($listarDetalles as $detalle) {
 
-                $stock = Stock::where('empresas_id', $this->empresas_id)
-                    ->where('articulos_id', $db_articulo_id)
-                    ->where('almacenes_id', $db_almacen_id)
-                    ->where('unidades_id', $db_unidad_id)
-                    ->first();
+                    $db_articulo_id = $detalle->articulos_id;
+                    $db_almacen_id = $detalle->almacenes_id;
+                    $db_unidad_id = $detalle->unidades_id;
+                    $db_cantidad = $detalle->cantidad;
+                    $db_accion = $detalle->tipo->tipo;
 
-                if ($stock) {
+                    $stock = Stock::where('empresas_id', $this->empresas_id)
+                        ->where('articulos_id', $db_articulo_id)
+                        ->where('almacenes_id', $db_almacen_id)
+                        ->where('unidades_id', $db_unidad_id)
+                        ->first();
 
-                    $db_id = $stock->id;
-                    $db_disponible = $stock->disponible;
-                    $db_comprometido = $stock->comprometido;
+                    if ($stock) {
 
-                    if ($db_accion == 1) {
-                        //revierto entrada
-                        if ($db_disponible >= $db_cantidad) {
-                            $disponible = $db_disponible - $db_cantidad;
+                        $db_id = $stock->id;
+                        $db_disponible = $stock->disponible;
+                        $db_comprometido = $stock->comprometido;
+
+                        if ($db_accion == 1) {
+                            //revierto entrada
+                            if ($db_disponible >= $db_cantidad) {
+                                $disponible = $db_disponible - $db_cantidad;
+                            } else {
+                                $disponible = 0;
+                            }
+                            $actual = $disponible + $db_comprometido;
                         } else {
-                            $disponible = 0;
+                            //revierto salida
+                            $disponible = $db_disponible + $db_cantidad;
+                            $actual = $disponible + $db_comprometido;
                         }
-                        $actual = $disponible + $db_comprometido;
-                    } else {
-                        //revierto salida
-                        $disponible = $db_disponible + $db_cantidad;
-                        $actual = $disponible + $db_comprometido;
+                        //aplico los cambios
+                        $stock = Stock::find($db_id);
+                        $stock->actual = $actual;
+                        $stock->disponible = $disponible;
+                        $stock->save();
                     }
-                    //aplico los cambios
-                    $stock = Stock::find($db_id);
-                    $stock->actual = $actual;
-                    $stock->disponible = $disponible;
-                    $stock->save();
+
                 }
 
             }
 
+            $ajuste->estatus = 0;
+            $ajuste->save();
 
             if ($this->opcionDestroy == "delete") {
                 $ajuste->delete();
@@ -1118,8 +1125,6 @@ class AjustesComponent extends Component
                 $this->limpiarAjustes();
                 $message = "Ajuste Eliminado.";
             } else {
-                $ajuste->estatus = 0;
-                $ajuste->save();
                 $this->show($ajuste->id);
                 $message = "Ajuste Anulado.";
             }
