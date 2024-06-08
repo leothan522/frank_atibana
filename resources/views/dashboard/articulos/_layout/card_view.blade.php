@@ -63,6 +63,12 @@
             <i class="fas fa-weight-hanging"></i> Unidad
         </button>
 
+        <button type="button" class="btn btn-default btn-sm" {{--wire:click="btnPrecios"--}} {{--onclick="verArticulosPrecios()"--}}
+                {{--data-toggle="modal" data-target="#modal-sm-articulos-precios"--}}
+                @if(!$estatus) disabled @endif>
+            <i class="fas fa-user-friends"></i> Proveedores
+        </button>
+
         {{--<button type="button" class="btn btn-default btn-sm" wire:click="btnPrecios" onclick="verArticulosPrecios()"
                 data-toggle="modal" data-target="#modal-sm-articulos-precios"
                 @if(!$estatus) disabled @endif>

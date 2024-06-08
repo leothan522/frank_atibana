@@ -35,15 +35,8 @@ return new class extends Migration
             ]);
         DB::table("unidades")
             ->insert([
-                "codigo" => "CAJA",
-                "nombre" => "CAJA",
-                "created_at" => \Carbon\Carbon::now(),
-                "updated_at" => \Carbon\Carbon::now(),
-            ]);
-        DB::table("unidades")
-            ->insert([
-                "codigo" => "BULTO",
-                "nombre" => "BULTO",
+                "codigo" => "LT",
+                "nombre" => "LITROS",
                 "created_at" => \Carbon\Carbon::now(),
                 "updated_at" => \Carbon\Carbon::now(),
             ]);

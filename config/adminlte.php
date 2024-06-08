@@ -329,25 +329,31 @@ return [
                 ]
             ],
         ],
-        /*[
+        [
             'text'      => 'E-commerce',
-            'icon'      => 'fas fa-fw fa-store ',
-            'can'       => ['empresas', 'ofertas'],
+            'icon'      => 'fas fa-fw fa-utensils',
+            'can'       => ['parametros'],
             'submenu' => [
                 [
-                    'text' => 'Ofertas',
-                    'icon' => 'fas fa-fw fa-gifts',
-                    'route' => 'ofertas.index',
-                    'can' => 'ofertas',
+                    'text' => 'Recetas',
+                    'icon' => 'fas fa-fw fa-book',
+                    'route' => 'parametros.index',
+                    'can' => 'parametros',
                 ],
                 [
-                    'text' => 'Empresas',
-                    'icon' => 'fas fa-fw fa-store-alt',
-                    'route'  => 'empresas.index',
-                    'can'  => 'empresas',
+                    'text' => 'Planificación',
+                    'icon' => 'fas fa-fw fa-tasks',
+                    'route' => 'parametros.index',
+                    'can' => 'parametros',
+                ],
+                [
+                    'text' => 'Despachos',
+                    'icon' => 'fas fa-fw fa-gifts',
+                    'route' => 'parametros.index',
+                    'can' => 'parametros',
                 ]
             ],
-        ],*/
+        ],
         [
             'text'      => 'Configuración',
             'icon'      => 'fas fa-fw fa-cogs',
