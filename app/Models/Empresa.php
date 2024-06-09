@@ -59,4 +59,9 @@ class Empresa extends Model
         return $this->hasMany(Articulo::class, 'empresas_id', 'id');
     }
 
+    public function recetas(): HasMany
+    {
+        return $this->hasMany(Receta::class, 'empresas_id', 'id');
+    }
+
 }

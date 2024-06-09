@@ -23,24 +23,29 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        Gate::define('articulos', function ($user){
-            return comprobarPermisos('articulos.index');
-        });
-
         Gate::define('stock', function ($user){
             return comprobarPermisos('stock.index');
         });
 
-        Gate::define('empresas', function ($user){
-            return $user->role == 100;
+        Gate::define('articulos', function ($user){
+            return comprobarPermisos('articulos.index');
+        });
+
+        Gate::define('recetas', function ($user){
+            return comprobarPermisos('recetas.index');
         });
 
         Gate::define('usuarios', function ($user){
             return comprobarPermisos('usuarios.index');
         });
 
+        Gate::define('empresas', function ($user){
+            return $user->role == 100;
+        });
+
         Gate::define('parametros', function ($user){
             return $user->role == 100;
         });
+
     }
 }

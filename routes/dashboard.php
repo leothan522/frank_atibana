@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\RecetasController;
 use App\Http\Controllers\FCM\FcmController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\ParametrosController;
@@ -43,6 +44,10 @@ Route::middleware([
     Route::get('print/ajuste/{id?}', [StockController::class, 'printAjustes'])->name('ajustes.print');
     Route::post('export/stock', [StockController::class, 'reporteStock'])->name('stock.reportes');
     Route::post('export/ajustes', [StockController::class, 'reporteAjustes'])->name('ajustes.reportes');
+
+    /*ATIBANA*/
+
+    Route::get('recetas', [RecetasController::class, 'index'])->name('recetas.index');
 
 });
 
