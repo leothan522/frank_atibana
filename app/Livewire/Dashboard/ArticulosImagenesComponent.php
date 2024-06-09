@@ -135,9 +135,9 @@ class ArticulosImagenesComponent extends Component
             $path_data = "storage/articulos/size_".$nombre[1];
             $miniatura = crearMiniaturas($articulo->imagen, $path_data);
             $articulo->mini = $miniatura['mini'];
-            $articulo->detail = $miniatura['detail'];
+            /*$articulo->detail = $miniatura['detail'];
             $articulo->cart = $miniatura['cart'];
-            $articulo->banner = $miniatura['banner'];
+            $articulo->banner = $miniatura['banner'];*/
             //borramos imagenes anteriones si existen
             if ($this->img_borrar_principal){
                 borrarImagenes($imagen, 'articulos');
@@ -208,27 +208,28 @@ class ArticulosImagenesComponent extends Component
             }
 
             if ($photo){
-                $ruta = $photo->store('public/galeria/art_id_'.$this->articulos_id);
+                //$ruta = $photo->store('public/galeria/art_id_'.$this->articulos_id);
+                $ruta = $photo->store('public/galeria');
                 $galeria->imagen = str_replace('public/', 'storage/', $ruta);
                 //miniaturas
-                $nombre = explode('art_id_'.$this->articulos_id.'/', $galeria->imagen);
-                $path_data = "storage/galeria/art_id_".$this->articulos_id."/size_".$nombre[1];
+                $nombre = explode('galeria/', $galeria->imagen);
+                $path_data = "storage/galeria/size_".$nombre[1];
                 $miniatura = crearMiniaturas($galeria->imagen, $path_data);
                 $galeria->mini = $miniatura['mini'];
-                $galeria->detail = $miniatura['detail'];
+                /*$galeria->detail = $miniatura['detail'];
                 $galeria->cart = $miniatura['cart'];
-                $galeria->banner = $miniatura['banner'];
+                $galeria->banner = $miniatura['banner'];*/
                 $galeria->articulos_id = $this->articulos_id;
                 $galeria->save();
                 $alert_galeria = true;
                 if ($borrar_galeria){
-                    borrarImagenes($galeria_imagen, 'art_id_'.$this->articulos_id);
+                    borrarImagenes($galeria_imagen, 'galeria');
                 }
             }else{
                 if ($borrar_galeria){
                     $galeria->delete();
                     $alert_galeria = true;
-                    borrarImagenes($galeria_imagen, 'art_id_'.$this->articulos_id);
+                    borrarImagenes($galeria_imagen, 'galeria');
                 }
             }
 

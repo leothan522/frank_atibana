@@ -284,7 +284,7 @@ function crearMiniaturas($imagen_data, $path_data)
             'height' => 320,
             'path' => str_replace('size_', 'mini_', $path_data)
         ],
-        'detail' => [
+        /*'detail' => [
             'width' => 540,
             'height' => 560,
             'path' => str_replace('size_', 'detail_', $path_data)
@@ -298,7 +298,7 @@ function crearMiniaturas($imagen_data, $path_data)
             'width' => 570,
             'height' => 270,
             'path' => str_replace('size_', 'banner_', $path_data)
-        ]
+        ]*/
     ];
 
     $respuesta = array();

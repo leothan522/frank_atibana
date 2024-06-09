@@ -151,9 +151,9 @@ class EmpresasComponent extends Component
             $path_data = "storage/empresas/size_".$nombre[1];
             $miniatura = crearMiniaturas($empresa->imagen, $path_data);
             $empresa->mini = $miniatura['mini'];
-            $empresa->detail = $miniatura['detail'];
+            /*$empresa->detail = $miniatura['detail'];
             $empresa->cart = $miniatura['cart'];
-            $empresa->banner = $miniatura['banner'];
+            $empresa->banner = $miniatura['banner'];*/
             //borramos imagenes anteriones si existen
             if ($this->img_borrar_principal){
                 borrarImagenes($imagen, 'empresas');
