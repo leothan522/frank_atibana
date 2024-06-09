@@ -330,7 +330,7 @@ return [
             ],
         ],
         [
-            'text'      => 'E-commerce',
+            'text'      => 'Gestionar Comida',
             'icon'      => 'fas fa-fw fa-utensils',
             'can'       => ['parametros'],
             'submenu' => [

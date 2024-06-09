@@ -43,7 +43,6 @@ Route::middleware([
     Route::get('print/ajuste/{id?}', [StockController::class, 'printAjustes'])->name('ajustes.print');
     Route::post('export/stock', [StockController::class, 'reporteStock'])->name('stock.reportes');
     Route::post('export/ajustes', [StockController::class, 'reporteAjustes'])->name('ajustes.reportes');
-    Route::get('ofertas', [OfertasController::class, 'index'])->name('ofertas.index');
 
 });
 
