@@ -1,53 +1,44 @@
-<div class="card {{--card-outline--}} card-navy" xmlns:wire="http://www.w3.org/1999/xhtml">
+<div class="card card-navy" xmlns:wire="http://www.w3.org/1999/xhtml">
     <div class="card-header">
         <h3 class="card-title">
-            @if($keyword)
+            @if(/*$keyword*/false)
                 Búsqueda { <b class="text-warning">{{ $keyword }}</b> }
-                <button class="btn btn-tool text-warning" wire:click="limpiarTiposAjuste"><i class="fas fa-times-circle"></i>
+                <button class="btn btn-tool text-warning" wire:click="limpiarTipos">
+                    <i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Tipos de Ajuste [ <b class="text-warning">{{ $rowsTipos }}</b> ]
+                Tipos [ <b class="text-warning">{{--{{ $rowsTipos }}--}}0</b> ]
             @endif
         </h3>
 
         <div class="card-tools">
-            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $rowsTipos) disabled @endif>
+            <button type="button" class="btn btn-tool" {{--wire:click="setLimit" @if($rows > $rowsTipos) disabled @endif--}} >
                 <i class="fas fa-sort-amount-down-alt"></i> Ver más
             </button>
         </div>
     </div>
-    <div class="card-body table-responsive p-0" style="height: 60vh">
+    <div class="card-body table-responsive p-0" style="height: 47vh;">
         <table class="table table-sm table-head-fixed table-hover text-nowrap">
             <thead>
             <tr class="text-navy">
-                <th style="width: 20%">Codigo</th>
-                <th>Descripción</th>
-                <th>Tipo</th>
+                <th>Nombre</th>
                 <th style="width: 5%;">&nbsp;</th>
             </tr>
             </thead>
             <tbody>
-            @if($listarTiposAjuste->isNotEmpty())
-                @foreach($listarTiposAjuste as $tipo)
+            @if(/*$listarTipos->isNotEmpty()*/false)
+                @foreach($listarTipos as $tipo)
                     <tr>
-                        <td>{{ $tipo->codigo }}</td>
-                        <td>{{ $tipo->descripcion }}</td>
-                        <td>
-                            @if($tipo->tipo == 1)
-                                Entrada
-                            @else
-                                Salida
-                            @endif
-                        </td>
+                        <td>{{ $tipo->nombre }}</td>
                         <td class="justify-content-end">
                             <div class="btn-group">
                                 <button wire:click="edit({{ $tipo->id }})" class="btn btn-primary btn-sm"
-                                @if(!comprobarPermisos()) disabled @endif >
+                                @if(!comprobarPermisos('tipos.edit')) disabled @endif >
                                     <i class="fas fa-edit"></i>
                                 </button>
 
                                 <button wire:click="destroy({{ $tipo->id }})" class="btn btn-primary btn-sm"
-                                @if(!comprobarPermisos()) disabled @endif >
+                                @if(!comprobarPermisos('tipos.destroy')) disabled @endif >
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
@@ -56,11 +47,11 @@
                 @endforeach
                 @else
                 <tr class="text-center">
-                    <td colspan="3">
-                        @if($keyword)
+                    <td colspan="2">
+                        @if(/*$keyword*/false)
                             <span>Sin resultados.</span>
                         @else
-                            <span>Aún no se ha creado un Tipo de Ajuste.</span>
+                            <span>Aún se se ha creado un Tipo.</span>
                         @endif
                     </td>
                 </tr>
@@ -70,6 +61,6 @@
         </table>
     </div>
     <div class="card-footer">
-        <small>Mostrando {{ $listarTiposAjuste->count() }}</small>
+        <small>Mostrando {{--{{ $listarTipos->count() }}--}}0</small>
     </div>
 </div>

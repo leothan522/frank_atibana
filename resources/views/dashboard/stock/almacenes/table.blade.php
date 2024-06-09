@@ -2,11 +2,11 @@
     <div class="card-header">
         <h3 class="card-title">
             @if($keyword)
-                Resultados de la Busqueda { <b class="text-warning">{{ $keyword }}</b> }
+                Búsqueda { <b class="text-warning">{{ $keyword }}</b> }
                 <button class="btn btn-tool text-warning" wire:click="limpiarAlmacenes"><i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Almacenes Registrados [ <b class="text-warning">{{ $rowsAlmacenes }}</b> ]
+                Almacenes [ <b class="text-warning">{{ $rowsAlmacenes }}</b> ]
             @endif
         </h3>
 

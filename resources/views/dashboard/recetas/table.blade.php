@@ -7,7 +7,7 @@
                 <button class="btn btn-tool text-warning" wire:click="cerrarBusqueda"><i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Artículos [ <b class="text-warning">{{ $rowsArticulos }}</b> ]
+                Recetas [ <b class="text-warning">{{ $rowsArticulos }}</b> ]
             @endif
         </h3>
 

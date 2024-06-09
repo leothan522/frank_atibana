@@ -20,7 +20,11 @@
 
 @section('content')
     {{--<p>Welcome to this beautiful admin panel.</p>--}}
-    @livewire('dashboard.recetas-component')
+    @livewire('dashboard.mount-empresas-component')
+    <div>
+        @livewire('dashboard.recetas-component')
+    </div>
+
 @endsection
 
 @section('right-sidebar')
@@ -38,6 +42,15 @@
 @section('js')
     <script src="{{ asset("js/app.js") }}"></script>
     <script>
+
+        function verSpinnerOculto() {
+            //$('.cargar_articulos').removeClass('d-none');
+        }
+
+        $(document).ready(function () {
+            //verSpinnerOculto();
+            Livewire.dispatch('updatedEmpresaID');
+        });
 
         function buscar(){
             let input = $("#navbarSearch");
