@@ -138,6 +138,7 @@ class RecetasComponent extends Component
             $detalles->cantidad = $this->ajusteCantidad[$i];
             $detalles->save();
         }
+        $this->show($receta->id);
         $this->alert('success', 'Receta Guardada.');
     }
 

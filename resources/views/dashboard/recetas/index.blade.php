@@ -44,21 +44,22 @@
     <script>
 
         function verSpinnerOculto() {
-            //$('.cargar_articulos').removeClass('d-none');
+            $('.cargar_recetas').removeClass('d-none');
         }
 
         $(document).ready(function () {
-            //verSpinnerOculto();
+            verSpinnerOculto();
             Livewire.dispatch('updatedEmpresaID');
         });
 
         function buscar(){
+            verSpinnerOculto();
             let input = $("#navbarSearch");
             let keyword  = input.val();
             if (keyword.length > 0){
                 input.blur();
-                alert('Falta vincular con el componente Livewire');
-                //Livewire.dispatch('buscar', { keyword: keyword });
+                //alert('Falta vincular con el componente Livewire');
+                Livewire.dispatch('buscar', { keyword: keyword });
             }
             return false;
         }

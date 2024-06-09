@@ -1,6 +1,6 @@
 @extends('layouts.adminlte_print')
 
-@section('title', 'Empresa: '. $empresa)
+@section('title', 'Empresa: '. mb_strtoupper($empresa))
 
 @section('content')
 
