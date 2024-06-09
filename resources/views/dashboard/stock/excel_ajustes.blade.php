@@ -309,7 +309,11 @@
                             (*Anulado)
                         @endif
                     </td>
-                    <td style="{{ $border }}">{{ $detalle->ajustes->segmentos->descripcion }}</td>
+                    <td style="{{ $border }}">
+						@if($detalle->ajustes->segmentos_id)
+                            {{ $detalle->ajustes->segmentos->descripcion }}
+                        @endif
+					</td>
                     <td style="{{ $border }}">{{ verFecha($detalle->ajustes->fecha, 'd/m/Y h:i a') }}</td>
                     <td style="{{ $border }}">{{ $detalle->tipo->codigo }}</td>
                     <td style="{{ $border }}">{{ $detalle->almacen->codigo }}</td>
