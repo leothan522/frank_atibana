@@ -106,7 +106,7 @@ class RecetasComponent extends Component
             'codigo' => ['required', 'min:4', 'alpha_dash:ascii', Rule::unique('recetas', 'codigo')->ignore($this->recetas_id)],
             'fecha' => 'nullable',
             'descripcion' => 'required|min:4',
-            'cantidad' => 'nullable|integer',
+            'cantidad' => 'nullable',
             'ajusteArticulo.*' => ['required', Rule::exists('articulos', 'codigo')],
             'ajusteUnidad.*' => 'required',
             'ajusteCantidad.*' => 'required'
@@ -194,12 +194,67 @@ class RecetasComponent extends Component
 
         //***** Detalles ******
 
+        if (!empty($this->borraritems)) {
+            $procesar = true;
+        }
+
+        for ($i = 0; $i < $this->ajuste_contador; $i++) {
+
+            $detalle_id = $this->detalles_id[$i];
+            $articulo_id = $this->ajuste_articulos_id[$i];
+            $unidad_id = $this->ajusteUnidad[$i];
+            $cantidad = $this->ajusteCantidad[$i];
+
+            if ($detalle_id) {
+                //seguimos validando
+                $detalles = ReceDetalle::find($detalle_id);
+                $db_articulo_id = $detalles->articulos_id;
+                $db_unidad_id = $detalles->unidades_id;
+                $db_cantidad = $detalles->cantidad;
+
+                if ($db_articulo_id != $articulo_id) {
+                    $procesar = true;
+                }
+                if ($db_unidad_id != $unidad_id) {
+                    $procesar = true;
+                }
+                if ($db_cantidad != $cantidad) {
+                    $procesar = true;
+                }
+
+            } else {
+                //nuevo renglon
+                $procesar = true;
+            }
+
+        }
+
         // fin detalles
 
         if ($procesar){
 
             $receta->save();
-            $this->show($this->recetas_id);
+
+            //************** Detalles *********************
+
+            //borramos los item viejos
+            $itemViejos = ReceDetalle::where('recetas_id', $receta->id)->get();
+            foreach ($itemViejos as $item){
+                    $detalle = ReceDetalle::find($item->id);
+                    $detalle->delete();
+            }
+
+            //guardamos los item nuevos
+            for ($i = 0; $i < $this->ajuste_contador; $i++) {
+                $detalles = new ReceDetalle();
+                $detalles->recetas_id = $receta->id;
+                $detalles->articulos_id = $this->ajuste_articulos_id[$i];
+                $detalles->unidades_id = $this->ajusteUnidad[$i];
+                $detalles->cantidad = $this->ajusteCantidad[$i];
+                $detalles->save();
+            }
+
+            $this->show($receta->id);
             $this->alert('success', 'Receta Actualizada.');
 
         }else{

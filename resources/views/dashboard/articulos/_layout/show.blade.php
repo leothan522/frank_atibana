@@ -5,7 +5,7 @@
             <label>Código:</label>
         </div>
         <div class="col-md-5 mb-2">
-            <span class="border badge-pill">{{ $codigo }}</span>
+            <span class="border badge-pill text-uppercase">{{ $codigo }}</span>
         </div>
         <div class="col-md-2 text-md-right">
             <label>Fecha:</label>
@@ -20,7 +20,7 @@
             <label>Descripción:</label>
         </div>
         <div class="col-md-10">
-            <span class="border badge-pill">{{ $descripcion }}</span>
+            <span class="border badge-pill text-uppercase">{{ $descripcion }}</span>
         </div>
     </div>
 
@@ -52,29 +52,29 @@
                                 <tr>
                                     <th scope="row" style="width: 10%">Tipo:</th>
                                     <td colspan="2">
-                                        <span class="">{{ $tipo }}</span>
+                                        <span class="text-uppercase">{{ $tipo }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row" style="width: 10%">Categoría:</th>
-                                    <td style="width: 10%;">{{ $categorias_code }}</td>
+                                    <td style="width: 10%;" class="text-uppercase">{{ $categorias_code }}</td>
                                     <td>
-                                        <span class="">{{ $categoria }}</span>
+                                        <span class="text-uppercase">{{ $categoria }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Procedencia:</th>
                                     <td>
-                                        <span class="">{{ $procedencias_code }}</span>
+                                        <span class="text-uppercase">{{ $procedencias_code }}</span>
                                     </td>
                                     <td>
-                                        <span class="">{{ $procedencia }}</span>
+                                        <span class="text-uppercase">{{ $procedencia }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">I.V.A.:</th>
                                     <td colspan="2">
-                                        <span class="">{{ $tributario }}</span>
+                                        <span class="text-uppercase">{{ $tributario }}</span>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -92,25 +92,25 @@
                                 <tr>
                                     <th scope="row" style="width: 30%">Marca:</th>
                                     <td colspan="2">
-                                        <span class="">{{ $marca }}</span>
+                                        <span class="text-uppercase">{{ $marca }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Modelo:</th>
                                     <td colspan="2">
-                                        <span class="">{{ $modelo }}</span>
+                                        <span class="text-uppercase">{{ $modelo }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Referencia:</th>
                                     <td colspan="2">
-                                        <span class="">{{ $referencia }}</span>
+                                        <span class="text-uppercase">{{ $referencia }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Información Adicional:</th>
                                     <td colspan="2">
-                                        <span class="">{{ $adicional }}</span>
+                                        <span class="text-uppercase">{{ $adicional }}</span>
                                     </td>
                                 </tr>
                                 </tbody>

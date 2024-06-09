@@ -47,7 +47,7 @@
                             <label>Cantidad (KG):</label>
                         </div>
                         <div class="col-1">
-                            <span class="border badge-pill text-uppercase text-nowrap">{{ formatoMillares($cantidad, 0) }}</span>
+                            <span class="border badge-pill text-uppercase text-nowrap">{{ formatoMillares($cantidad, 3) }}</span>
                         </div>
                     @endif
                 </div>

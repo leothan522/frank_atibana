@@ -36,8 +36,8 @@
                                         @php($i++)
                                         <tr>
                                             <td>{{ $i }}</td>
-                                            <td>{{ $stock->almacen->nombre }}</td>
-                                            <td>{{ $stock->unidad->codigo }}</td>
+                                            <td class="text-uppercase">{{ $stock->almacen->nombre }}</td>
+                                            <td class="text-uppercase">{{ $stock->unidad->codigo }}</td>
                                             <td class="text-right">{{ formatoMillares($stock->actual, 0) }}</td>
                                             <td class="text-right">{{ formatoMillares($stock->comprometido, 0) }}</td>
                                             <td class="text-right">{{ formatoMillares($stock->disponible, 0) }}</td>
@@ -58,8 +58,8 @@
                                         @php($i++)
                                         <tr>
                                             <td>{{ $i }}</td>
-                                            <td>{{ $almacen->nombre }}</td>
-                                            <td>{{ $principal_code }}</td>
+                                            <td class="text-uppercase">{{ $almacen->nombre }}</td>
+                                            <td class="text-uppercase">{{ $principal_code }}</td>
                                             <td class="text-right">{{ formatoMillares(0, 0) }}</td>
                                             <td class="text-right">{{ formatoMillares(0, 0) }}</td>
                                             <td class="text-right">{{ formatoMillares(0, 0) }}</td>

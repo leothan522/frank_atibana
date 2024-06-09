@@ -27,7 +27,7 @@
             @if($listarTipos->isNotEmpty())
                 @foreach($listarTipos as $tipo)
                     <tr>
-                        <td>{{ $tipo->nombre }}</td>
+                        <td class="text-uppercase">{{ $tipo->nombre }}</td>
                         <td class="justify-content-end">
                             <div class="btn-group">
                                 <button wire:click="edit({{ $tipo->id }})" class="btn btn-primary btn-sm"

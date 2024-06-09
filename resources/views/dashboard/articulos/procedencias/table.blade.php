@@ -29,8 +29,8 @@
             @if($listarProcedencias->isNotEmpty())
                 @foreach($listarProcedencias as $procedencia)
                     <tr>
-                        <td>{{ $procedencia->codigo }}</td>
-                        <td>{{ $procedencia->nombre }}</td>
+                        <td class="text-uppercase">{{ $procedencia->codigo }}</td>
+                        <td class="text-uppercase">{{ $procedencia->nombre }}</td>
                         <td class="justify-content-end">
                             <div class="btn-group">
                                 <button wire:click="edit({{ $procedencia->id }})" class="btn btn-primary btn-sm"

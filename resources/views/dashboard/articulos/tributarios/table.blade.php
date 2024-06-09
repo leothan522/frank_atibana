@@ -29,7 +29,7 @@
             @if($listarTributarios->isNotEmpty())
                 @foreach($listarTributarios as $tributario)
                     <tr>
-                        <td>{{ $tributario->codigo }}</td>
+                        <td class="text-uppercase">{{ $tributario->codigo }}</td>
                         <td class="text-center">{{ formatoMillares($tributario->taza) }} <i class="fas fa-percentage"></i></td>
                         <td class="justify-content-end">
                             <div class="btn-group">

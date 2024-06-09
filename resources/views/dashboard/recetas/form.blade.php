@@ -28,8 +28,8 @@
                    wire:model="descripcion">
         </div>
         <div class="col-md-4">
-            <input type="text" class="form-control form-control-sm @error('cantidad') is-invalid @enderror" placeholder="Cantidad (KG)"
-                   wire:model="cantidad" >
+            <input type="number" class="form-control form-control-sm @error('cantidad') is-invalid @enderror" placeholder="Cantidad (KG)"
+                   wire:model="cantidad" min="0.001" step=".001" >
         </div>
     </div>
 
@@ -44,9 +44,9 @@
                     </li>
                     <div class="card-tools p-2">
                         <div class="btn-tool">
-                            <button type="button" wire:click="btnContador('add')" class="btn btn-default btn-sm">
+                            {{--<button type="button" wire:click="btnContador('add')" class="btn btn-default btn-sm">
                                 <i class="fas fa-plus"></i>
-                            </button>
+                            </button>--}}
                             {{--<button type="button" wire:click="btnContador('remove')" class="btn btn-default btn-sm"
                                     @if($ajuste_contador == 1) disabled @endif>
                                 <i class="fas fa-minus"></i>
@@ -84,20 +84,33 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="col-md-8">
-                                    @if($errors->has('ajusteArticulo.*') || $errors->has('ajusteUnidad.*') || $errors->has('ajusteCantidad.*'))
-                                        <span class="col-sm-12 text-sm text-bold text-danger">
-                                            <i class="icon fas fa-exclamation-triangle"></i>
-                                            Todos los campos son obigatorios y deben ser validados.
-                                            {{--<br>{{ var_export($errors->messages()) }}--}}
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="col-md-4 float-right mt-3">
-                                    <button type="submit" class="btn btn-block btn-success">
-                                        <i class="fas fa-save"></i> Guardar
-                                    </button>
-                                </div>
+                                {{--@if($errors->has('codigo'))
+                                    <span class="col-sm-12 text-sm text-bold text-danger">
+                                        <i class="icon fas fa-exclamation-triangle"></i>
+                                        El codigo ya ha sido registrado.
+                                        --}}{{--<br>{{ var_export($errors->messages()) }}--}}{{--
+                                    </span>
+                                @endif--}}
+                                @if($errors->has('ajusteArticulo.*') || $errors->has('ajusteUnidad.*') || $errors->has('ajusteCantidad.*'))
+                                    <span class="col-sm-12 text-sm text-bold text-danger">
+                                        <i class="icon fas fa-exclamation-triangle"></i>
+                                        Todos los campos son obigatorios y deben ser validados.
+                                        {{--<br>{{ var_export($errors->messages()) }}--}}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-between">
+                            <div class="col-md-2 mt-3">
+                                <button type="button" wire:click="btnContador('add')" class="btn btn-default btn-sm">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-4 float-right mt-3">
+                                <button type="submit" class="btn btn-block btn-success">
+                                    <i class="fas fa-save"></i> Guardar
+                                </button>
                             </div>
                         </div>
 

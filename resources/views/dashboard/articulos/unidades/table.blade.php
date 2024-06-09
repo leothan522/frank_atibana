@@ -29,8 +29,8 @@
             @if($listarUnidades->isNotEmpty())
                 @foreach($listarUnidades as $unidad)
                     <tr>
-                        <td>{{ $unidad->codigo }}</td>
-                        <td>{{ $unidad->nombre }}</td>
+                        <td class="text-uppercase">{{ $unidad->codigo }}</td>
+                        <td class="text-uppercase">{{ $unidad->nombre }}</td>
                         <td class="justify-content-end">
                             <div class="btn-group">
                                 <button wire:click="edit({{ $unidad->id }})" class="btn btn-primary btn-sm"

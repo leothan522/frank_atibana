@@ -30,9 +30,9 @@
             @if($listarTiposAjuste->isNotEmpty())
                 @foreach($listarTiposAjuste as $tipo)
                     <tr>
-                        <td>{{ $tipo->codigo }}</td>
-                        <td>{{ $tipo->descripcion }}</td>
-                        <td>
+                        <td class="text-uppercase">{{ $tipo->codigo }}</td>
+                        <td class="text-uppercase">{{ $tipo->descripcion }}</td>
+                        <td class="text-uppercase">
                             @if($tipo->tipo == 1)
                                 Entrada
                             @else

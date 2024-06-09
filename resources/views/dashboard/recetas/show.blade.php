@@ -4,7 +4,7 @@
             <label>Código:</label>
         </div>
         <div class="col-md-5 mb-2">
-            <span class="border badge-pill">{{ $codigo }}</span>
+            <span class="border badge-pill text-uppercase">{{ $codigo }}</span>
         </div>
         <div class="col-md-2 text-md-right">
             <label>Fecha:</label>
@@ -26,7 +26,7 @@
                 <label>Cantidad (KG):</label>
             </div>
             <div class="col-md-1">
-                <span class="border badge-pill text-uppercase text-nowrap">{{ formatoMillares($cantidad, 0) }}</span>
+                <span class="border badge-pill text-uppercase text-nowrap">{{ formatoMillares($cantidad, 3) }}</span>
             </div>
         @endif
     </div>

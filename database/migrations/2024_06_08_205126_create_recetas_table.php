@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('codigo');
             $table->string('descripcion');
             $table->dateTime('fecha');
-            $table->integer('cantidad')->nullable();
+            $table->decimal('cantidad', 12, 3)->nullable();
             $table->text('auditoria')->nullable();
             $table->integer('estatus')->default(1);
             $table->foreign('empresas_id')->references('id')->on('empresas')->cascadeOnDelete();

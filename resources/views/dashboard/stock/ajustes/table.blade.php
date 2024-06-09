@@ -40,11 +40,11 @@
                     <li class=" @if(!$ajuste->estatus) done @endif @if($ajuste->id == $ajuste_id) text-warning @endif ""
                     >
                     <!-- todo text -->
-                    <span class="text">
+                    <span class="text text-uppercase">
                             {{ $ajuste->codigo }}
                         </span>
                     <!-- Emphasis label -->
-                    <small class="badge {{--badge-danger--}}">
+                    <small class="badge {{--badge-danger--}} text-uppercase">
                         {{ $ajuste->descripcion }}
                     </small>
                     <!-- General tools such as edit or delete-->

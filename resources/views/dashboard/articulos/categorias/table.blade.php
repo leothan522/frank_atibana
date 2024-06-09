@@ -30,8 +30,8 @@
             @if($listarCategorias->isNotEmpty())
                 @foreach($listarCategorias as $categoria)
                     <tr>
-                        <td>{{ $categoria->codigo }}</td>
-                        <td>{{ $categoria->nombre }}</td>
+                        <td class="text-uppercase">{{ $categoria->codigo }}</td>
+                        <td class="text-uppercase">{{ $categoria->nombre }}</td>
                         <td class="text-center">{{ formatoMillares($categoria->cantidad, 0) }}</td>
                         <td class="justify-content-end">
                             <div class="btn-group">

@@ -38,11 +38,11 @@
                 @foreach($listarRecetas as $receta)
                     <li class=" @if(!$receta->estatus) done @endif @if($receta->id == $recetas_id) text-warning @endif "" >
                     <!-- todo text -->
-                    <span class="text" >
+                    <span class="text text-uppercase">
                             {{ $receta->codigo }}
                         </span>
                     <!-- Emphasis label -->
-                    <small class="badge {{--badge-danger--}}">
+                    <small class="badge {{--badge-danger--}} text-uppercase">
                         {{ $receta->descripcion }}
                     </small>
                     <!-- General tools such as edit or delete-->

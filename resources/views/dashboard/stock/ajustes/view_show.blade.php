@@ -4,7 +4,7 @@
             <label>Código:</label>
         </div>
         <div class="col-md-5 mb-2">
-            <span class="border badge-pill">{{ $ajuste_codigo }}</span>
+            <span class="border badge-pill text-uppercase">{{ $ajuste_codigo }}</span>
         </div>
         <div class="col-md-2 text-md-right">
             <label>Fecha:</label>

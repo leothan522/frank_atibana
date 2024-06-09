@@ -21,6 +21,7 @@
 
 @section('content')
     <p>Welcome to this beautiful admin panel.</p>
+    <input type="week" id="semana" name="semana"></p>
 @stop
 
 @section('right-sidebar')

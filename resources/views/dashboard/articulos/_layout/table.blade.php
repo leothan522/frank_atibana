@@ -38,11 +38,11 @@
                 @foreach($listarArticulos as $articulo)
                     <li class=" @if(!$articulo->estatus) done @endif @if($articulo->id == $articulos_id) text-warning @endif "" >
                     <!-- todo text -->
-                    <span class="text" >
+                    <span class="text text-uppercase" >
                             {{ $articulo->codigo }}
                         </span>
                     <!-- Emphasis label -->
-                    <small class="badge {{--badge-danger--}}">
+                    <small class="badge {{--badge-danger--}} text-uppercase">
                         {{ $articulo->descripcion }}
                     </small>
                     <!-- General tools such as edit or delete-->
