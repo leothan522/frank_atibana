@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        /*DB::table("almacenes")
+        DB::table("almacenes")
             ->insert([
                 "empresas_id" => 1,
                 "codigo" => "ALMP",
@@ -30,7 +30,7 @@ return new class extends Migration
                 "tipo" => 1,
                 "created_at" => \Carbon\Carbon::now(),
                 "updated_at" => \Carbon\Carbon::now(),
-            ]);*/
+            ]);
     }
 
     /**

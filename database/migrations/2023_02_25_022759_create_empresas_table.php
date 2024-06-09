@@ -31,18 +31,18 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        /*DB::table("empresas")
+        DB::table("empresas")
             ->insert([
-                "rif" => "G-20012864-0",
-                "nombre" => "Alimentos del Guárico S.A.",
-                "direccion" => "San Juan de los Morros, Edo. Guárico",
-                "telefono" => "(0424)338.66.00",
-                "email" => "admin@alguarisa.com",
-                "supervisor" => "Humberto Albani",
+                "rif" => "J-50012154-7",
+                "nombre" => "ATIBANA C.A.",
+                "direccion" => "CARACAS, EL ROSAL, QTA. ATIBANA I",
+                "telefono" => "(0212) 000.00.00",
+                "email" => "admin@atibana.com",
+                "supervisor" => ".",
                 "default" => 1,
                 "created_at" => \Carbon\Carbon::now(),
                 "updated_at" => \Carbon\Carbon::now(),
-            ]);*/
+            ]);
     }
 
     /**
