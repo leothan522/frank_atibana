@@ -2,11 +2,11 @@
     <div class="card-header">
         <h3 class="card-title">
             @if($keyword)
-                Resultados de la Busqueda { <b class="text-danger">{{ $keyword }}</b> }
+                Búsqueda { <b class="text-danger">{{ $keyword }}</b> }
                 <button class="btn btn-tool text-danger" wire:click="limpiar"><i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Usuarios Registrados [ <b class="text-navy">{{ $rows }}</b> ]
+                Usuarios [ <b class="text-navy">{{ $rows }}</b> ]
             @endif
         </h3>
 
