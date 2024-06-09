@@ -48,6 +48,7 @@ Route::middleware([
     /*ATIBANA*/
 
     Route::get('recetas', [RecetasController::class, 'index'])->name('recetas.index');
+    Route::get('print/recetas/{id?}', [RecetasController::class, 'printReceta'])->name('recetas.print');
 
 });
 

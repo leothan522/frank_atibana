@@ -24,4 +24,14 @@ class ReceDetalle extends Model
         return $this->belongsTo(Receta::class, 'recetas_id', 'id');
     }
 
+    public function articulo(): BelongsTo
+    {
+        return $this->belongsTo(Articulo::class, 'articulos_id', 'id');
+    }
+
+    public function unidad(): BelongsTo
+    {
+        return $this->belongsTo(Unidad::class, 'unidades_id', 'id');
+    }
+
 }

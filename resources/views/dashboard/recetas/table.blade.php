@@ -7,12 +7,12 @@
                 <button class="btn btn-tool text-warning" wire:click="cerrarBusqueda"><i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Recetas [ <b class="text-warning">{{ $rowsArticulos }}</b> ]
+                Recetas [ <b class="text-warning">{{ $rowsRecetas }}</b> ]
             @endif
         </h3>
 
         <div class="card-tools">
-            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $listarArticulos->count()) disabled @endif>
+            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $listarRecetas->count()) disabled @endif>
                 <i class="fas fa-sort-amount-down-alt"></i> Ver más
             </button>
         </div>
@@ -26,7 +26,7 @@
                 <th style="width: 10%">Código</th>
                 <th>
                     Descripción
-                    <small class="float-right">Mostrando {{ $listarArticulos->count() }}</small>
+                    <small class="float-right">Mostrando {{ $listarRecetas->count() }}</small>
                 </th>
             </tr>
             </thead>
@@ -34,19 +34,19 @@
 
         <!-- TO DO List -->
         <ul class="todo-list" data-widget="todo-list">
-            @if($listarArticulos->isNotEmpty())
-                @foreach($listarArticulos as $articulo)
-                    <li class=" @if(!$articulo->estatus) done @endif @if($articulo->id == $articulos_id) text-warning @endif "" >
+            @if($listarRecetas->isNotEmpty())
+                @foreach($listarRecetas as $receta)
+                    <li class=" @if(!$receta->estatus) done @endif @if($receta->id == $recetas_id) text-warning @endif "" >
                     <!-- todo text -->
                     <span class="text" >
-                            {{ $articulo->codigo }}
+                            {{ $receta->codigo }}
                         </span>
                     <!-- Emphasis label -->
                     <small class="badge {{--badge-danger--}}">
-                        {{ $articulo->descripcion }}
+                        {{ $receta->descripcion }}
                     </small>
                     <!-- General tools such as edit or delete-->
-                    <div class="tools text-primary" wire:click="showArticulos({{ $articulo->id }})">
+                    <div class="tools text-primary" wire:click="show({{ $receta->id }})">
                         <i class="fas fa-eye"></i>
                     </div>
                     </li>
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="overlay-wrapper d-none cargar_articulos">
+    <div class="overlay-wrapper d-none cargar_recetas">
         <div class="overlay">
             <div class="spinner-border text-navy" role="status">
                 <span class="sr-only">Loading...</span>

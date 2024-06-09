@@ -48,4 +48,9 @@ class Unidad extends Model
         return $this->hasMany(Precio::class, 'unidades_id', 'id');
     }
 
+    public function recetadetalles(): HasMany
+    {
+        return $this->hasMany(ReceDetalle::class, 'unidades_id', 'id');
+    }
+
 }

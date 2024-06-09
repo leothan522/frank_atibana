@@ -288,6 +288,7 @@ class ArticulosComponent extends Component
             $this->limpiarArticulos();
         }
     }
+
     #[On('buscar')]
     public function buscar($keyword)
     {

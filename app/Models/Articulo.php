@@ -101,6 +101,11 @@ class Articulo extends Model
         return $this->belongsTo(Empresa::class, 'empresas_id', 'id');
     }
 
+    public function recetadetalles(): HasMany
+    {
+        return $this->hasMany(ReceDetalle::class, 'articulos_id', 'id');
+    }
+
 
 
 }
