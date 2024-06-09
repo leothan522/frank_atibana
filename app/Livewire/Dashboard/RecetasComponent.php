@@ -62,11 +62,11 @@ class RecetasComponent extends Component
     {
         $this->empresas_id = $empresaID;
         $this->limpiar();
-        /*$ultimo = Articulo::orderBy('codigo', 'ASC')->where('empresas_id', $this->empresas_id)->first();
+        $ultimo = Receta::orderBy('created_at', 'DESC')->where('empresas_id', $this->empresas_id)->first();
         if ($ultimo) {
             $this->view = "show";
-            $this->showArticulos($ultimo->id);
-        }*/
+            $this->show($ultimo->id);
+        }
     }
 
     public function limpiar()

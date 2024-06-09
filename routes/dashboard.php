@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\PlanificacionController;
 use App\Http\Controllers\Dashboard\RecetasController;
 use App\Http\Controllers\FCM\FcmController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,7 @@ Route::middleware([
 
     Route::get('recetas', [RecetasController::class, 'index'])->name('recetas.index');
     Route::get('print/recetas/{id?}', [RecetasController::class, 'printReceta'])->name('recetas.print');
+    Route::get('planificacion', [PlanificacionController::class, 'index'])->name('planificacion.index');
 
 });
 

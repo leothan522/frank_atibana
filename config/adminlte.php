@@ -332,7 +332,7 @@ return [
         [
             'text'      => 'Gestionar Comida',
             'icon'      => 'fas fa-fw fa-utensils',
-            'can'       => ['recetas'],
+            'can'       => ['recetas', 'planificacion'],
             'submenu' => [
                 [
                     'text' => 'Recetas',
@@ -343,8 +343,8 @@ return [
                 [
                     'text' => 'Planificación',
                     'icon' => 'fas fa-fw fa-tasks',
-                    'route' => 'parametros.index',
-                    'can' => 'parametros',
+                    'route' => 'planificacion.index',
+                    'can' => 'planificacion',
                 ],
                 [
                     'text' => 'Despachos',

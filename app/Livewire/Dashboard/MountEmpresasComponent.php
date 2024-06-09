@@ -69,6 +69,7 @@ class MountEmpresasComponent extends Component
         $this->dispatch('getEmpresaStock', empresaID: $this->empresaID)->to(StockComponent::class);
         $this->dispatch('getEmpresaArticulos', empresaID: $this->empresaID)->to(ArticulosComponent::class);
         $this->dispatch('getEmpresaRecetas', empresaID: $this->empresaID)->to(RecetasComponent::class);
+        $this->dispatch('getEmpresaPlanificacion', empresaID: $this->empresaID)->to(PlanificacionComponent::class);
     }
 
 
