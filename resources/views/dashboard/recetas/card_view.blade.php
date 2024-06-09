@@ -73,8 +73,7 @@
     </div>
 
     <div class="overlay-wrapper" wire:loading
-         wire:target="limpiar, create, save, show, destroy, btnCancelar, btnEditar,
-         btnActivoInactivo">
+         wire:target="limpiar, create, save, show, update, destroy, btnCancelar, btnEditar, btnActivoInactivo">
         <div class="overlay">
             <div class="spinner-border text-navy" role="status">
                 <span class="sr-only">Loading...</span>

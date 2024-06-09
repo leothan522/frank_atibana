@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ajustes', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('empresas_id')->unsigned();
-            $table->string('codigo')->unique();
+            $table->string('codigo')/*->unique()*/;
             $table->string('descripcion');
             $table->dateTime('fecha');
             $table->bigInteger('segmentos_id')->unsigned()->nullable();

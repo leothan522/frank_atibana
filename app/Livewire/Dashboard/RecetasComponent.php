@@ -282,6 +282,7 @@ class RecetasComponent extends Component
     public function confirmed()
     {
         $receta = Receta::find($this->recetas_id);
+        $receta->codigo = "*".$receta->codigo;
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
@@ -297,6 +298,7 @@ class RecetasComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
+            $receta->save();
             $receta->delete();
             $this->alert('success', 'Receta Eliminada.');
             $this->edit = false;
