@@ -313,7 +313,7 @@ return [
         [
             'text'      => 'Inventario',
             'icon'      => 'fas fa-fw fa-cubes',
-            'can'       => ['articulos', 'stock'],
+            'can'       => ['articulos', 'stock', 'proveedores'],
             'submenu' => [
                 [
                     'text' => 'Stock',
@@ -326,6 +326,12 @@ return [
                     'icon' => 'fas fa-fw fa-box',
                     'route'  => 'articulos.index',
                     'can'  => 'articulos',
+                ],
+                [
+                    'text' => 'Proveedores',
+                    'icon' => 'fas fa-fw fa-user-friends',
+                    'route'  => 'proveedores.index',
+                    'can'  => 'proveedores',
                 ]
             ],
         ],

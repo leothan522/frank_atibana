@@ -20,14 +20,6 @@
             </button>
         </li>
 
-        <li class="nav-item">
-            <button type="button" class="btn btn-primary btn-sm btn-block m-1"
-                    {{--data-toggle="modal" data-target="#modal-unidades" onclick="verUnidades()"--}}
-                    @if(!comprobarPermisos('unidades.index')) disabled @endif >
-                Proveedores
-            </button>
-        </li>
-
         @if(auth()->user()->role == 100)
             <li class="nav-item">
                 <button type="button" class="btn btn-primary btn-sm btn-block m-1"

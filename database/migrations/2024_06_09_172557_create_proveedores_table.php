@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('rif')->unique();
             $table->string('nombre');
-            $table->text('direccion');
             $table->string('telefono');
+            $table->text('direccion');
             $table->string('banco')->nullable();
             $table->string('cuenta')->nullable();
             $table->text('imagen')->nullable();

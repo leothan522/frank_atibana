@@ -31,6 +31,10 @@ class AuthServiceProvider extends ServiceProvider
             return comprobarPermisos('articulos.index');
         });
 
+        Gate::define('proveedores', function ($user){
+            return comprobarPermisos('proveedores.index');
+        });
+
         Gate::define('recetas', function ($user){
             return comprobarPermisos('recetas.index');
         });
