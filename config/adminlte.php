@@ -355,8 +355,8 @@ return [
                 [
                     'text' => 'Despachos',
                     'icon' => 'fas fa-fw fa-gifts',
-                    'route' => 'parametros.index',
-                    'can' => 'parametros',
+                    'route' => 'despachos.index',
+                    'can' => 'despachos',
                 ]
             ],
         ],

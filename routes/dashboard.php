@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\DespachosController;
 use App\Http\Controllers\Dashboard\PlanificacionController;
 use App\Http\Controllers\Dashboard\ProveedoresController;
 use App\Http\Controllers\Dashboard\RecetasController;
@@ -53,6 +54,7 @@ Route::middleware([
     Route::get('print/recetas/{id?}', [RecetasController::class, 'printReceta'])->name('recetas.print');
     Route::get('proveedores', [ProveedoresController::class, 'index'])->name('proveedores.index');
     Route::get('planificacion', [PlanificacionController::class, 'index'])->name('planificacion.index');
+    Route::get('despachos', [DespachosController::class, 'index'])->name('despachos.index');
 
 });
 
