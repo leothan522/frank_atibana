@@ -25,7 +25,7 @@
     </div>
 
     @if($footer)
-        <div class="card-footer text-center @if(!comprobarAccesoEmpresa($permisos, auth()->id())) d-none @endif">
+        <div class="card-footer text-center @if(auth()->user()->role != 100) d-none @endif">
 
             @if(!$verDefault)
                 <button type="button" class="btn btn-default btn-sm mr-1"
@@ -36,12 +36,12 @@
             @endif
 
             <button type="button" class="btn btn-default btn-sm" wire:click="verHorario"
-                    @if(!comprobarPermisos('empresas.horario')) disabled @endif>
+                    @if(auth()->user()->role != 100) disabled @endif>
                 <i class="fas fa-clock"></i> Horario
             </button>
 
             <button type="button" class="btn btn-default btn-sm" wire:click="edit"
-                    @if(!comprobarPermisos('empresas.edit')) disabled @endif>
+                    @if(auth()->user()->role != 100) disabled @endif>
                 <i class="fas fa-edit"></i> {{ __('Edit') }} Información
             </button>
                 {{--@if(!$verDefault)

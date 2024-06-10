@@ -38,7 +38,7 @@
                                     </td>
                                     <td class="text-right">
                                         @if(comprobarPermisos('articulos.edit'))
-                                            <button class="btn btn-sm text-danger m-0" wire:click="destroy({{ $proveedor->id }})">
+                                            <button class="btn btn-sm text-danger m-0 @if(!comprobarPermisos('articulos.proveedores')) d-none @endif " wire:click="destroy({{ $proveedor->id }})">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         @endif
@@ -58,7 +58,7 @@
 
                 </div>
 
-                <form wire:submit="save" class="p-0 @if(!comprobarPermisos('articulos.edit')) d-none @endif ">
+                <form wire:submit="save" class="p-0 @if(!comprobarPermisos('articulos.proveedores')) d-none @endif ">
                     <table class="table table-sm">
                         <tbody>
                         <tr>

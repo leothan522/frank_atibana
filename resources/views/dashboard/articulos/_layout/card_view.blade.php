@@ -102,7 +102,7 @@
         </button>
 
         <button type="button" class="btn btn-default btn-sm" wire:click="destroy()"
-                @if(!comprobarPermisos()) disabled @endif>
+                @if(!comprobarPermisos('articulos.destroy')) disabled @endif>
             <i class="fas fa-trash-alt"></i> Borrar
         </button>
 

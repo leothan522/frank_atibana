@@ -40,13 +40,56 @@ function allPermisos()
         'Articulos' => [
             'route' => 'articulos.index',
             'submenu' => [
-                'Crear Articulos' => 'articulos.create',
-                'Editar Articulos' => 'articulos.edit',
                 'Cambiar Estatus' => 'articulos.estatus',
                 'Cambiar Unidades' => 'articulos.unidades',
-                'Cambiar Precios' => 'articulos.precios',
-                'Cambiar Identificadores' => 'articulos.identificadores',
-                'Cambiar Imagenes' => 'articulos.imagenes'
+                'Cambiar Proveedores' => 'articulos.proveedores',
+                'Cambiar Imagenes' => 'articulos.imagenes',
+                'Crear Articulos' => 'articulos.create',
+                'Editar Articulos' => 'articulos.edit',
+                /*'Cambiar Precios' => 'articulos.precios',
+                'Cambiar Identificadores' => 'articulos.identificadores',*/
+                'Borrar Articulos' => 'articulos.destroy'
+            ]
+        ],
+        'Proveedores' => [
+            'route' => 'proveedores.index',
+            'submenu' => [
+                'Cambiar Estatus' => 'proveedores.estatus',
+                'Crear Proveedores' => 'proveedores.create',
+                'Editar Proveedores' => 'proveedores.edit',
+                'Borrar Proveedores' => 'proveedores.destroy',
+
+            ]
+        ],
+        'Recetas' => [
+            'route' => 'recetas.index',
+            'submenu' => [
+                'Cambiar Estatus' => 'recetas.estatus',
+                'Imprimir Recetas' => 'recetas.print',
+                'Crear Recetas' => 'recetas.create',
+                'Editar Recetas' => 'recetas.edit',
+                'Borrar Recetas' => 'recetas.destroy',
+
+            ]
+        ],
+        'Planificación' => [
+            'route' => 'planificacion.index',
+            'submenu' => [
+                'Imprimir Planificación' => 'planificacion.print',
+                'Crear Planificación' => 'planificacion.create',
+                'Editar Planificación' => 'planificacion.edit',
+                'Borrar Planificación' => 'planificacion.destroy',
+
+            ]
+        ],
+        'Despachos' => [
+            'route' => 'despachos.index',
+            'submenu' => [
+                'Imprimir Despachos' => 'despachos.print',
+                'Crear Despachos' => 'despachos.create',
+                'Editar Despachos' => 'despachos.edit',
+                'Borrar Despachos' => 'despachos.destroy',
+
             ]
         ],
         'Categorias' => [
@@ -78,7 +121,7 @@ function allPermisos()
                 'Eliminar Usuarios' => 'usuarios.destroy',
             ]
         ],
-        'Empresas' => [
+        /*'Empresas' => [
             'route' => 'empresas.index',
             'submenu' => [
                 'Crear Empresas' => 'empresas.create',
@@ -88,7 +131,7 @@ function allPermisos()
                 'Borrar Empresas' => 'empresas.destroy'
 
             ]
-        ]
+        ]*/
         /*'Procedencias' => [
             'route' => 'procedencias.index',
             'submenu' => [
