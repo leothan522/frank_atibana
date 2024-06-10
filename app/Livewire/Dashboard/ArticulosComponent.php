@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard;
 use App\Models\Articulo;
 use App\Models\Categoria;
 use App\Models\Procedencia;
+use App\Models\ReceDetalle;
 use App\Models\Stock;
 use App\Models\TipoArticulo;
 use App\Models\Tributario;
@@ -263,8 +264,14 @@ class ArticulosComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
+
         $stock = Stock::where('articulos_id', $articulo->id)->first();
         if ($stock) {
+            $vinculado = true;
+        }
+
+        $recetas = ReceDetalle::where('articulos_id', $articulo->id)->first();
+        if ($recetas){
             $vinculado = true;
         }
 
@@ -460,6 +467,9 @@ class ArticulosComponent extends Component
         $this->cancelar = true;
     }
 
-
+    public function btnProveedores()
+    {
+        $this->dispatch('getArticuloProveedores', articuloID: $this->articulos_id)->to(ArticulosProveedoresComponent::class);
+    }
 
 }

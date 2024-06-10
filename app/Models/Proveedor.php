@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Proveedor extends Model
 {
@@ -29,6 +30,11 @@ class Proveedor extends Model
     {
         return $query->where('rif', 'LIKE', "%$keyword%")
             ->orWhere('nombre', 'LIKE', "%$keyword%");
+    }
+
+    public function articulos(): HasMany
+    {
+        return $this->hasMany(ArtProv::class, 'proveedores_id', 'id');
     }
 
 }

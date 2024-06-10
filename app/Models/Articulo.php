@@ -106,6 +106,11 @@ class Articulo extends Model
         return $this->hasMany(ReceDetalle::class, 'articulos_id', 'id');
     }
 
+    public function proveedores(): HasMany
+    {
+        return $this->hasMany(ArtProv::class, 'articulos_id', 'id');
+    }
+
 
 
 }

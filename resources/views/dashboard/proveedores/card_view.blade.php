@@ -56,6 +56,12 @@
             <i class="fas fa-print"></i> Imprimir
         </a>--}}
 
+        <button type="button" class="btn btn-default btn-sm" wire:click="btnArticulos"
+        data-toggle="modal" data-target="#modal-sm-articulos-proveedores"
+                @if(!$estatus || !$btnVinculados) disabled @endif>
+            <i class="fas fa-boxes"></i> Artículos Vinculados
+        </button>
+
         <button type="button" class="btn btn-default btn-sm" wire:click="btnActivoInactivo"
                 @if(!comprobarPermisos('proveedores.estatus')) disabled @endif >
             @if($estatus)

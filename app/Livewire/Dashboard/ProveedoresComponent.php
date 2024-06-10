@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Models\ArtProv;
 use App\Models\Proveedor;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -18,10 +19,15 @@ class ProveedoresComponent extends Component
     public $view, $nuevo = true, $cancelar = false, $footer = false, $edit = false, $new_proveedor = false, $keyword;
     public $photo, $verImagen, $img_borrar_principal, $img_principal;
     public $proveedores_id, $rif, $nombre, $telefono, $direccion, $banco, $cuenta, $estatus;
+    public $listarVinculados, $btnVinculados;
 
     public function mount()
     {
         $this->setLimit();
+        $proveedor = Proveedor::orderBy('created_at', 'DESC')->first();
+        if ($proveedor){
+            $this->show($proveedor->id);
+        }
     }
 
     public function render()
@@ -166,6 +172,9 @@ class ProveedoresComponent extends Component
         $this->estatus = $proveedor->estatus;
         $this->verImagen = $proveedor->mini;
         $this->img_principal = $proveedor->imagen;
+
+        $this->btnVinculados = ArtProv::where('proveedores_id', $this->proveedores_id)->first();
+
     }
 
     public function destroy()
@@ -189,6 +198,11 @@ class ProveedoresComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
+
+        $articulo = ArtProv::where('proveedores_id', $this->proveedores_id)->first();
+        if ($articulo){
+            $vinculado = true;
+        }
 
         if ($vinculado) {
             $this->alert('warning', '¡No se puede Borrar!', [
@@ -254,6 +268,14 @@ class ProveedoresComponent extends Component
             $message = "Proveedor Activo.";
         }
         $proveedor->update();
+
+        $articulos = ArtProv::where('proveedores_id', $proveedor->id)->get();
+        foreach ($articulos as $articulo){
+            $vinculado = ArtProv::find($articulo->id);
+            $vinculado->estatus = $this->estatus;
+            $vinculado->save();
+        }
+
         $this->alert('success', $message);
     }
 
@@ -262,6 +284,42 @@ class ProveedoresComponent extends Component
         $this->verImagen = null;
         $this->reset('photo');
         $this->img_borrar_principal = $this->img_principal;
+    }
+
+    public function btnArticulos()
+    {
+        $this->listarVinculados = ArtProv::where('proveedores_id', $this->proveedores_id)->get();
+    }
+
+    public function desvincular()
+    {
+        $this->confirm('¿Estas seguro?', [
+            'toast' => false,
+            'position' => 'center',
+            'showConfirmButton' => true,
+            'confirmButtonText' => '¡Sí, bórralo!',
+            'text' => '¡No podrás revertir esto!',
+            'cancelButtonText' => 'No',
+            'onConfirmed' => 'confirmedDesvincular',
+        ]);
+    }
+
+    #[On('confirmedDesvincular')]
+    public function confirmedDesvincular()
+    {
+        $articulos = ArtProv::where('proveedores_id', $this->proveedores_id)->get();
+        foreach ($articulos as $articulo){
+            $vinculado = ArtProv::find($articulo->id);
+            $vinculado->delete();
+            $this->show($this->proveedores_id);
+            $this->dispatch('cerrarModal');
+        }
+    }
+
+    #[On('cerrarModal')]
+    public function cerrarModal()
+    {
+        //JS
     }
 
 }

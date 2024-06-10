@@ -51,6 +51,10 @@
             $('#customFileLang').click();
         }
 
+        Livewire.on('cerrarModal', () => {
+            $('#cerrar_modal_proveedor').click();
+        });
+
         function buscar(){
             verSpinnerOculto();
             let input = $("#navbarSearch");

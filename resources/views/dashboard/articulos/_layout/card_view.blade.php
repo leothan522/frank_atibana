@@ -50,6 +50,7 @@
             @livewire('dashboard.articulos-unidades-component')
             @livewire('dashboard.articulos-precios-component')
             @livewire('dashboard.articulos-identificadores-component')
+            @livewire('dashboard.articulos-proveedores-component')
             @include('dashboard.articulos._layout.modal_reportes')
         </div>
 
@@ -63,8 +64,8 @@
             <i class="fas fa-weight-hanging"></i> Unidad
         </button>
 
-        <button type="button" class="btn btn-default btn-sm" {{--wire:click="btnPrecios"--}} {{--onclick="verArticulosPrecios()"--}}
-                {{--data-toggle="modal" data-target="#modal-sm-articulos-precios"--}}
+        <button type="button" class="btn btn-default btn-sm" wire:click="btnProveedores" {{--onclick="verArticulosPrecios()"--}}
+                data-toggle="modal" data-target="#modal-sm-articulos-proveedores"
                 @if(!$estatus) disabled @endif>
             <i class="fas fa-user-friends"></i> Proveedores
         </button>
@@ -109,7 +110,7 @@
 
     <div class="overlay-wrapper" wire:loading
          wire:target="limpiarArticulos, create, save, showArticulos, destroy, btnCancelar, btnEditar,
-         btnActivoInactivo, btnImagen, btnExistencias">
+         btnActivoInactivo, btnImagen, btnExistencias, btnProveedores">
         <div class="overlay">
             <div class="spinner-border text-navy" role="status">
                 <span class="sr-only">Loading...</span>

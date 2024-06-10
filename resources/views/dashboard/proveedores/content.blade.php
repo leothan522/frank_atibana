@@ -4,5 +4,6 @@
     </div>
     <div class="col-md-7">
         @include('dashboard.proveedores.card_view')
+        @include('dashboard.proveedores.articulos')
     </div>
 </div>
