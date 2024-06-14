@@ -3,26 +3,26 @@
 
     <div class="card-header">
         <h3 class="card-title">
-            @if($new_receta)
-                Nuevo Receta
+            @if($new_planificacion)
+                Nueva Planificación
             @endif
-            @if(!$new_receta && $view == 'form')
-                Editar Receta
+            @if(!$new_planificacion && $view == 'form')
+                Editar Planificación
             @endif
             @if($view != "form")
-                Ver Receta
+                Ver Planificación
             @endif
         </h3>
         <div class="card-tools">
             {{--<span class="btn btn-tool"><i class="fas fa-list"></i></span>--}}
             @if($nuevo)
                 <button class="btn btn-tool" wire:click="create"
-                        @if(!comprobarPermisos('recetas.create')) disabled @endif ><i class="fas fa-file"></i> Nuevo
+                        @if(!comprobarPermisos('planificacion.create')) disabled @endif ><i class="fas fa-file"></i> Nuevo
                 </button>
             @endif
             @if($edit)
                 <button class="btn btn-tool" wire:click="btnEditar"
-                        @if(!comprobarPermisos('recetas.edit')) disabled @endif ><i class="fas fa-edit"></i> Editar
+                        @if(!comprobarPermisos('planificacion.edit')) disabled @endif ><i class="fas fa-edit"></i> Editar
                 </button>
             @endif
             @if($cancelar)
@@ -34,16 +34,16 @@
     <div class="card-body">
 
         @if($view == 'form')
-            @include('dashboard.recetas.form')
+            @include('dashboard.planificacion.form')
         @endif
 
         @if($view == 'show')
-            @include('dashboard.recetas.show')
+            {{--@include('dashboard.recetas.show')--}}
         @endif
 
         @if($view != 'form' && $view != 'show')
             <div class="row m-5">
-                Debes seleccionar una Receta ó Precionar el boton Nuevo para empezar...
+                Debes seleccionar una Planificación ó Precionar el boton Nuevo para empezar...
             </div>
         @endif
 
@@ -51,14 +51,14 @@
 
     <div class="card-footer text-center @if(!$footer) d-none @endif">
 
-        <a href="{{ route('recetas.print', $recetas_id) }}" target="_blank"
+        <a href="{{--{{ route('planificacion.print', $recetas_id) }}--}}#" target="_blank"
            class="btn btn-default btn-sm @if(!comprobarPermisos('recetas.print')) disabled @endif ">
             <i class="fas fa-print"></i> Imprimir
         </a>
 
         <button type="button" class="btn btn-default btn-sm" wire:click="btnActivoInactivo"
-                @if(!comprobarPermisos('recetas.estatus')) disabled @endif >
-            @if($estatus)
+                @if(!comprobarPermisos('planificacion.estatus')) disabled @endif >
+            @if(/*$estatus*/true)
                 <i class="fas fa-check"></i> Activo
             @else
                 <i class="fas fa-ban"></i> Inactivo
@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <div class="overlay-wrapper d-none cargar_recetas">
+    <div class="overlay-wrapper d-none cargar_planificacion">
         <div class="overlay">
             <div class="spinner-border text-navy" role="status">
                 <span class="sr-only">Loading...</span>

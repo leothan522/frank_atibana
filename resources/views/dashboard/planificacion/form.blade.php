@@ -1,4 +1,4 @@
-<form @if($new_receta) wire:submit="save" @else wire:submit="update" @endif xmlns:wire="http://www.w3.org/1999/xhtml">
+<form @if($new_planificacion) wire:submit="save" @else wire:submit="update" @endif xmlns:wire="http://www.w3.org/1999/xhtml">
     <div class="row col-12 mb-2">
         <div class="col-md-2">
             <label>Código:</label>
@@ -14,8 +14,8 @@
             <label>Fecha:</label>
         </div>
         <div class="col-md-3">
-            <input type="datetime-local" class="form-control form-control-sm @error('fecha') is-invalid @enderror"
-                   wire:model="fecha" readonly >
+            <input type="week" class="form-control form-control-sm @error('fecha') is-invalid @enderror"
+                   wire:model="fecha" >
         </div>
     </div>
 
@@ -27,10 +27,10 @@
             <input type="text" class="form-control form-control-sm @error('descripcion') is-invalid @enderror" placeholder="Descripción"
                    wire:model="descripcion">
         </div>
-        <div class="col-md-4">
+        {{--<div class="col-md-4">
             <input type="number" class="form-control form-control-sm @error('cantidad') is-invalid @enderror" placeholder="Cantidad (KG)"
                    wire:model="cantidad" min="0.001" step=".001" >
-        </div>
+        </div>--}}
     </div>
 
     <div class="col-12">
@@ -74,9 +74,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @for($i = 0; $i < $ajuste_contador; $i++)
+                                {{--@for($i = 0; $i < $ajuste_contador; $i++)
                                     @include('dashboard.recetas.from_detalles')
-                                @endfor
+                                @endfor--}}
                                 </tbody>
                             </table>
 
@@ -124,4 +124,4 @@
         </div>
     </div>
 </form>
-@include('dashboard.recetas.modal_buscar')
+{{--@include('dashboard.recetas.modal_buscar')--}}

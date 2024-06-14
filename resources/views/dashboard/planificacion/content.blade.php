@@ -5,8 +5,7 @@
             <p>En desarrollo, activo proximamente!.</p>
         </div>
         <div class="col-md-7">
-            {{--@include('dashboard.recetas.card_view')--}}
-            {{--mundo--}}
+            @include('dashboard.planificacion.card_view')
         </div>
     </div>
 @endif
