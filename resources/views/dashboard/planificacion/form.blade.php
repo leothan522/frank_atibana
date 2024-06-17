@@ -5,7 +5,7 @@
         </div>
         <div class="col-md-2 mb-2">
             <input type="text" class="form-control form-control-sm @error('codigo') is-invalid @enderror" placeholder="Código"
-                   wire:model="codigo" >
+                   wire:model="codigo" readonly>
         </div>
         <div class="col-md-3">
             &nbsp; {{--@error('codigo') {{ $message }} @endif--}}
@@ -67,9 +67,8 @@
                                 <thead>
                                 <tr class="text-navy">
                                     <th style="width: 10%">#</th>
-                                    <th>Artículo</th>
+                                    <th>Receta</th>
                                     <th>Descripción</th>
-                                    <th>Unidad</th>
                                     <th>Cantidad</th>
                                 </tr>
                                 </thead>
