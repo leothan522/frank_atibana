@@ -64,4 +64,9 @@ class Empresa extends Model
         return $this->hasMany(Receta::class, 'empresas_id', 'id');
     }
 
+    public function planificaciones(): HasMany
+    {
+        return $this->hasMany(Planificacion::class, 'empresas_id', 'id');
+    }
+
 }

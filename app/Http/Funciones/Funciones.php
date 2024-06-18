@@ -614,19 +614,33 @@ function nextCodigoAjuste($empresa_id){
 
 }
 
-function nextCodigo($next = 1, $parametros_nombre = null, $parametros_tabla_id = null, $formato = null){
+function nextCodigo($parametros_nombre, $parametros_tabla_id, $nombre_formato = null){
+
+    $next = 1;
     $codigo = null;
 
     //buscamos algun formato para el codigo
-    $parametro = Parametro::where("nombre", $parametros_nombre)->where('tabla_id', $parametros_tabla_id)->first();
-    if ($parametro) {
-        $codigo = $parametro->valor;
-    }else{
-        if (is_null($formato)){
-            $codigo = "N".$parametros_tabla_id.'-';
+    if (!is_null($nombre_formato)){
+        $parametro = Parametro::where("nombre", $nombre_formato)->where('tabla_id', $parametros_tabla_id)->first();
+        if ($parametro) {
+            $codigo = $parametro->valor;
         }else{
-            $codigo = $formato;
+            $codigo = "N".$parametros_tabla_id.'-';
         }
+    }
+
+    //buscamos el proximo numero
+    $parametro = Parametro::where("nombre", $parametros_nombre)->where('tabla_id', $parametros_tabla_id)->first();
+    if ($parametro){
+        $next = $parametro->valor;
+        $parametro->valor = $next + 1;
+        $parametro->save();
+    }else{
+        $parametro = new Parametro();
+        $parametro->nombre = $parametros_nombre;
+        $parametro->tabla_id = $parametros_tabla_id;
+        $parametro->valor = 2;
+        $parametro->save();
     }
 
     if (!is_numeric($next)){ $next = 1; }

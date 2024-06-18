@@ -1,4 +1,5 @@
-<div class="tab-pane fade @if($dia == 'jueves') active show @endif " id="custom-tabs-three-jueves" role="tabpanel" aria-labelledby="custom-tabs-three-jueves-tab">
+<div class="tab-pane fade @if($dia == 'jueves') active show @endif " id="custom-tabs-three-jueves" role="tabpanel"
+     aria-labelledby="custom-tabs-three-jueves-tab" xmlns:wire="http://www.w3.org/1999/xhtml">
 
     <div class="row table-responsive p-0">
 

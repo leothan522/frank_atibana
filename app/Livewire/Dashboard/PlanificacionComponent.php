@@ -2,6 +2,9 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Models\Parametro;
+use App\Models\PlanDetalle;
+use App\Models\Planificacion;
 use App\Models\Receta;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -17,13 +20,13 @@ class PlanificacionComponent extends Component
     public $rows = 0, $numero = 14, $empresas_id, $tableStyle = false;
     public $view, $nuevo = true, $cancelar = false, $footer = false, $edit = false, $new_planificacion = false, $keyword;
 
-    public $contador_lunes = 0, $idRecetaLunes = [], $codigoRecetaLunes = [], $classRecetaLunes = [],
+    public $contador_lunes = 1, $idRecetaLunes = [], $codigoRecetaLunes = [], $classRecetaLunes = [],
             $descripcionRecetaLunes = [], $cantidadLunes = [], $detalles_id_lunes = [];
 
-    public $contador_martes = 0, $idRecetaMartes = [], $codigoRecetaMartes = [], $classRecetaMartes = [],
+    public $contador_martes = 1, $idRecetaMartes = [], $codigoRecetaMartes = [], $classRecetaMartes = [],
         $descripcionRecetaMartes = [], $cantidadMartes = [], $detalles_id_martes = [];
 
-    public $contador_miercoles = 0, $idRecetaMiercoles = [], $codigoRecetaMiercoles = [], $classRecetaMiercoles = [],
+    public $contador_miercoles = 1, $idRecetaMiercoles = [], $codigoRecetaMiercoles = [], $classRecetaMiercoles = [],
         $descripcionRecetaMiercoles = [], $cantidadMiercoles = [], $detalles_id_miercoles = [];
 
     public $contador_jueves = 0, $idRecetaJueves = [], $codigoRecetaJueves = [], $classRecetaJueves = [],
@@ -100,7 +103,9 @@ class PlanificacionComponent extends Component
             'contador_domingo', 'idRecetaDomingo', 'codigoRecetaDomingo', 'classRecetaDomingo', 'descripcionRecetaDomingo',
             'cantidadDomingo', 'detalles_id_domingo',
 
-            'borraritems', 'item', 'dia', 'listarRecetas', 'keywordRecetas'
+            'borraritems', 'item', 'dia', 'listarRecetas', 'keywordRecetas',
+
+            'codigo', 'fecha', 'descripcion', 'estatus'
         ]);
     }
 
@@ -113,12 +118,41 @@ class PlanificacionComponent extends Component
         $this->cancelar = true;
         $this->edit = false;
         $this->footer = false;
+
+        if ($this->contador_lunes){
+            $this->idRecetaLunes[0] = null;
+            $this->codigoRecetaLunes[0] = null;
+            $this->classRecetaLunes[0] = null;
+            $this->descripcionRecetaLunes[0] = null;
+            $this->cantidadLunes[0] = null;
+            $this->detalles_id_lunes[0] = null;
+        }
+
+        if ($this->contador_martes){
+            $this->idRecetaMartes[0] = null;
+            $this->codigoRecetaMartes[0] = null;
+            $this->classRecetaMartes[0] = null;
+            $this->descripcionRecetaMartes[0] = null;
+            $this->cantidadMartes[0] = null;
+            $this->detalles_id_martes[0] = null;
+        }
+
+        if ($this->contador_miercoles){
+            $this->idRecetaMiercoles[0] = null;
+            $this->codigoRecetaMiercoles[0] = null;
+            $this->classRecetaMiercoles[0] = null;
+            $this->descripcionRecetaMiercoles[0] = null;
+            $this->cantidadMiercoles[0] = null;
+            $this->detalles_id_miercoles[0] = null;
+        }
+
     }
 
     protected function rules()
     {
         return [
-            'fecha' => 'required',
+            'codigo' => ['nullable', Rule::unique('planificaciones', 'codigo')->ignore($this->planificaciones_id)],
+            'fecha' => ['required', Rule::unique('planificaciones', 'fecha')->ignore($this->planificaciones_id)],
             'codigoRecetaLunes.*' => [Rule::requiredIf($this->contador_lunes > 0), Rule::exists('recetas', 'codigo')],
             'cantidadLunes.*' => [Rule::requiredIf($this->contador_lunes > 0)],
             'codigoRecetaMartes.*' => [Rule::requiredIf($this->contador_martes > 0), Rule::exists('recetas', 'codigo')],
@@ -158,7 +192,80 @@ class PlanificacionComponent extends Component
             $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
             $domingo = $date->endOfWeek()->format('Y-m-d');
 
+            $this->codigo = nextCodigo("proximo_codigo_planificacion", $this->empresas_id, "formato_codigo_planificacion");
 
+            $planificacion = new Planificacion();
+            $planificacion->empresas_id = $this->empresas_id;
+            $planificacion->codigo = $this->codigo;
+            $planificacion->fecha = $this->fecha;
+            $planificacion->save();
+
+            for ($i = 0; $i < $this->contador_lunes; $i++){
+                $detalle = new PlanDetalle();
+                $detalle->planificaciones_id = $planificacion->id;
+                $detalle->fecha = $lunes;
+                $detalle->recetas_id = $this->idRecetaLunes[$i];
+                $detalle->cantidad = $this->cantidadLunes[$i];
+                $detalle->save();
+            }
+
+            for ($i = 0; $i < $this->contador_martes; $i++){
+                $detalle = new PlanDetalle();
+                $detalle->planificaciones_id = $planificacion->id;
+                $detalle->fecha = $martes;
+                $detalle->recetas_id = $this->idRecetaMartes[$i];
+                $detalle->cantidad = $this->cantidadMartes[$i];
+                $detalle->save();
+            }
+
+            for ($i = 0; $i < $this->contador_miercoles; $i++){
+                $detalle = new PlanDetalle();
+                $detalle->planificaciones_id = $planificacion->id;
+                $detalle->fecha = $miercoles;
+                $detalle->recetas_id = $this->idRecetaMiercoles[$i];
+                $detalle->cantidad = $this->cantidadMiercoles[$i];
+                $detalle->save();
+            }
+
+            for ($i = 0; $i < $this->contador_jueves; $i++){
+                $detalle = new PlanDetalle();
+                $detalle->planificaciones_id = $planificacion->id;
+                $detalle->fecha = $jueves;
+                $detalle->recetas_id = $this->idRecetaJueves[$i];
+                $detalle->cantidad = $this->cantidadJueves[$i];
+                $detalle->save();
+            }
+
+            for ($i = 0; $i < $this->contador_viernes; $i++){
+                $detalle = new PlanDetalle();
+                $detalle->planificaciones_id = $planificacion->id;
+                $detalle->fecha = $viernes;
+                $detalle->recetas_id = $this->idRecetaViernes[$i];
+                $detalle->cantidad = $this->cantidadViernes[$i];
+                $detalle->save();
+            }
+
+            for ($i = 0; $i < $this->contador_sabado; $i++){
+                $detalle = new PlanDetalle();
+                $detalle->planificaciones_id = $planificacion->id;
+                $detalle->fecha = $sabado;
+                $detalle->recetas_id = $this->idRecetaSabado[$i];
+                $detalle->cantidad = $this->cantidadSabado[$i];
+                $detalle->save();
+            }
+
+            for ($i = 0; $i < $this->contador_domingo; $i++){
+                $detalle = new PlanDetalle();
+                $detalle->planificaciones_id = $planificacion->id;
+                $detalle->fecha = $domingo;
+                $detalle->recetas_id = $this->idRecetaDomingo[$i];
+                $detalle->cantidad = $this->cantidadDomingo[$i];
+                $detalle->save();
+            }
+
+            $this->limpiar();
+
+            $this->alert('success', 'Guardado.');
 
 
         }else{
@@ -314,7 +421,7 @@ class PlanificacionComponent extends Component
                     unset($this->classRecetaJueves[$this->contador_jueves]);
                     unset($this->descripcionRecetaJueves[$this->contador_jueves]);
                     unset($this->cantidadJueves[$this->contador_jueves]);
-                    unset($this->detalles_id_Jueves[$this->contador_jueves]);
+                    unset($this->detalles_id_jueves[$this->contador_jueves]);
                 }
 
                 break;
