@@ -1,9 +1,9 @@
-<div wire:ignore.self class="modal fade" id="modal-buscar-articulo" xmlns:wire="http://www.w3.org/1999/xhtml">
+<div wire:ignore.self class="modal fade" id="modal-buscar-recetas" xmlns:wire="http://www.w3.org/1999/xhtml">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Buscar Articulos</h5>
+                <h5 class="modal-title">Buscar Recetas</h5>
                 <button type="button" {{--wire:click="limpiar()"--}} class="close" data-dismiss="modal"
                         aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -14,10 +14,10 @@
 
                 <div class="row justify-content-center">
                     <div class="col-md-6 justify-content-end">
-                        <form wire:submit="buscarAjustesArticulos">
+                        <form wire:submit="buscarRecetas">
                             <div class="input-group close">
                                 <input type="search" class="form-control" placeholder="Buscar"
-                                       wire:model="keywordAjustesArticulos">
+                                       wire:model="keywordRecetas">
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-default">
                                         <i class="fa fa-search"></i>
@@ -38,14 +38,14 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if(!is_null($ajusteListarArticulos))
-                            @foreach($ajusteListarArticulos as $articulo)
+                        @if(!is_null($listarRecetas))
+                            @foreach($listarRecetas as $receta)
                                 <tr>
-                                    <td>{{ $articulo->codigo }}</td>
-                                    <td>{{ $articulo->descripcion }}</td>
+                                    <td>{{ $receta->codigo }}</td>
+                                    <td>{{ $receta->descripcion }}</td>
                                     <td class="justify-content-end">
                                         <div class="btn-group">
-                                            <button wire:click="selectArticuloAjuste('{{ $articulo->codigo }}')"
+                                            <button wire:click="selectReceta('{{ $receta->codigo }}')"
                                                     class="btn btn-primary btn-sm" data-dismiss="modal">
                                                 <i class="fas fa-check"></i>
                                             </button>
@@ -64,7 +64,7 @@
                 <div class="row col-12">
                     <div class="col-md-6">
                         <span>
-                            Item: <strong>{{ $ajusteItem + 1  }}</strong>
+                            Item: <strong>{{ $item + 1  }}</strong>
                         </span>
                     </div>
                     <div class="col-md-6 text-right p-0">
