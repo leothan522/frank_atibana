@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Receta;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
@@ -138,12 +139,32 @@ class PlanificacionComponent extends Component
     public function save()
     {
         $this->validate();
-        $date = Carbon::parse($this->fecha);
-        ///dd($date->weekOfYear);
-        //dd($date->dayOfWeek);
-        //dd($date->startOfWeek()->format('Y-m-d'));
-        //dd($date->endOfWeek()->format('Y-m-d'));
-        dd($this->fecha);
+
+        $key = '-W';
+        $valido = strpos($this->fecha, $key);
+
+        if ($valido !== false){
+
+            //obteniendo fechas para la semana
+            $carbon = CarbonImmutable::now();
+            $explode = explode($key, $this->fecha);
+            $semana = intval($explode[1]);
+            $date = Carbon::parse($carbon->week($semana)->format('d-m-Y'));
+            $lunes = $date->startOfWeek()->format('Y-m-d');
+            $martes = Carbon::parse($lunes)->addDay()->format('Y-m-d');
+            $miercoles = Carbon::parse($lunes)->addDay(2)->format('Y-m-d');
+            $jueves = Carbon::parse($lunes)->addDay(3)->format('Y-m-d');
+            $viernes = Carbon::parse($lunes)->addDay(4)->format('Y-m-d');
+            $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
+            $domingo = $date->endOfWeek()->format('Y-m-d');
+
+
+
+
+        }else{
+            dd('error');
+        }
+
     }
 
     public function btnContador($opcion, $dia)
