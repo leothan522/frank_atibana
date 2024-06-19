@@ -56,6 +56,11 @@
             <i class="fas fa-print"></i> Imprimir
         </a>
 
+        <a href="{{--{{ route('planificacion.print', $recetas_id) }}--}}#" {{--target="_blank"--}}
+        class="btn btn-default btn-sm @if(!comprobarPermisos('planificacion.print')) disabled @endif ">
+            <i class="fas fa-print"></i> Requerimientos
+        </a>
+
         <button type="button" class="btn btn-default btn-sm" wire:click="btnCopiar"
                 @if(!comprobarPermisos('planificacion.create')) disabled @endif >
             <i class="far fa-copy"></i> Copiar Planificación
