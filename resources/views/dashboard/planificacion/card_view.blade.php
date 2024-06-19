@@ -56,7 +56,7 @@
             <i class="fas fa-print"></i> Imprimir
         </a>
 
-        <button type="button" class="btn btn-default btn-sm" {{--wire:click="btnActivoInactivo"--}}
+        <button type="button" class="btn btn-default btn-sm" wire:click="btnCopiar"
                 @if(!comprobarPermisos('planificacion.create')) disabled @endif >
             <i class="far fa-copy"></i> Copiar Planificación
         </button>

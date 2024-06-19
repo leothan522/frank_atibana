@@ -1187,4 +1187,15 @@ class PlanificacionComponent extends Component
         $this->dia = $dia;
     }
 
+    public function btnCopiar()
+    {
+        $this->reset(['dia', 'fecha', 'codigo']);
+        $this->new_planificacion = true;
+        $this->view = "form";
+        $this->nuevo = false;
+        $this->cancelar = true;
+        $this->edit = false;
+        $this->footer = false;
+    }
+
 }
