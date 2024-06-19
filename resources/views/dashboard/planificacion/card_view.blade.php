@@ -51,8 +51,8 @@
 
     <div class="card-footer text-center @if(!$footer) d-none @endif">
 
-        <a href="{{--{{ route('planificacion.print', $recetas_id) }}--}}#" target="_blank"
-           class="btn btn-default btn-sm @if(!comprobarPermisos('recetas.print')) disabled @endif ">
+        <a href="{{--{{ route('planificacion.print', $recetas_id) }}--}}#" {{--target="_blank"--}}
+           class="btn btn-default btn-sm @if(!comprobarPermisos('planificacion.print')) disabled @endif ">
             <i class="fas fa-print"></i> Imprimir
         </a>
 
@@ -69,7 +69,7 @@
     </div>
 
     <div class="overlay-wrapper" wire:loading
-         wire:target="limpiar, create, save, show, update, destroy, btnCancelar, btnEditar, btnActivoInactivo">
+         wire:target="limpiar, create, save, show, update, destroy, btnCancelar, btnEditar, cerrarBusqueda">
         <div class="overlay">
             <div class="spinner-border text-navy" role="status">
                 <span class="sr-only">Loading...</span>

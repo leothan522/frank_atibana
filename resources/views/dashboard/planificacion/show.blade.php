@@ -7,10 +7,10 @@
             <span class="border badge-pill text-uppercase">{{ $codigo }}</span>
         </div>
         <div class="col-md-2 text-md-right">
-            <label>Fecha:</label>
+            <label>Semana:</label>
         </div>
         <div class="col-md-3">
-            <span class="border badge-pill text-nowrap">{{ verFecha($fecha, 'd/m/Y h:i a') }}</span>
+            <span class="border badge-pill text-nowrap">{{ $verSemana }}</span>
         </div>
     </div>
 
