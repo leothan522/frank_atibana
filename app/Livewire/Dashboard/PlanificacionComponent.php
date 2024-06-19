@@ -29,10 +29,10 @@ class PlanificacionComponent extends Component
     public $contador_miercoles = 1, $idRecetaMiercoles = [], $codigoRecetaMiercoles = [], $classRecetaMiercoles = [],
         $descripcionRecetaMiercoles = [], $cantidadMiercoles = [], $detalles_id_miercoles = [];
 
-    public $contador_jueves = 0, $idRecetaJueves = [], $codigoRecetaJueves = [], $classRecetaJueves = [],
+    public $contador_jueves = 1, $idRecetaJueves = [], $codigoRecetaJueves = [], $classRecetaJueves = [],
         $descripcionRecetaJueves = [], $cantidadJueves = [], $detalles_id_jueves = [];
 
-    public $contador_viernes = 0, $idRecetaViernes = [], $codigoRecetaViernes = [], $classRecetaViernes = [],
+    public $contador_viernes = 1, $idRecetaViernes = [], $codigoRecetaViernes = [], $classRecetaViernes = [],
         $descripcionRecetaViernes = [], $cantidadViernes = [], $detalles_id_viernes = [];
 
     public $contador_sabado = 0, $idRecetaSabado = [], $codigoRecetaSabado = [], $classRecetaSabado = [],
@@ -51,7 +51,21 @@ class PlanificacionComponent extends Component
 
     public function render()
     {
-        return view('livewire.dashboard.planificacion-component');
+        $planificaciones = Planificacion::buscar($this->keyword)
+            ->where('empresas_id', $this->empresas_id)
+            ->orderBy('fecha', 'DESC')
+            ->limit($this->rows)
+            ->get();
+        $rowsPlanificaciones = Planificacion::count();
+
+        if ($rowsPlanificaciones > $this->numero) {
+            $this->tableStyle = true;
+        }
+
+        return view('livewire.dashboard.planificacion-component')
+            ->with('listarPlanificaciones', $planificaciones)
+            ->with('rowsPlanificaciones', $rowsPlanificaciones)
+            ;
     }
 
     public function setLimit()
@@ -146,6 +160,24 @@ class PlanificacionComponent extends Component
             $this->detalles_id_miercoles[0] = null;
         }
 
+        if ($this->contador_jueves){
+            $this->idRecetaJueves[0] = null;
+            $this->codigoRecetaJueves[0] = null;
+            $this->classRecetaJueves[0] = null;
+            $this->descripcionRecetaJueves[0] = null;
+            $this->cantidadJueves[0] = null;
+            $this->detalles_id_jueves[0] = null;
+        }
+
+        if ($this->contador_viernes){
+            $this->idRecetaViernes[0] = null;
+            $this->codigoRecetaViernes[0] = null;
+            $this->classRecetaViernes[0] = null;
+            $this->descripcionRecetaViernes[0] = null;
+            $this->cantidadViernes[0] = null;
+            $this->detalles_id_viernes[0] = null;
+        }
+
     }
 
     protected function rules()
@@ -197,6 +229,7 @@ class PlanificacionComponent extends Component
             $planificacion = new Planificacion();
             $planificacion->empresas_id = $this->empresas_id;
             $planificacion->codigo = $this->codigo;
+            $planificacion->descripcion = "Semana $semana-$explode[0] (del ".verFecha($lunes, 'd-m')." al ".verFecha($domingo, 'd-m').")";
             $planificacion->fecha = $this->fecha;
             $planificacion->save();
 
@@ -272,6 +305,20 @@ class PlanificacionComponent extends Component
             dd('error');
         }
 
+    }
+
+    public function show($id)
+    {
+        $this->limpiar();
+        $planificacion = Planificacion::find($id);
+        $this->edit = true;
+        $this->view = "show";
+        $this->footer = true;
+        $this->planificaciones_id = $planificacion->id;
+        $this->codigo = $planificacion->codigo;
+        $this->fecha = $planificacion->fecha;
+        $this->descripcion = $planificacion->descripcion;
+        $this->estatus = $planificacion->estatus;
     }
 
     public function btnContador($opcion, $dia)
@@ -772,7 +819,7 @@ class PlanificacionComponent extends Component
     public function btnCancelar()
     {
         if ($this->planificaciones_id) {
-            //$this->show($this->recetas_id);
+            $this->show($this->planificaciones_id);
         } else {
             $this->limpiar();
         }

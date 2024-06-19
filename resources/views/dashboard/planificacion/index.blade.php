@@ -43,7 +43,7 @@
     <script>
 
         function verSpinnerOculto() {
-            //$('.cargar_recetas').removeClass('d-none');
+            $('.cargar_planificacion').removeClass('d-none');
         }
 
         $(document).ready(function () {
