@@ -38,7 +38,7 @@
         @endif
 
         @if($view == 'show')
-            {{--@include('dashboard.recetas.show')--}}
+            @include('dashboard.planificacion.show')
         @endif
 
         @if($view != 'form' && $view != 'show')
@@ -56,13 +56,9 @@
             <i class="fas fa-print"></i> Imprimir
         </a>
 
-        <button type="button" class="btn btn-default btn-sm" wire:click="btnActivoInactivo"
-                @if(!comprobarPermisos('planificacion.estatus')) disabled @endif >
-            @if(/*$estatus*/true)
-                <i class="fas fa-check"></i> Activo
-            @else
-                <i class="fas fa-ban"></i> Inactivo
-            @endif
+        <button type="button" class="btn btn-default btn-sm" {{--wire:click="btnActivoInactivo"--}}
+                @if(!comprobarPermisos('planificacion.create')) disabled @endif >
+            <i class="far fa-copy"></i> Copiar Planificación
         </button>
 
         <button type="button" class="btn btn-default btn-sm" wire:click="destroy"

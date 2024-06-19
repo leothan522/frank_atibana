@@ -202,6 +202,24 @@ class PlanificacionComponent extends Component
         ];
     }
 
+    protected function getSemana($fecha): array
+    {
+        $key = '-W';
+        $carbon = CarbonImmutable::now();
+        $explode = explode($key, $fecha);
+        $year = $explode[0];
+        $semana = intval($explode[1]);
+        $date = Carbon::parse($carbon->week($semana)->format('d-m-Y'));
+        $lunes = $date->startOfWeek()->format('Y-m-d');
+        $martes = Carbon::parse($lunes)->addDay()->format('Y-m-d');
+        $miercoles = Carbon::parse($lunes)->addDay(2)->format('Y-m-d');
+        $jueves = Carbon::parse($lunes)->addDay(3)->format('Y-m-d');
+        $viernes = Carbon::parse($lunes)->addDay(4)->format('Y-m-d');
+        $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
+        $domingo = $date->endOfWeek()->format('Y-m-d');
+        return [$semana, $lunes, $martes, $miercoles, $jueves, $viernes, $sabado, $domingo, $year];
+    }
+
     public function save()
     {
         $this->validate();
@@ -212,7 +230,7 @@ class PlanificacionComponent extends Component
         if ($valido !== false){
 
             //obteniendo fechas para la semana
-            $carbon = CarbonImmutable::now();
+            /*$carbon = CarbonImmutable::now();
             $explode = explode($key, $this->fecha);
             $semana = intval($explode[1]);
             $date = Carbon::parse($carbon->week($semana)->format('d-m-Y'));
@@ -222,21 +240,23 @@ class PlanificacionComponent extends Component
             $jueves = Carbon::parse($lunes)->addDay(3)->format('Y-m-d');
             $viernes = Carbon::parse($lunes)->addDay(4)->format('Y-m-d');
             $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
-            $domingo = $date->endOfWeek()->format('Y-m-d');
+            $domingo = $date->endOfWeek()->format('Y-m-d');*/
+
+            $semana = $this->getSemana($this->fecha);
 
             $this->codigo = nextCodigo("proximo_codigo_planificacion", $this->empresas_id, "formato_codigo_planificacion");
 
             $planificacion = new Planificacion();
             $planificacion->empresas_id = $this->empresas_id;
             $planificacion->codigo = $this->codigo;
-            $planificacion->descripcion = "Semana $semana-$explode[0] (del ".verFecha($lunes, 'd-m')." al ".verFecha($domingo, 'd-m').")";
+            $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".verFecha($semana[1], 'd-m')." al ".verFecha($semana[7], 'd-m').")";
             $planificacion->fecha = $this->fecha;
             $planificacion->save();
 
             for ($i = 0; $i < $this->contador_lunes; $i++){
                 $detalle = new PlanDetalle();
                 $detalle->planificaciones_id = $planificacion->id;
-                $detalle->fecha = $lunes;
+                $detalle->fecha = $semana[1];
                 $detalle->recetas_id = $this->idRecetaLunes[$i];
                 $detalle->cantidad = $this->cantidadLunes[$i];
                 $detalle->save();
@@ -245,7 +265,7 @@ class PlanificacionComponent extends Component
             for ($i = 0; $i < $this->contador_martes; $i++){
                 $detalle = new PlanDetalle();
                 $detalle->planificaciones_id = $planificacion->id;
-                $detalle->fecha = $martes;
+                $detalle->fecha = $semana[2];
                 $detalle->recetas_id = $this->idRecetaMartes[$i];
                 $detalle->cantidad = $this->cantidadMartes[$i];
                 $detalle->save();
@@ -254,7 +274,7 @@ class PlanificacionComponent extends Component
             for ($i = 0; $i < $this->contador_miercoles; $i++){
                 $detalle = new PlanDetalle();
                 $detalle->planificaciones_id = $planificacion->id;
-                $detalle->fecha = $miercoles;
+                $detalle->fecha = $semana[3];
                 $detalle->recetas_id = $this->idRecetaMiercoles[$i];
                 $detalle->cantidad = $this->cantidadMiercoles[$i];
                 $detalle->save();
@@ -263,7 +283,7 @@ class PlanificacionComponent extends Component
             for ($i = 0; $i < $this->contador_jueves; $i++){
                 $detalle = new PlanDetalle();
                 $detalle->planificaciones_id = $planificacion->id;
-                $detalle->fecha = $jueves;
+                $detalle->fecha = $semana[4];
                 $detalle->recetas_id = $this->idRecetaJueves[$i];
                 $detalle->cantidad = $this->cantidadJueves[$i];
                 $detalle->save();
@@ -272,7 +292,7 @@ class PlanificacionComponent extends Component
             for ($i = 0; $i < $this->contador_viernes; $i++){
                 $detalle = new PlanDetalle();
                 $detalle->planificaciones_id = $planificacion->id;
-                $detalle->fecha = $viernes;
+                $detalle->fecha = $semana[5];
                 $detalle->recetas_id = $this->idRecetaViernes[$i];
                 $detalle->cantidad = $this->cantidadViernes[$i];
                 $detalle->save();
@@ -281,7 +301,7 @@ class PlanificacionComponent extends Component
             for ($i = 0; $i < $this->contador_sabado; $i++){
                 $detalle = new PlanDetalle();
                 $detalle->planificaciones_id = $planificacion->id;
-                $detalle->fecha = $sabado;
+                $detalle->fecha = $semana[6];
                 $detalle->recetas_id = $this->idRecetaSabado[$i];
                 $detalle->cantidad = $this->cantidadSabado[$i];
                 $detalle->save();
@@ -290,7 +310,7 @@ class PlanificacionComponent extends Component
             for ($i = 0; $i < $this->contador_domingo; $i++){
                 $detalle = new PlanDetalle();
                 $detalle->planificaciones_id = $planificacion->id;
-                $detalle->fecha = $domingo;
+                $detalle->fecha = $semana[7];
                 $detalle->recetas_id = $this->idRecetaDomingo[$i];
                 $detalle->cantidad = $this->cantidadDomingo[$i];
                 $detalle->save();
@@ -319,6 +339,132 @@ class PlanificacionComponent extends Component
         $this->fecha = $planificacion->fecha;
         $this->descripcion = $planificacion->descripcion;
         $this->estatus = $planificacion->estatus;
+
+        $semana = $this->getSemana($this->fecha);
+
+        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[1])->get();
+        $this->contador_lunes = 0;
+        foreach ($detalles as $detalle){
+            $this->idRecetaLunes[$this->contador_lunes] = $detalle->id;
+            $this->codigoRecetaLunes[$this->contador_lunes] = $detalle->receta->codigo;
+            $this->classRecetaLunes[$this->contador_lunes] = null;
+            $this->descripcionRecetaLunes[$this->contador_lunes] = $detalle->receta->descripcion;
+            $this->cantidadLunes[$this->contador_lunes] = $detalle->cantidad;
+            $this->detalles_id_lunes[$this->contador_lunes] = $detalle->id;
+            $this->contador_lunes++;
+        }
+
+        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[2])->get();
+        $this->contador_martes = 0;
+        foreach ($detalles as $detalle){
+            $this->idRecetaMartes[$this->contador_martes] = $detalle->id;
+            $this->codigoRecetaMartes[$this->contador_martes] = $detalle->receta->codigo;
+            $this->classRecetaMartes[$this->contador_martes] = null;
+            $this->descripcionRecetaMartes[$this->contador_martes] = $detalle->receta->descripcion;
+            $this->cantidadMartes[$this->contador_martes] = $detalle->cantidad;
+            $this->detalles_id_martes[$this->contador_martes] = $detalle->id;
+            $this->contador_martes++;
+        }
+
+        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[3])->get();
+        $this->contador_miercoles = 0;
+        foreach ($detalles as $detalle){
+            $this->idRecetaMiercoles[$this->contador_miercoles] = $detalle->id;
+            $this->codigoRecetaMiercoles[$this->contador_miercoles] = $detalle->receta->codigo;
+            $this->classRecetaMiercoles[$this->contador_miercoles] = null;
+            $this->descripcionRecetaMiercoles[$this->contador_miercoles] = $detalle->receta->descripcion;
+            $this->cantidadMiercoles[$this->contador_miercoles] = $detalle->cantidad;
+            $this->detalles_id_miercoles[$this->contador_miercoles] = $detalle->id;
+            $this->contador_miercoles++;
+        }
+
+        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[4])->get();
+        $this->contador_jueves = 0;
+        foreach ($detalles as $detalle){
+            $this->idRecetaJueves[$this->contador_jueves] = $detalle->id;
+            $this->codigoRecetaJueves[$this->contador_jueves] = $detalle->receta->codigo;
+            $this->classRecetaJueves[$this->contador_jueves] = null;
+            $this->descripcionRecetaJueves[$this->contador_jueves] = $detalle->receta->descripcion;
+            $this->cantidadJueves[$this->contador_jueves] = $detalle->cantidad;
+            $this->detalles_id_jueves[$this->contador_jueves] = $detalle->id;
+            $this->contador_jueves++;
+        }
+
+        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[5])->get();
+        $this->contador_viernes = 0;
+        foreach ($detalles as $detalle){
+            $this->idRecetaViernes[$this->contador_viernes] = $detalle->id;
+            $this->codigoRecetaViernes[$this->contador_viernes] = $detalle->receta->codigo;
+            $this->classRecetaViernes[$this->contador_viernes] = null;
+            $this->descripcionRecetaViernes[$this->contador_viernes] = $detalle->receta->descripcion;
+            $this->cantidadViernes[$this->contador_viernes] = $detalle->cantidad;
+            $this->detalles_id_viernes[$this->contador_viernes] = $detalle->id;
+            $this->contador_viernes++;
+        }
+
+        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[6])->get();
+        $this->contador_sabado = 0;
+        foreach ($detalles as $detalle){
+            $this->idRecetaSabado[$this->contador_sabado] = $detalle->id;
+            $this->codigoRecetaSabado[$this->contador_sabado] = $detalle->receta->codigo;
+            $this->classRecetaSabado[$this->contador_sabado] = null;
+            $this->descripcionRecetaSabado[$this->contador_sabado] = $detalle->receta->descripcion;
+            $this->cantidadSabado[$this->contador_sabado] = $detalle->cantidad;
+            $this->detalles_id_sabado[$this->contador_sabado] = $detalle->id;
+            $this->contador_sabado++;
+        }
+
+        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[7])->get();
+        $this->contador_domingo = 0;
+        foreach ($detalles as $detalle){
+            $this->idRecetaDomingo[$this->contador_domingo] = $detalle->id;
+            $this->codigoRecetaDomingo[$this->contador_domingo] = $detalle->receta->codigo;
+            $this->classRecetaDomingo[$this->contador_domingo] = null;
+            $this->descripcionRecetaDomingo[$this->contador_domingo] = $detalle->receta->descripcion;
+            $this->cantidadDomingo[$this->contador_domingo] = $detalle->cantidad;
+            $this->detalles_id_domingo[$this->contador_domingo] = $detalle->id;
+            $this->contador_domingo++;
+        }
+
+    }
+
+    public function destroy()
+    {
+        $this->confirm('¿Estas seguro?', [
+            'toast' => false,
+            'position' => 'center',
+            'showConfirmButton' => true,
+            'confirmButtonText' => '¡Sí, bórralo!',
+            'text' => '¡No podrás revertir esto!',
+            'cancelButtonText' => 'No',
+            'onConfirmed' => 'confirmed',
+        ]);
+    }
+
+    #[On('confirmed')]
+    public function confirmed()
+    {
+        $planificacion = Planificacion::find($this->planificaciones_id);
+
+        //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
+        $vinculado = false;
+
+        if ($vinculado) {
+            $this->alert('warning', '¡No se puede Borrar!', [
+                'position' => 'center',
+                'timer' => '',
+                'toast' => false,
+                'text' => 'El registro que intenta borrar ya se encuentra vinculado con otros procesos.',
+                'showConfirmButton' => true,
+                'onConfirmed' => '',
+                'confirmButtonText' => 'OK',
+            ]);
+        } else {
+            $planificacion->delete();
+            $this->edit = false;
+            $this->limpiar();
+            $this->alert('success', 'Planificación Eliminada.');
+        }
     }
 
     public function btnContador($opcion, $dia)
@@ -823,6 +969,14 @@ class PlanificacionComponent extends Component
         } else {
             $this->limpiar();
         }
+    }
+
+    public function btnEditar()
+    {
+        $this->view = 'form';
+        $this->edit = false;
+        $this->cancelar = true;
+        $this->footer = false;
     }
 
     public function setDia($dia)

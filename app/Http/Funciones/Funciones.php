@@ -585,7 +585,7 @@ function nextCodigoAjuste($empresa_id){
     if ($parametro) {
         $codigo['formato'] = $parametro->valor;
     }else{
-        $codigo['formato'] = $empresa_id.'-';
+        $codigo['formato'] = 'N'.$empresa_id.'-';
     }
 
     $parametro = Parametro::where("nombre", "editable_codigo_ajutes")->where('tabla_id', $empresa_id)->first();

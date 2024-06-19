@@ -41,4 +41,9 @@ class Receta extends Model
         return $this->hasMany(ReceDetalle::class, 'recetas_id', 'id');
     }
 
+    public function planificaciones(): HasMany
+    {
+        return $this->hasMany(PlanDetalle::class, 'recetas_id', 'id');
+    }
+
 }

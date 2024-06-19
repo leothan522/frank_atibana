@@ -23,5 +23,10 @@ class PlanDetalle extends Model
         return $this->belongsTo(Planificacion::class, 'planificaciones_id', 'id');
     }
 
+    public function receta(): BelongsTo
+    {
+        return $this->belongsTo(Receta::class, 'recetas_id', 'id');
+    }
+
 
 }

@@ -39,6 +39,6 @@
     <td>
         <input type="number" class="form-control form-control-sm
         @error('ajusteCantidad.'.$i) is-invalid @enderror" min="0.001" step=".001"
-               wire:model.live="ajusteCantidad.{{ $i }}">
+               wire:model="ajusteCantidad.{{ $i }}">
     </td>
 </tr>
