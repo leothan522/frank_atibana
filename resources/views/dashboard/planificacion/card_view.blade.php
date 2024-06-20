@@ -51,13 +51,13 @@
 
     <div class="card-footer text-center @if(!$footer) d-none @endif">
 
-        <a href="{{--{{ route('planificacion.print', $recetas_id) }}--}}#" {{--target="_blank"--}}
+        <a href="{{ route('planificacion.print', $planificaciones_id) }}" target="_blank"
            class="btn btn-default btn-sm @if(!comprobarPermisos('planificacion.print')) disabled @endif ">
             <i class="fas fa-print"></i> Imprimir
         </a>
 
-        <a href="{{--{{ route('planificacion.print', $recetas_id) }}--}}#" {{--target="_blank"--}}
-        class="btn btn-default btn-sm @if(!comprobarPermisos('planificacion.print')) disabled @endif ">
+        <a href="{{ route('planificacion.requerimientos', $planificaciones_id) }}" target="_blank"
+        class="btn btn-default btn-sm @if(!comprobarPermisos('planificacion.requerimientos')) disabled @endif ">
             <i class="fas fa-print"></i> Requerimientos
         </a>
 
