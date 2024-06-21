@@ -61,6 +61,12 @@
             <i class="fas fa-print"></i> Requerimientos
         </a>
 
+        <button type="button" class="btn btn-default btn-sm" wire:click="btnExistencias"
+            data-toggle="modal" data-target="#modal-existencias"
+                {{--@if(!comprobarPermisos('planificacion.create')) disabled @endif--}} >
+            <i class="fas fa-boxes"></i> Existencias
+        </button>
+
         <button type="button" class="btn btn-default btn-sm" wire:click="btnCopiar"
                 @if(!comprobarPermisos('planificacion.create')) disabled @endif >
             <i class="far fa-copy"></i> Copiar Planificación
@@ -74,7 +80,7 @@
     </div>
 
     <div class="overlay-wrapper" wire:loading
-         wire:target="limpiar, create, save, show, update, destroy, btnCancelar, btnEditar, cerrarBusqueda">
+         wire:target="limpiar, create, save, show, update, destroy, btnCancelar, btnEditar, cerrarBusqueda, btnExistencias">
         <div class="overlay">
             <div class="spinner-border text-navy" role="status">
                 <span class="sr-only">Loading...</span>

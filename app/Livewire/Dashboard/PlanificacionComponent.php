@@ -2,10 +2,13 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Models\ArtProv;
 use App\Models\Parametro;
 use App\Models\PlanDetalle;
 use App\Models\Planificacion;
+use App\Models\ReceDetalle;
 use App\Models\Receta;
+use App\Models\Stock;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Validation\Rule;
@@ -43,6 +46,7 @@ class PlanificacionComponent extends Component
 
     public $borraritems = [], $item, $dia = 'lunes', $listarRecetas, $keywordRecetas;
     public $planificaciones_id, $codigo, $fecha, $descripcion, $estatus, $verSemana;
+    public $listarExistencias = [];
 
     public function mount()
     {
@@ -119,7 +123,9 @@ class PlanificacionComponent extends Component
 
             'borraritems', 'item', /*'dia',*/ 'listarRecetas', 'keywordRecetas',
 
-            'codigo', 'fecha', 'descripcion', 'estatus', 'verSemana'
+            'codigo', 'fecha', 'descripcion', 'estatus', 'verSemana',
+
+            'listarExistencias'
         ]);
     }
 
@@ -1196,6 +1202,52 @@ class PlanificacionComponent extends Component
         $this->cancelar = true;
         $this->edit = false;
         $this->footer = false;
+    }
+
+    public function btnExistencias()
+    {
+        $planificacion = Planificacion::find($this->planificaciones_id);
+
+        $listarArticulos = [];
+
+        //DETALLES PLANIFICACION
+        $detallesPlanificacion = PlanDetalle::where('planificaciones_id', $planificacion->id)->get();
+        foreach ($detallesPlanificacion as $planficacion){
+            //recetas
+            $idReceta = $planficacion->recetas_id;
+            //articulos
+            $detallesReceta = ReceDetalle::where('recetas_id', $idReceta)->get();
+            foreach ($detallesReceta as $articulo){
+                $idArticulo = $articulo->articulos_id;
+                $idUnidad = $articulo->articulo->unidades_id;
+                //stock
+                $stocks = Stock::where('empresas_id', $this->empresas_id)
+                    ->where('articulos_id', $idArticulo)
+                    ->where('unidades_id', $idUnidad)
+                    ->get();
+                $disponible = 0;
+                foreach ($stocks as $stock){
+                    $disponible = $disponible + $stock->disponible;
+                }
+
+                $buscar = array_key_exists(mb_strtoupper($articulo->articulo->codigo), $listarArticulos);
+
+                if (!$buscar){
+                    $listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).''] = [
+                        'codigo' => mb_strtoupper($articulo->articulo->codigo),
+                        'descripcion' => mb_strtoupper($articulo->articulo->descripcion),
+                        'unidad' => mb_strtoupper($articulo->articulo->unidad->codigo),
+                        'cantidad' => $disponible
+                    ];
+                }else{
+                    //$cantidad = $listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'']['cantidad'];
+                    //$listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'']['cantidad'] = $cantidad + $disponible;
+                }
+
+            }
+        }
+
+        $this->listarExistencias = $listarArticulos;
     }
 
 }

@@ -5,6 +5,7 @@
         </div>
         <div class="col-md-7">
             @include('dashboard.planificacion.card_view')
+            @include('dashboard.planificacion.modal_exitencias')
         </div>
     </div>
 @endif
