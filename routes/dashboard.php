@@ -54,8 +54,8 @@ Route::middleware([
     Route::get('print/recetas/{id?}', [RecetasController::class, 'printReceta'])->name('recetas.print');
     Route::get('proveedores', [ProveedoresController::class, 'index'])->name('proveedores.index');
     Route::get('planificacion', [PlanificacionController::class, 'index'])->name('planificacion.index');
-    Route::get('print/planificacion/{id}', [PlanificacionController::class, 'imprimirPlanificacion'])->name('planificacion.print');
-    Route::get('print/requerimientos/{id}', [PlanificacionController::class, 'imprimirRequerimientos'])->name('planificacion.requerimientos');
+    Route::get('print/{id}/planificacion', [PlanificacionController::class, 'imprimirPlanificacion'])->name('planificacion.print');
+    Route::get('print/{id}/requerimientos', [PlanificacionController::class, 'imprimirRequerimientos'])->name('planificacion.requerimientos');
     Route::get('despachos', [DespachosController::class, 'index'])->name('despachos.index');
 
 });

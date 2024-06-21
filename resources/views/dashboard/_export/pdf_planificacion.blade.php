@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>ViewPDF</title>
+    <title>ViewPDF | Planificación</title>
 
     <style>
         .invoice-box {
@@ -111,8 +111,8 @@
                         </td>
 
                         <td>
-                            Factura #: <strong style="font-weight: bold;color: red;">0000{{--{{ $factura->factura_numero }}--}}</strong><br />
-                            Fecha: {{--{{ verFecha($factura->factura_fecha) }}--}}
+                            Código: <strong style="font-weight: bold;color: red;">{{ $planificacion->codigo }}</strong><br />
+                            Semana: {{ $semana[0]."-".$semana[8] }}
                         </td>
                     </tr>
                 </table>
@@ -124,48 +124,171 @@
                 <table>
                     <tr>
                         <td>
-                            Dirección:<br />
-                            {{--{{ $factura->cliente_direccion }}--}}giresssmsms
+                            Planificación semanal: {{ $planificacion->descripcion }}
                         </td>
-                        <td>
-                            {{--Cedula: {{ $factura->cliente_cedula }}<br />
+                        {{--<td>
+                            Cedula: {{ $factura->cliente_cedula }}<br />
                             Nombre: {{ $factura->cliente_nombre }} {{ $factura->cliente_apellido }}<br />
                             Teléfono: {{ $factura->cliente_telefono }}<br />
-                            Email: {{ $factura->cliente_email }}<br />--}}
-                        hola
+                            Email: {{ $factura->cliente_email }}<br />
+                            hola
+                        </td>--}}
                     </tr>
                 </table>
             </td>
         </tr>
 
-        <tr class="heading">
-            <td>Plan de Servicio</td>
+        @if($lunes->isNotEmpty())
+            <tr>
+                <td colspan="2">Lunes: {{ verFecha($semana[1], "d-m-Y") }}</td>
+            </tr>
+            <tr class="heading">
+                <td>Receta</td>
+                <td>Cantidad</td>
+            </tr>
+            @foreach($lunes as $detalle)
+                <tr class="item">
+                    <td>
+                        <span>{{ mb_strtoupper($detalle->receta->descripcion) }}</span>
+                        <small>[{{ $detalle->receta->codigo }}]</small>
+                    </td>
+                    <td>{{ formatoMillares($detalle->cantidad, 3) }}</td>
+                </tr>
+            @endforeach
+        @endif
 
-            <td>Total</td>
-        </tr>
+        @if($martes->isNotEmpty())
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">Martes: {{ verFecha($semana[2], "d-m-Y") }}</td>
+            </tr>
+            <tr class="heading">
+                <td>Receta</td>
+                <td>Cantidad</td>
+            </tr>
+            @foreach($martes as $detalle)
+                <tr class="item">
+                    <td>
+                        <span>{{ mb_strtoupper($detalle->receta->descripcion) }}</span>
+                        <small>[{{ $detalle->receta->codigo }}]</small>
+                    </td>
+                    <td>{{ formatoMillares($detalle->cantidad, 3) }}</td>
+                </tr>
+            @endforeach
+        @endif
 
-        <tr class="item">
-            <td>
-                {{--{{ $factura->plan_etiqueta }}--}}etiqueta
-            </td>
-            <td>
-                {{--{{ $factura->organizacion_moneda }} {{ formatoMillares($factura->plan_precio) }}--}}
-                cotidkdnsns
-            </td>
-        </tr>
+        @if($miercoles->isNotEmpty())
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">Miercoles: {{ verFecha($semana[2], "d-m-Y") }}</td>
+            </tr>
+            <tr class="heading">
+                <td>Receta</td>
+                <td>Cantidad</td>
+            </tr>
+            @foreach($miercoles as $detalle)
+                <tr class="item">
+                    <td>
+                        <span>{{ mb_strtoupper($detalle->receta->descripcion) }}</span>
+                        <small>[{{ $detalle->receta->codigo }}]</small>
+                    </td>
+                    <td>{{ formatoMillares($detalle->cantidad, 3) }}</td>
+                </tr>
+            @endforeach
+        @endif
 
-        <tr class="total">
-            <td></td>
-            <td style="background: #eee; border-bottom: 1px solid #ddd;"><small><small style="float: left;">Subtotal:</small></small> {{--{{ $factura->organizacion_moneda }} {{ formatoMillares($factura->plan_precio) }}--}} hola </td>
-        </tr>
-        <tr class="total">
-            <td></td>
-            <td style="background: #eee; border-bottom: 1px solid #ddd;"><small><small style="float: left;">I.V.A.:</small></small>-</td>
-        </tr>
-        <tr class="total">
-            <td></td>
-            <td style="background: #eee; border-bottom: 1px solid #ddd; font-weight: bold;color: red;"><span style="float: left;">Total:</span> {{--{{ $factura->organizacion_moneda }} {{ formatoMillares($factura->plan_precio) }}--}}holama</td>
-        </tr>
+        @if($jueves->isNotEmpty())
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">Jueves: {{ verFecha($semana[2], "d-m-Y") }}</td>
+            </tr>
+            <tr class="heading">
+                <td>Receta</td>
+                <td>Cantidad</td>
+            </tr>
+            @foreach($jueves as $detalle)
+                <tr class="item">
+                    <td>
+                        <span>{{ mb_strtoupper($detalle->receta->descripcion) }}</span>
+                        <small>[{{ $detalle->receta->codigo }}]</small>
+                    </td>
+                    <td>{{ formatoMillares($detalle->cantidad, 3) }}</td>
+                </tr>
+            @endforeach
+        @endif
+
+        @if($viernes->isNotEmpty())
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">Viernes: {{ verFecha($semana[2], "d-m-Y") }}</td>
+            </tr>
+            <tr class="heading">
+                <td>Receta</td>
+                <td>Cantidad</td>
+            </tr>
+            @foreach($viernes as $detalle)
+                <tr class="item">
+                    <td>
+                        <span>{{ mb_strtoupper($detalle->receta->descripcion) }}</span>
+                        <small>[{{ $detalle->receta->codigo }}]</small>
+                    </td>
+                    <td>{{ formatoMillares($detalle->cantidad, 3) }}</td>
+                </tr>
+            @endforeach
+        @endif
+
+        @if($sabado->isNotEmpty())
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">Sabado: {{ verFecha($semana[2], "d-m-Y") }}</td>
+            </tr>
+            <tr class="heading">
+                <td>Receta</td>
+                <td>Cantidad</td>
+            </tr>
+            @foreach($sabado as $detalle)
+                <tr class="item">
+                    <td>
+                        <span>{{ mb_strtoupper($detalle->receta->descripcion) }}</span>
+                        <small>[{{ $detalle->receta->codigo }}]</small>
+                    </td>
+                    <td>{{ formatoMillares($detalle->cantidad, 3) }}</td>
+                </tr>
+            @endforeach
+        @endif
+
+        @if($domingo->isNotEmpty())
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">Domingo: {{ verFecha($semana[2], "d-m-Y") }}</td>
+            </tr>
+            <tr class="heading">
+                <td>Receta</td>
+                <td>Cantidad</td>
+            </tr>
+            @foreach($domingo as $detalle)
+                <tr class="item">
+                    <td>
+                        <span>{{ mb_strtoupper($detalle->receta->descripcion) }}</span>
+                        <small>[{{ $detalle->receta->codigo }}]</small>
+                    </td>
+                    <td>{{ formatoMillares($detalle->cantidad, 3) }}</td>
+                </tr>
+            @endforeach
+        @endif
+
     </table>
 </div>
 </body>

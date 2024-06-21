@@ -203,7 +203,7 @@ class PlanificacionComponent extends Component
         ];
     }
 
-    protected function getSemana($fecha): array
+    /*protected function getSemana($fecha): array
     {
         $key = '-W';
         $carbon = CarbonImmutable::now();
@@ -219,7 +219,7 @@ class PlanificacionComponent extends Component
         $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
         $domingo = $date->endOfWeek()->format('Y-m-d');
         return [$semana, $lunes, $martes, $miercoles, $jueves, $viernes, $sabado, $domingo, $year];
-    }
+    }*/
 
     public function save()
     {
@@ -230,7 +230,7 @@ class PlanificacionComponent extends Component
 
         if ($valido !== false){
 
-            $semana = $this->getSemana($this->fecha);
+            $semana = getSemana($this->fecha);
 
             $this->codigo = nextCodigo("proximo_codigo_planificacion", $this->empresas_id, "formato_codigo_planificacion");
 
@@ -333,7 +333,7 @@ class PlanificacionComponent extends Component
         $this->descripcion = $planificacion->descripcion;
         $this->estatus = $planificacion->estatus;
 
-        $semana = $this->getSemana($this->fecha);
+        $semana = getSemana($this->fecha);
         $this->verSemana = $semana[0]."-".$semana[8];
 
         $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[1])->get();
@@ -606,7 +606,7 @@ class PlanificacionComponent extends Component
 
         if ($procesar){
 
-            $semana = $this->getSemana($this->fecha);
+            $semana = getSemana($this->fecha);
             $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".verFecha($semana[1], 'd-m')." al ".verFecha($semana[7], 'd-m').")";
             $planificacion->save();
 

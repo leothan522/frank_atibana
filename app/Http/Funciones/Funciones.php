@@ -5,13 +5,13 @@ use App\Models\Parametro;
 use App\Models\Stock;
 use App\Models\Unidad;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Tributario;
 use App\Models\Precio;
 use App\Models\Articulo;
 use App\Models\Empresa;
-use App\Models\Oferta;
 
 function hola(){
     return "Funciones Personalidas bien creada";
@@ -739,6 +739,24 @@ function recorrerCategorias($categorias)
         $categoria->stock = $contador;
 
     });
+}
+
+function getSemana($fecha): array
+{
+    $key = '-W';
+    $carbon = CarbonImmutable::now();
+    $explode = explode($key, $fecha);
+    $year = $explode[0];
+    $semana = intval($explode[1]);
+    $date = Carbon::parse($carbon->week($semana)->format('d-m-Y'));
+    $lunes = $date->startOfWeek()->format('Y-m-d');
+    $martes = Carbon::parse($lunes)->addDay()->format('Y-m-d');
+    $miercoles = Carbon::parse($lunes)->addDay(2)->format('Y-m-d');
+    $jueves = Carbon::parse($lunes)->addDay(3)->format('Y-m-d');
+    $viernes = Carbon::parse($lunes)->addDay(4)->format('Y-m-d');
+    $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
+    $domingo = $date->endOfWeek()->format('Y-m-d');
+    return [$semana, $lunes, $martes, $miercoles, $jueves, $viernes, $sabado, $domingo, $year];
 }
 
 //***********************************************************************************
