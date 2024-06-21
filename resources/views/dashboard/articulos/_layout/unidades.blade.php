@@ -73,7 +73,7 @@
 
                 </div>
 
-                <form wire:submit="save" class="p-0">
+                <form wire:submit="save" class="p-0 @if($primaria_id && !$editar) d-none @endif">
                     <table class="table table-sm">
                         <tbody>
                         <tr>

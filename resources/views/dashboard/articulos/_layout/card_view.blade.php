@@ -83,7 +83,7 @@
         </button>--}}
 
         <button type="button" class="btn btn-default btn-sm" wire:click="btnExistencias"
-                @if(!$estatus) disabled @endif>
+                {{--@if(!$estatus) disabled @endif--}} >
             <i class="fas fa-boxes"></i> Existencias
         </button>
 
