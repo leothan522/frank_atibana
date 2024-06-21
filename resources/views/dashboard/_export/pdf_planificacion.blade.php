@@ -126,13 +126,6 @@
                         <td>
                             Planificación semanal: {{ $planificacion->descripcion }}
                         </td>
-                        {{--<td>
-                            Cedula: {{ $factura->cliente_cedula }}<br />
-                            Nombre: {{ $factura->cliente_nombre }} {{ $factura->cliente_apellido }}<br />
-                            Teléfono: {{ $factura->cliente_telefono }}<br />
-                            Email: {{ $factura->cliente_email }}<br />
-                            hola
-                        </td>--}}
                     </tr>
                 </table>
             </td>
