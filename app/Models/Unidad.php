@@ -53,4 +53,9 @@ class Unidad extends Model
         return $this->hasMany(ReceDetalle::class, 'unidades_id', 'id');
     }
 
+    public function despachos(): HasMany
+    {
+        return $this->hasMany(DespDetalle::class, 'unidades_id', 'id');
+    }
+
 }

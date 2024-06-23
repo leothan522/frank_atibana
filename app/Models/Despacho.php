@@ -8,20 +8,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Receta extends Model
+class Despacho extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = "recetas";
+    protected $table = "despachos";
     protected $fillable = [
         'empresas_id',
         'codigo',
         'descripcion',
         'fecha',
-        'cantidad',
+        'segmentos_id',
         'auditoria',
-        'estatus'
+        'estatus',
+        'impreso',
     ];
 
     public function scopeBuscar($query, $keyword)
@@ -31,24 +32,19 @@ class Receta extends Model
             ;
     }
 
-    public function empresa(): BelongsTo
+    public function segmento(): BelongsTo
     {
-        return $this->belongsTo(Empresa::class, 'empresas_id', 'id');
+        return $this->belongsTo(DespSegmento::class, 'segmentos_id', 'id');
     }
 
     public function detalles(): HasMany
     {
-        return $this->hasMany(ReceDetalle::class, 'recetas_id', 'id');
+        return $this->hasMany(DespDetalle::class, 'despachos_id', 'id');
     }
 
-    public function planificaciones(): HasMany
+    public function empresa(): BelongsTo
     {
-        return $this->hasMany(PlanDetalle::class, 'recetas_id', 'id');
-    }
-
-    public function despachos(): HasMany
-    {
-        return $this->hasMany(DespDetalle::class, 'recetas_id', 'id');
+        return $this->belongsTo(Empresa::class, 'empresas_id', 'id');
     }
 
 }

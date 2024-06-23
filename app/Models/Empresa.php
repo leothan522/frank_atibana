@@ -69,4 +69,9 @@ class Empresa extends Model
         return $this->hasMany(Planificacion::class, 'empresas_id', 'id');
     }
 
+    public function despachos(): HasMany
+    {
+        return $this->hasMany(Despacho::class, 'empresas_id', 'id');
+    }
+
 }

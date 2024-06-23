@@ -19,7 +19,11 @@
 @endsection
 
 @section('content')
-    <p>En desarrollo, activo proximamente!.</p>
+    {{--<p>En desarrollo, activo proximamente!.</p>--}}
+    @livewire('dashboard.mount-empresas-component')
+    <div>
+        @livewire('dashboard.despachos-component')
+    </div>
 @endsection
 
 @section('right-sidebar')
@@ -37,6 +41,15 @@
 @section('js')
     <script src="{{ asset("js/app.js") }}"></script>
     <script>
+
+        function verSpinnerOculto() {
+            $('.cargar_despachos').removeClass('d-none');
+        }
+
+        $(document).ready(function () {
+            verSpinnerOculto();
+            Livewire.dispatch('updatedEmpresaID');
+        });
 
         function buscar(){
             let input = $("#navbarSearch");
