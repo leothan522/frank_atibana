@@ -6,7 +6,6 @@ use App\Models\AjusSegmento;
 use App\Models\AjusTipo;
 use App\Models\Almacen;
 use App\Models\Articulo;
-use App\Models\Municipio;
 use App\Models\Unidad;
 use Livewire\Attributes\On;
 use Livewire\Component;

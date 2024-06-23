@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Articulo;
 use App\Models\Empresa;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;

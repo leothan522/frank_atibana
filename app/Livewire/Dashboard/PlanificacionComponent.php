@@ -2,15 +2,11 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\ArtProv;
-use App\Models\Parametro;
 use App\Models\PlanDetalle;
 use App\Models\Planificacion;
 use App\Models\ReceDetalle;
 use App\Models\Receta;
 use App\Models\Stock;
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
