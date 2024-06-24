@@ -33,6 +33,7 @@ class DespachosComponent extends Component
     public $proximo_codigo;
     public $listarDetalles, $verSegmento;
     public $listarArticulos = [];
+    public $opcionDestroy;
 
     public function mount()
     {
@@ -96,7 +97,8 @@ class DespachosComponent extends Component
             'codigo', 'fecha', 'descripcion', 'segmentos_id', 'estatus', 'impreso',
             'proximo_codigo',
             'listarDetalles', 'verSegmento',
-            'listarArticulos'
+            'listarArticulos',
+            'opcionDestroy'
         ]);
     }
 
@@ -502,6 +504,85 @@ class DespachosComponent extends Component
             }
         }
 
+    }
+
+    public function destroy($opcion = "delete")
+    {
+        $this->opcionDestroy = $opcion;
+        $this->confirm('¿Estas seguro?', [
+            'toast' => false,
+            'position' => 'center',
+            'showConfirmButton' => true,
+            'confirmButtonText' => '¡Sí, bórralo!',
+            'text' => '¡No podrás revertir esto!',
+            'cancelButtonText' => 'No',
+            'onConfirmed' => 'confirmed',
+        ]);
+    }
+
+    #[On('confirmed')]
+    public function confirmed()
+    {
+        $despacho = Despacho::find($this->despachos_id);
+        $estatus = $despacho->estatus;
+
+        //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
+        $vinculado = false;
+
+        if ($vinculado) {
+            $this->alert('warning', '¡No se puede Borrar!', [
+                'position' => 'center',
+                'timer' => '',
+                'toast' => false,
+                'text' => 'El registro que intenta borrar ya se encuentra vinculado con otros procesos.',
+                'showConfirmButton' => true,
+                'onConfirmed' => '',
+                'confirmButtonText' => 'OK',
+            ]);
+        } else {
+            if ($estatus){
+
+                $detalles = DespDetalle::where('despachos_id', $this->despachos_id)->get();
+                foreach ($detalles as $detalle){
+                    $idReceta = $detalle->recetas_id;
+                    $idAlmacen = $detalle->almacenes_id;
+                    $cantidadReceta = $detalle->cantidad;
+                    $this->listarReceta($idReceta, $idAlmacen, $cantidadReceta);
+                }
+                //devolvemos el Stock
+                foreach ($this->listarArticulos as $articulo){
+                    $stock = Stock::where('empresas_id', $this->empresas_id)
+                        ->where('articulos_id', $articulo['articulos_id'])
+                        ->where('almacenes_id', $articulo['almacenes_id'])
+                        ->where('unidades_id', $articulo['unidades_id'])
+                        ->first();
+                    if ($stock) {
+                        $comprometido = $stock->comprometido;
+                        $disponible = $stock->disponible;
+                        $stock->disponible = $disponible + $articulo['cantidad'];
+                        $stock->actual = $comprometido + $stock->disponible;
+                        $stock->save();
+                    }
+                }
+
+                $despacho->estatus = 0;
+
+            }else{
+                $despacho->codigo = "*".$despacho->codigo;
+            }
+
+            $despacho->save();
+
+            if ($this->opcionDestroy == "delete") {
+                $despacho->delete();
+                $this->edit = false;
+                $this->limpiar();
+                $this->alert('success', 'Despacho Eliminado.');
+            }else{
+                $this->show($this->despachos_id);
+                $this->alert('success', 'Despacho Anulado.');
+            }
+        }
     }
 
     public function btnContador($opcion)

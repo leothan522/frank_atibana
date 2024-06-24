@@ -28,6 +28,9 @@ class DespachosController extends Controller
 
         $listarDetalles = DespDetalle::where('despachos_id', $despacho->id)->get();
 
+        $despacho->impreso = 1;
+        $despacho->save();
+
         return view('dashboard.despachos.print')
             ->with('despachos_id', $id)
             ->with('empresa', $despacho->empresa->nombre)
