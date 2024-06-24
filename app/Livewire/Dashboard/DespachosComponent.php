@@ -10,6 +10,7 @@ use App\Models\Parametro;
 use App\Models\ReceDetalle;
 use App\Models\Receta;
 use App\Models\Stock;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
@@ -31,6 +32,7 @@ class DespachosComponent extends Component
     public $despachos_id, $codigo, $fecha, $descripcion, $segmentos_id, $estatus, $impreso;
     public $proximo_codigo;
     public $listarDetalles, $verSegmento;
+    public $listarArticulos = [];
 
     public function mount()
     {
@@ -93,7 +95,8 @@ class DespachosComponent extends Component
 
             'codigo', 'fecha', 'descripcion', 'segmentos_id', 'estatus', 'impreso',
             'proximo_codigo',
-            'listarDetalles', 'verSegmento'
+            'listarDetalles', 'verSegmento',
+            'listarArticulos'
         ]);
     }
 
@@ -135,13 +138,12 @@ class DespachosComponent extends Component
     public function save()
     {
         $this->validate();
-        $this->validate();
 
         if (empty($this->codigo)) {
             $this->codigo = $this->proximo_codigo['formato'] . cerosIzquierda($this->proximo_codigo['proximo'], numSizeCodigo());
         }
 
-        if (empty($this->ajuste_fecha)) {
+        if (empty($this->fecha)) {
             $this->fecha = date("Y-m-d H:i");
         }
 
@@ -149,38 +151,7 @@ class DespachosComponent extends Component
         $html = null;
 
         //para validar stock
-        $listarArticulos = [];
-        for ($i = 0; $i < $this->contador; $i++) {
-            //recetas
-            $idReceta = $this->idReceta[$i];
-            $cantidadReceta = $this->cantidad[$i];
-            $almacenes_id = $this->idAlmacen[$i];
-            //articulos
-            $detallesReceta = ReceDetalle::where('recetas_id', $idReceta)->get();
-            foreach ($detallesReceta as $articulo) {
-                $idArticulo = $articulo->articulos_id;
-                $idUnidad = $articulo->unidades_id;
-                $cantidadArticulo = $articulo->cantidad;
-
-                $buscar = array_key_exists(mb_strtoupper($articulo->articulo->codigo), $listarArticulos);
-
-                if (!$buscar) {
-                    $listarArticulos['' . mb_strtoupper($articulo->articulo->codigo) . ''] = [
-                        'articulos_id' => $idArticulo,
-                        'codigo' => mb_strtoupper($articulo->articulo->codigo),
-                        'descripcion' => mb_strtoupper($articulo->articulo->descripcion),
-                        'unidades_id' => $idUnidad,
-                        'unidad' => mb_strtoupper($articulo->articulo->unidad->codigo),
-                        'cantidad' => $cantidadReceta * $cantidadArticulo,
-                        'almacenes_id' => $almacenes_id,
-                        'i' => $i
-                    ];
-                } else {
-                    $cantidad = $listarArticulos['' . mb_strtoupper($articulo->articulo->codigo) . '']['cantidad'];
-                    $listarArticulos['' . mb_strtoupper($articulo->articulo->codigo) . '']['cantidad'] = $cantidad + ($cantidadReceta * $cantidadArticulo);
-                }
-            }
-        }
+        $listarArticulos = $this->listarArticulos();
 
         //Validamos el Stock
         foreach ($listarArticulos as $articulo){
@@ -202,7 +173,6 @@ class DespachosComponent extends Component
                 $this->addError('cantidad.' . $articulo['i'], 'error');
             }
         }
-
 
         if ($procesar){
 
@@ -229,20 +199,9 @@ class DespachosComponent extends Component
             }
 
             //descontamos el stock
-            foreach ($listarArticulos as $articulo){
-                $stock = Stock::where('empresas_id', $this->empresas_id)
-                    ->where('articulos_id', $articulo['articulos_id'])
-                    ->where('almacenes_id', $articulo['almacenes_id'])
-                    ->where('unidades_id', $articulo['unidades_id'])
-                    ->first();
-                if ($stock) {
-                    $comprometido = $stock->comprometido;
-                    $disponible = $stock->disponible;
-                    $stock->disponible = $disponible - $articulo['cantidad'];
-                    $stock->actual = $comprometido + $stock->disponible;
-                    $stock->save();
-                }
-            }
+            $this->descontarStock($listarArticulos);
+
+            $this->show($despacho->id);
             $this->alert('success', 'Despacho Guardado Correctamente.');
 
         }else{
@@ -282,7 +241,267 @@ class DespachosComponent extends Component
         $this->impreso = $despacho->impreso;
 
         $this->listarDetalles = DespDetalle::where('despachos_id', $this->despachos_id)->get();
-        $this->contador = DespDetalle::where('despachos_id', $this->despachos_id)->count();
+        $this->contador = 0;
+        foreach ($this->listarDetalles as $detalle){
+            $this->idReceta[$this->contador] = $detalle->recetas_id;
+            $this->codigoReceta[$this->contador] = $detalle->receta->codigo;
+            $this->classReceta[$this->contador] = null;
+            $this->descripcionReceta[$this->contador] = mb_strtoupper($detalle->receta->descripcion);
+            $this->cantidad[$this->contador] = $detalle->cantidad;
+            $this->detalles_id[$this->contador] = $detalle->id;
+            $this->idAlmacen[$this->contador] = $detalle->almacenes_id;
+            $this->codigoAlmacen[$this->contador] = $detalle->almacen->codigo;
+            $this->classAlmacen[$this->contador] = null;
+            $this->contador++;
+        }
+    }
+
+    public function update()
+    {
+        $this->validate();
+
+        if (empty($this->codigo)) {
+            $this->codigo = $this->proximo_codigo['formato'] . cerosIzquierda($this->proximo_codigo['proximo'], numSizeCodigo());
+        }
+
+        if (empty($this->fecha)) {
+            $this->fecha = date("Y-m-d H:i");
+        }
+
+        $procesar_despacho = false;
+
+        //comprobamos cambios en tabla Despachos
+        $despacho = Despacho::find($this->despachos_id);
+        $db_codigo = $despacho->codigo;
+        $db_descripcion = $despacho->descripcion;
+        $db_fecha = $despacho->fecha;
+        $db_segmentos_id = $despacho->segmentos_id;
+
+        if ($db_codigo != $this->codigo){
+            $procesar_despacho = true;
+            $despacho->codigo = $this->codigo;
+        }
+
+        if ($db_fecha != $this->fecha){
+            $procesar_despacho = true;
+            $despacho->fecha = $this->fecha;
+        }
+
+        if ($db_descripcion != $this->descripcion){
+            $procesar_despacho = true;
+            $despacho->descripcion = $this->descripcion;
+        }
+
+        if ($db_segmentos_id != $this->segmentos_id){
+            $procesar_despacho = true;
+            if ($this->segmentos_id){
+                $despacho->segmentos_id = $this->segmentos_id;
+            }else{
+                $despacho->segmentos_id = null;
+            }
+        }
+
+        //***** Detalles ******
+        $itemEliminados = array();
+        $revisados = array();
+        $procesar_detalles = array();
+        $error = array();
+        $html = null;
+
+        //validamos los item eliminados
+        if (!empty($this->borraritems)) {
+            foreach ($this->borraritems as $item) {
+                $detalles = DespDetalle::find($item['id']);
+                $db_recetas_id = $detalles->recetas_id;
+                $db_almacenes_id = $detalles->almacenes_id;
+                $db_cantidad = $detalles->cantidad;
+                //articulos
+                $this->listarReceta($db_recetas_id, $db_almacenes_id, $db_cantidad);
+            }
+            $itemEliminados = $this->listarArticulos;
+        }
+
+        //validamos la nueva grilla
+        $this->reset('listarArticulos');
+        for ($i = 0; $i < $this->contador; $i++) {
+            //recetas
+            $idReceta = $this->idReceta[$i];
+            $almacenes_id = $this->idAlmacen[$i];
+            $cantidadReceta = $this->cantidad[$i];
+            $detalles_id = $this->detalles_id[$i];
+            if ($detalles_id){
+                $detalles = DespDetalle::find($detalles_id);
+                $db_recetas_id = $detalles->recetas_id;
+                $db_almacenes_id = $detalles->almacenes_id;
+                $db_cantidad = $detalles->cantidad;
+
+                $diferencias_stock = false;
+
+                if ($db_recetas_id != $idReceta){
+                    $diferencias_stock = true;
+                }
+
+                if ($db_almacenes_id != $almacenes_id){
+                    $diferencias_stock = true;
+                }
+
+                if ($db_cantidad != $cantidadReceta){
+                    $diferencias_stock = true;
+                }
+
+                if ($diferencias_stock){
+                    $procesar_detalles[$i] = true;
+                }
+
+                $this->listarReceta($db_recetas_id, $db_almacenes_id, $db_cantidad);
+
+            }else{
+                //nuevo renglon
+                $procesar_detalles[$i] = true;
+            }
+        }
+
+        $revisados = $this->listarArticulos;
+
+        //$this->reset('listarArticulos');
+        //para validar stock
+        $listarArticulos = $this->listarArticulos();
+
+        //Validamos el Stock
+        foreach ($listarArticulos as $articulo){
+
+            $cantidadEliminados = 0;
+            $cantidadRevisados = 0;
+
+            $stock = Stock::where('empresas_id', $this->empresas_id)
+                ->where('articulos_id', $articulo['articulos_id'])
+                ->where('almacenes_id', $articulo['almacenes_id'])
+                ->where('unidades_id', $articulo['unidades_id'])
+                ->first();
+            if ($stock) {
+
+                $disponible = $stock->disponible;
+
+                $buscarEliminados = array_key_exists(mb_strtoupper($articulo['codigo'].'_'.$articulo['almacenes_id']), $itemEliminados);
+                if ($buscarEliminados){
+                    $cantidadEliminados = $itemEliminados[$articulo['codigo'].'_'.$articulo['almacenes_id']]['cantidad'];
+                }
+
+                $buscarRevisados = array_key_exists(mb_strtoupper($articulo['codigo'].'_'.$articulo['almacenes_id']), $revisados);
+                if ($buscarRevisados){
+                    $cantidadRevisados = $revisados[$articulo['codigo'].'_'.$articulo['almacenes_id']]['cantidad'];
+                }
+
+                $disponible = $disponible + ($cantidadEliminados + $cantidadRevisados);
+
+                if ($articulo['cantidad'] > $disponible) {
+                    $error[$articulo['i']] = true;
+                    $mostrarCantidad = $articulo['cantidad'] - ($cantidadEliminados + $cantidadRevisados);
+                    $mostrarStock = $disponible - ($cantidadEliminados + $cantidadRevisados);
+                    $html .= 'Para <strong>' . formatoMillares($mostrarCantidad, 3) . ' '.$articulo['unidad'].' </strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>' . formatoMillares($mostrarStock, 3) . '</strong><br>';
+                    $this->addError('cantidad.' . $articulo['i'], 'error');
+                }
+
+            } else {
+                $error[$articulo['i']] = true;
+                $html .= 'Para <strong>' . formatoMillares($articulo['cantidad'], 3) . '</strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>0,000</strong><br>';
+                $this->addError('cantidad.' . $articulo['i'], 'error');
+            }
+        }
+
+        //procesamos
+        if (($procesar_despacho || !empty($this->borraritems) || !empty($procesar_detalles)) && empty($error)){
+
+            //guardar Despacho
+            if ($procesar_despacho){
+                $despacho->save();
+            }
+
+            //item eliminados
+            if (!empty($this->borraritems)){
+                //devolvemos el Stock
+                foreach ($itemEliminados as $articulo){
+                    $stock = Stock::where('empresas_id', $this->empresas_id)
+                        ->where('articulos_id', $articulo['articulos_id'])
+                        ->where('almacenes_id', $articulo['almacenes_id'])
+                        ->where('unidades_id', $articulo['unidades_id'])
+                        ->first();
+                    if ($stock) {
+                        $comprometido = $stock->comprometido;
+                        $disponible = $stock->disponible;
+                        $stock->disponible = $disponible + $articulo['cantidad'];
+                        $stock->actual = $comprometido + $stock->disponible;
+                        $stock->save();
+                    }
+                }
+                //elimino el Item
+                foreach ($this->borraritems as $item) {
+                    $detalles = DespDetalle::find($item['id']);
+                    $detalles->delete();
+                }
+            }
+
+            //procesamos Detalles
+            if (!empty($procesar_detalles)){
+
+                //item Revisados
+                if (!empty($revisados)){
+                    //devolvemos el Stock
+                    foreach ($revisados as $articulo){
+                        $stock = Stock::where('empresas_id', $this->empresas_id)
+                            ->where('articulos_id', $articulo['articulos_id'])
+                            ->where('almacenes_id', $articulo['almacenes_id'])
+                            ->where('unidades_id', $articulo['unidades_id'])
+                            ->first();
+                        if ($stock) {
+                            $comprometido = $stock->comprometido;
+                            $disponible = $stock->disponible;
+                            $stock->disponible = $disponible + $articulo['cantidad'];
+                            $stock->actual = $comprometido + $stock->disponible;
+                            $stock->save();
+                        }
+                    }
+                }
+
+                //guardar Detalles
+                for ($i = 0; $i < $this->contador; $i++) {
+                    $detalles_id = $this->detalles_id[$i];
+                    if ($detalles_id){
+                        $detalle = DespDetalle::find($detalles_id);
+                    }else{
+                        $detalle = new DespDetalle();
+                    }
+                    $detalle->despachos_id = $despacho->id;
+                    $detalle->recetas_id = $this->idReceta[$i];
+                    $detalle->almacenes_id = $this->idAlmacen[$i];
+                    $detalle->cantidad = $this->cantidad[$i];
+                    $detalle->save();
+                }
+                //descontamos el stock
+                $this->descontarStock($listarArticulos);
+            }
+
+            $this->show($despacho->id);
+            $this->alert('success', 'guardar');
+
+        }else{
+
+            if (!empty($error)){
+                $this->alert('warning', '¡Stock Insuficiente!', [
+                    'position' => 'center',
+                    'timer' => '',
+                    'toast' => false,
+                    'html' => $html,
+                    'showConfirmButton' => true,
+                    'onConfirmed' => '',
+                    'confirmButtonText' => 'OK',
+                ]);
+            }else{
+                $this->alert('info', 'No se realizo ningún cambio.');
+                $this->show($this->despachos_id);
+            }
+        }
+
     }
 
     public function btnContador($opcion)
@@ -407,7 +626,7 @@ class DespachosComponent extends Component
     public function btnCancelar()
     {
         if ($this->despachos_id) {
-            //$this->show($this->planificaciones_id);
+            $this->show($this->despachos_id);
         } else {
             $this->limpiar();
         }
@@ -419,9 +638,10 @@ class DespachosComponent extends Component
         $this->edit = false;
         $this->cancelar = true;
         $this->footer = false;
+        $this->proximo_codigo = $this->getNextCodigo();
     }
 
-    protected function getNextCodigo()
+    protected function getNextCodigo(): array
     {
         $codigo = array();
 
@@ -480,6 +700,87 @@ class DespachosComponent extends Component
         }
         $parametro->valor = $proximo + 1;
         $parametro->save();
+    }
+
+    protected function listarArticulos(): array
+    {
+        $listarArticulos = [];
+        for ($i = 0; $i < $this->contador; $i++) {
+            //recetas
+            $idReceta = $this->idReceta[$i];
+            $almacenes_id = $this->idAlmacen[$i];
+            $cantidadReceta = $this->cantidad[$i];
+
+            //articulos
+            $detallesReceta = ReceDetalle::where('recetas_id', $idReceta)->get();
+            foreach ($detallesReceta as $articulo) {
+                $idArticulo = $articulo->articulos_id;
+                $idUnidad = $articulo->unidades_id;
+                $cantidadArticulo = $articulo->cantidad;
+
+                $buscar = array_key_exists(mb_strtoupper($articulo->articulo->codigo).'_'.$almacenes_id, $listarArticulos);
+
+                if (!$buscar) {
+                    $listarArticulos[''. mb_strtoupper($articulo->articulo->codigo) .'_'.$almacenes_id] = [
+                        'articulos_id' => $idArticulo,
+                        'codigo' => mb_strtoupper($articulo->articulo->codigo),
+                        'descripcion' => mb_strtoupper($articulo->articulo->descripcion),
+                        'unidades_id' => $idUnidad,
+                        'unidad' => mb_strtoupper($articulo->articulo->unidad->codigo),
+                        'cantidad' => $cantidadReceta * $cantidadArticulo,
+                        'almacenes_id' => $almacenes_id,
+                        'i' => $i
+                    ];
+                } else {
+                    $cantidad = $listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'_'.$almacenes_id]['cantidad'];
+                    $listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'_'.$almacenes_id]['cantidad'] = $cantidad + ($cantidadReceta * $cantidadArticulo);
+                }
+            }
+        }
+        return $listarArticulos;
+    }
+
+    public function listarReceta($recetas_id, $almacenes_id, $cantidadReceta)
+    {
+        //articulos
+        $detallesReceta = ReceDetalle::where('recetas_id', $recetas_id)->get();
+        foreach ($detallesReceta as $articulo) {
+            $idArticulo = $articulo->articulos_id;
+            $idUnidad = $articulo->unidades_id;
+            $cantidadArticulo = $articulo->cantidad;
+
+            $buscar = array_key_exists(mb_strtoupper($articulo->articulo->codigo.'_'.$almacenes_id), $this->listarArticulos);
+
+            if (!$buscar) {
+                $this->listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'_'.$almacenes_id] = [
+                    'articulos_id' => $idArticulo,
+                    'unidades_id' => $idUnidad,
+                    'almacenes_id' => $almacenes_id,
+                    'cantidad' => $cantidadReceta * $cantidadArticulo,
+                ];
+            } else {
+                $cantidad = $this->listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'_'.$almacenes_id]['cantidad'];
+                $this->listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'_'.$almacenes_id]['cantidad'] = $cantidad + ($cantidadReceta * $cantidadArticulo);
+            }
+        }
+    }
+
+    protected function descontarStock($listarArticulos)
+    {
+        foreach ($listarArticulos as $articulo){
+            $stock = Stock::where('empresas_id', $this->empresas_id)
+                ->where('articulos_id', $articulo['articulos_id'])
+                ->where('almacenes_id', $articulo['almacenes_id'])
+                ->where('unidades_id', $articulo['unidades_id'])
+                ->first();
+            if ($stock) {
+                $comprometido = $stock->comprometido;
+                $disponible = $stock->disponible;
+                $stock->disponible = $disponible - $articulo['cantidad'];
+                $stock->actual = $comprometido + $stock->disponible;
+                $stock->save();
+            }
+        }
     }
 
 }

@@ -68,12 +68,12 @@
                                                 <i class="fas fa-arrow-down"></i>
                                                 </small>
                                             @endif
-                                            {{ formatoMillares($detalle->cantidad, 0) }}
+                                            {{ formatoMillares($detalle->cantidad, 3) }}
                                         </span>
                                     </td>
                                     <td class="text-right">
                                         <span class="text-nowrap mr-2">
-                                            {{ formatoMillares($arraySaldo[$detalle->articulo->codigo], 0) }}
+                                            {{ formatoMillares($arraySaldo[$detalle->articulo->codigo], 3) }}
                                         </span>
                                     </td>
                                     <td class="d-none d-md-table-cell text-center">
