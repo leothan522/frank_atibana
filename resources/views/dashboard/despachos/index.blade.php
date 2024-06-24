@@ -23,11 +23,13 @@
     @livewire('dashboard.mount-empresas-component')
     <div>
         @livewire('dashboard.despachos-component')
+        @livewire('dashboard.almacenes-component')
+        @livewire('dashboard.segmentos-despachos-component')
     </div>
 @endsection
 
 @section('right-sidebar')
-    @include('dashboard.right-sidebar')
+    @include('dashboard.despachos.right-sidebar')
 @endsection
 
 @section('footer')
@@ -50,6 +52,18 @@
             verSpinnerOculto();
             Livewire.dispatch('updatedEmpresaID');
         });
+
+        function changeEmpresa() {
+            $('.cargar_despachos').removeClass('d-none');
+        }
+
+        function verAlmacenes() {
+            Livewire.dispatch('limpiarAlmacenes');
+        }
+
+        function verSegmentos() {
+            Livewire.dispatch('limpiarSegmentos');
+        }
 
         function buscar(){
             let input = $("#navbarSearch");

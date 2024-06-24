@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\AjusSegmento;
-use App\Models\Ajuste;
+use App\Models\Despacho;
+use App\Models\DespSegmento;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class SegmentosComponent extends Component
+class SegmentosDespachosComponent extends Component
 {
     use LivewireAlert;
 
@@ -23,13 +23,14 @@ class SegmentosComponent extends Component
 
     public function render()
     {
-        $segmentos = AjusSegmento::buscar($this->keyword)
+        $segmentos = DespSegmento::buscar($this->keyword)
             ->orderBy('id', 'ASC')
             ->limit($this->rows)
             ->get()
         ;
-        $rowsSegmento = AjusSegmento::count();
-        return view('livewire.dashboard.segmentos-component')
+        $rowsSegmento = DespSegmento::count();
+
+        return view('livewire.dashboard.segmentos-despachos-component')
             ->with('listarSegmentos', $segmentos)
             ->with('rowsSegmento', $rowsSegmento);
     }
@@ -51,7 +52,7 @@ class SegmentosComponent extends Component
     public function save()
     {
         $rules = [
-            'nombre' => ['required', 'min:4', 'max:15'/*, 'alpha_dash:ascii'*/, Rule::unique('ajustes_segmentos', 'descripcion')->ignore($this->segmentos_id)],
+            'nombre' => ['required', 'min:4', 'max:15'/*, 'alpha_dash:ascii'*/, Rule::unique('despachos_segmentos', 'descripcion')->ignore($this->segmentos_id)],
         ];
         $messages = [
             'nombre.required' => 'El campo descripción es obligatorio.',
@@ -65,11 +66,11 @@ class SegmentosComponent extends Component
         $message = null;
         if (is_null($this->segmentos_id)) {
             //nuevo
-            $tipo = new AjusSegmento();
+            $tipo = new DespSegmento();
             $message = "Segmento Creado.";
         } else {
             //editar
-            $tipo = AjusSegmento::find($this->segmentos_id);
+            $tipo = DespSegmento::find($this->segmentos_id);
             $message = "Segmento Actualizado.";
         }
         $tipo->descripcion = ucfirst($this->nombre);
@@ -86,9 +87,9 @@ class SegmentosComponent extends Component
 
     public function edit($id)
     {
-        $tipo = AjusSegmento::find($id);
-        $this->segmentos_id = $tipo->id;
-        $this->nombre = $tipo->descripcion;
+        $segmentos = DespSegmento::find($id);
+        $this->segmentos_id = $segmentos->id;
+        $this->nombre = $segmentos->descripcion;
     }
 
     public function destroy($id)
@@ -110,11 +111,11 @@ class SegmentosComponent extends Component
     public function confirmedSegmento()
     {
 
-        $tipo = AjusSegmento::find($this->segmentos_id);
+        $segmentos = DespSegmento::find($this->segmentos_id);
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $detalles = Ajuste::where('segmentos_id', $tipo->id)->first();
+        $detalles = Despacho::where('segmentos_id', $segmentos->id)->first();
 
         if ($detalles){
             $vinculado = true;
@@ -132,7 +133,7 @@ class SegmentosComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $tipo->delete();
+            $segmentos->delete();
             $this->alert(
                 'success',
                 'Segmento Eliminado.'
@@ -145,5 +146,4 @@ class SegmentosComponent extends Component
     {
         //
     }
-
 }
