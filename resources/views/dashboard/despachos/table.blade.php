@@ -7,12 +7,12 @@
                 <button class="btn btn-tool text-warning" wire:click="cerrarBusqueda"><i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Recetas [ <b class="text-warning">{{ $rowsRecetas }}</b> ]
+                Despachos [ <b class="text-warning">{{ $rowsDespachos }}</b> ]
             @endif
         </h3>
 
         <div class="card-tools">
-            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $listarRecetas->count()) disabled @endif>
+            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $listarDespachos->count()) disabled @endif>
                 <i class="fas fa-sort-amount-down-alt"></i> Ver más
             </button>
         </div>
@@ -26,7 +26,7 @@
                 <th style="width: 10%">Código</th>
                 <th>
                     Descripción
-                    <small class="float-right">Mostrando {{ $listarRecetas->count() }}</small>
+                    <small class="float-right">Mostrando {{ $listarDespachos->count() }}</small>
                 </th>
             </tr>
             </thead>
@@ -34,19 +34,19 @@
 
         <!-- TO DO List -->
         <ul class="todo-list" data-widget="todo-list">
-            @if($listarRecetas->isNotEmpty())
-                @foreach($listarRecetas as $receta)
-                    <li class=" @if(!$receta->estatus) done @endif @if($receta->id == $recetas_id) text-warning @endif "" >
+            @if($listarDespachos->isNotEmpty())
+                @foreach($listarDespachos as $despacho)
+                    <li class=" @if(!$despacho->estatus) done @endif @if($despacho->id == $despachos_id) text-warning @endif "" >
                     <!-- todo text -->
                     <span class="text text-uppercase">
-                            {{ $receta->codigo }}
+                            {{ $despacho->codigo }}
                         </span>
                     <!-- Emphasis label -->
                     <small class="badge {{--badge-danger--}} text-uppercase">
-                        {{ $receta->descripcion }}
+                        {{ $despacho->descripcion }}
                     </small>
                     <!-- General tools such as edit or delete-->
-                    <div class="tools text-primary" wire:click="show({{ $receta->id }})">
+                    <div class="tools text-primary" wire:click="show({{ $despacho->id }})">
                         <i class="fas fa-eye"></i>
                     </div>
                     </li>

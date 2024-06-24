@@ -14,7 +14,6 @@ class DespDetalle extends Model
         'despachos_id',
         'recetas_id',
         'almacenes_id',
-        'unidades_id',
         'cantidad',
         'renglon'
     ];
@@ -32,11 +31,6 @@ class DespDetalle extends Model
     public function almacen(): BelongsTo
     {
         return $this->belongsTo(Almacen::class, 'almacenes_id', 'id');
-    }
-
-    public function unidad(): BelongsTo
-    {
-        return $this->belongsTo(Unidad::class, 'unidades_id', 'id');
     }
 
 }

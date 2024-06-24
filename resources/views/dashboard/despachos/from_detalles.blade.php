@@ -29,6 +29,10 @@
         </div>
     </td>
     <td>
+        <input type="text" class="form-control form-control-sm {{ $classAlmacen[$i] }} @error('codigoAlmacen.'.$i) is-invalid @enderror"
+               wire:model.blur="codigoAlmacen.{{ $i }}" placeholder="código">
+    </td>
+    <td>
         <input type="number" class="form-control form-control-sm
         @error('cantidad.'.$i) is-invalid @enderror" min="0.001" step=".001"
                wire:model="cantidad.{{ $i }}">

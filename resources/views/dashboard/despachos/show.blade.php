@@ -1,4 +1,4 @@
-@if($recetas_id)
+@if($despachos_id)
     <div class="row col-12 mb-2">
         <div class="col-md-2">
             <label>Código:</label>
@@ -19,14 +19,16 @@
             <label>Descripción:</label>
         </div>
         <div class="col-md-6">
-            <span class="border badge-pill text-uppercase">{{ $descripcion }}</span>
+            @if($descripcion)
+                <span class="border badge-pill text-uppercase">{{ $descripcion }}</span>
+            @endif
         </div>
-        @if($cantidad)
+        @if($segmentos_id)
             <div class="col-md-3 text-md-right">
-                <label>Cantidad (KG):</label>
+                <label>Segmento:</label>
             </div>
             <div class="col-md-1">
-                <span class="border badge-pill text-uppercase text-nowrap">{{ formatoMillares($cantidad, 3) }}</span>
+                <span class="border badge-pill text-uppercase text-nowrap">{{ $verSegmento }}</span>
             </div>
         @endif
     </div>
@@ -51,9 +53,9 @@
                                 <thead>
                                 <tr class="text-navy">
                                     <th style="width: 5%">#</th>
-                                    <th>Artículo</th>
+                                    <th>Receta</th>
                                     <th>Descripción</th>
-                                    <th>Unidad</th>
+                                    <th>Almacén</th>
                                     <th class="text-right">Cantidad</th>
                                 </tr>
                                 </thead>
@@ -63,9 +65,9 @@
                                     @foreach($listarDetalles as $detalle)
                                         <tr>
                                             <td>{{ $i + 1 }}</td>
-                                            <td class="text-uppercase">{{ $detalle->articulo->codigo }}</td>
-                                            <td class="text-uppercase">{{ $detalle->articulo->descripcion }}</td>
-                                            <td class="text-uppercase">{{ $detalle->unidad->codigo }}</td>
+                                            <td class="text-uppercase">{{ $detalle->receta->codigo }}</td>
+                                            <td class="text-uppercase">{{ $detalle->receta->descripcion }}</td>
+                                            <td class="text-uppercase">{{ $detalle->almacen->codigo }}</td>
                                             <td class="text-right">
                                                 {{ formatoMillares($detalle->cantidad, 3) }}
                                             </td>

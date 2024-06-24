@@ -57,6 +57,7 @@ Route::middleware([
     Route::get('print/{id?}/planificacion', [PlanificacionController::class, 'imprimirPlanificacion'])->name('planificacion.print');
     Route::get('print/{id?}/requerimientos', [PlanificacionController::class, 'imprimirRequerimientos'])->name('planificacion.requerimientos');
     Route::get('despachos', [DespachosController::class, 'index'])->name('despachos.index');
+    Route::get('print/{id?}/despachos', [DespachosController::class, 'printDespacho'])->name('despachos.print');
 
 });
 

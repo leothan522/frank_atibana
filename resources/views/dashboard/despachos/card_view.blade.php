@@ -51,17 +51,17 @@
 
     <div class="card-footer text-center @if(!$footer) d-none @endif">
 
-        <a href="{{--{{ route('despachos.print', $despachos_id) }}--}}#" target="_blank"
+        <a href="{{ route('despachos.print', $despachos_id) }}" target="_blank"
            class="btn btn-default btn-sm @if(!comprobarPermisos('despachos.print')) disabled @endif ">
             <i class="fas fa-print"></i> Imprimir
         </a>
 
-        <button type="button" class="btn btn-default btn-sm" wire:click="btnActivoInactivo"
-                @if(!comprobarPermisos('despachos.estatus')) disabled @endif >
-            @if($estatus)
-                <i class="fas fa-check"></i> Activo
+        <button type="button" class="btn btn-default btn-sm" {{--wire:click="destroy('anular')"--}}
+                @if(!comprobarPermisos('despachos.anular') || !$estatus) disabled @endif>
+            @if(!$estatus)
+                <i class="fas fa-ban"></i> Anulado
             @else
-                <i class="fas fa-ban"></i> Inactivo
+                <i class="fas fa-ban"></i> Anular
             @endif
         </button>
 

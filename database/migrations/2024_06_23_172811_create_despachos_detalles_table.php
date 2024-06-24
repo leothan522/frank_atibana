@@ -16,13 +16,11 @@ return new class extends Migration
             $table->bigInteger('despachos_id')->unsigned();
             $table->bigInteger('recetas_id')->unsigned();
             $table->bigInteger('almacenes_id')->unsigned();
-            $table->bigInteger('unidades_id')->unsigned();
             $table->decimal('cantidad', 12, 3);
             $table->integer('renglon')->nullable();
             $table->foreign('despachos_id')->references('id')->on('despachos')->cascadeOnDelete();
             $table->foreign('recetas_id')->references('id')->on('recetas')->cascadeOnDelete();
             $table->foreign('almacenes_id')->references('id')->on('almacenes')->cascadeOnDelete();
-            $table->foreign('unidades_id')->references('id')->on('unidades')->cascadeOnDelete();
             $table->timestamps();
         });
     }

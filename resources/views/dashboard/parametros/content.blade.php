@@ -21,6 +21,10 @@
             <li>editable_fecha_ajutes[empresa_id|1/0]</li>
             <li>proximo_codigo_planificacion[empresa_id|int]</li>
             <li>formato_codigo_planificacion[empresa_id|text]</li>
+            <li>proximo_codigo_despahos[empresa_id|int]</li>
+            <li>formato_codigo_despahos[empresa_id|text]</li>
+            <li>editable_codigo_despachos[empresa_id|1/0]</li>
+            <li>editable_fecha_despachos[empresa_id|1/0]</li>
             {{--<li>iva</li>
             <li>telefono_soporte</li>
             <li>codigo_pedido</li>--}}

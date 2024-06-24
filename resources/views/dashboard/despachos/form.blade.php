@@ -5,7 +5,7 @@
         </div>
         <div class="col-md-2 mb-2">
             <input type="text" class="form-control form-control-sm @error('codigo') is-invalid @enderror" placeholder="Código"
-                   wire:model="codigo" >
+                   wire:model="codigo" @if(!$proximo_codigo['editable']) readonly @endif >
         </div>
         <div class="col-md-3">
             &nbsp; {{--@error('codigo') {{ $message }} @endif--}}
@@ -15,7 +15,7 @@
         </div>
         <div class="col-md-3">
             <input type="datetime-local" class="form-control form-control-sm @error('fecha') is-invalid @enderror"
-                   wire:model="fecha" readonly >
+                   wire:model="fecha" @if(!$proximo_codigo['editable_fecha']) readonly @endif >
         </div>
     </div>
 
@@ -28,8 +28,13 @@
                    wire:model="descripcion">
         </div>
         <div class="col-md-4">
-            {{--<input type="number" class="form-control form-control-sm @error('cantidad') is-invalid @enderror" placeholder="Cantidad (KG)"
-                   wire:model="cantidad" min="0.001" step=".001" >--}}
+            <select class="custom-select custom-select-sm @error('segmentos_id') is-invalid @enderror"
+                    wire:model="segmentos_id">
+                <option value="">Segmento (Opcional)</option>
+                @foreach($selectSegmentos as $segmento)
+                    <option value="{{ $segmento->id }}">{{ $segmento->descripcion }}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 
@@ -58,6 +63,7 @@
                                     <th style="width: 10%">#</th>
                                     <th>Receta</th>
                                     <th>Descripción</th>
+                                    <th>Almacén</th>
                                     <th>Cantidad</th>
                                 </tr>
                                 </thead>
@@ -72,7 +78,7 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                @if($errors->has('codigoReceta.*') || $errors->has('cantidad.*'))
+                                @if($errors->has('codigoReceta.*') || $errors->has('codigoAlmacen.*') || $errors->has('cantidad.*'))
                                     <span class="col-sm-12 text-sm text-bold text-danger">
                                         <i class="icon fas fa-exclamation-triangle"></i>
                                         Todos los campos son obigatorios y deben ser validados.
