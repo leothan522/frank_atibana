@@ -735,7 +735,7 @@ class DespachosComponent extends Component
             $codigo['proximo'] = 1;
         }
 
-        $parametro = Parametro::where("nombre", "formato_codigo_despahos")->where('tabla_id', $this->empresas_id)->first();
+        $parametro = Parametro::where("nombre", "formato_codigo_despachos")->where('tabla_id', $this->empresas_id)->first();
         if ($parametro) {
             $codigo['formato'] = $parametro->valor;
         }else{
