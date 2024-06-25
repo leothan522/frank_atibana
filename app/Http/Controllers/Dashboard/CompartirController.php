@@ -143,7 +143,6 @@ class CompartirController extends Controller
                         'unidades_id' => $unidades_id
                     ];
                     $y++;
-                    $this->rowsMovimientos++;
                 }
             }
 
