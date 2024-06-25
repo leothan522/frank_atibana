@@ -9,17 +9,17 @@
 
     <table>
         <tr>
-            <td colspan="3">Empresa</td>
-            <td colspan="{{ $columnas }}" style="text-align: end">Usuario:</td>
+            <td colspan="4">Empresa</td>
+            {{--<td colspan="{{ $columnas }}" style="text-align: end">Usuario:</td>--}}
         </tr>
         <tr>
-            <td colspan="3">{{ $empresa->nombre }}</td>
-            <td colspan="{{ $columnas }}" style="text-align: end">{{ auth()->user()->email }}</td>
+            <td colspan="4">{{ $empresa->nombre }}</td>
+            {{--<td colspan="{{ $columnas }}" style="text-align: end">{{ auth()->user()->email }}</td>--}}
         </tr>
         <tr>
-            <td colspan="3">R.I.F: {{ $empresa->rif }}</td>
-            <td colspan="{{ $columnas }}" style="text-align: end">
-                Fecha: {{ $hoy }}</td>
+            <td colspan="4">R.I.F: {{ $empresa->rif }}</td>
+            {{--<td colspan="{{ $columnas }}" style="text-align: end">
+                Fecha: {{ $hoy }}</td>--}}
         </tr>
         <tr>
             <td colspan="{{ $columnas + 3 }}">&nbsp;</td>
@@ -161,17 +161,17 @@
 
     <table>
         <tr>
-            <td colspan="3">Empresa</td>
-            <td colspan="{{ $columnas + 1 }}" style="text-align: end">Usuario:</td>
+            <td colspan="7">Empresa</td>
+            {{--<td colspan="{{ $columnas + 1 }}" style="text-align: end">Usuario:</td>--}}
         </tr>
         <tr>
-            <td colspan="3">{{ $empresa->nombre }}</td>
-            <td colspan="{{ $columnas + 1 }}" style="text-align: end">{{ auth()->user()->email }}</td>
+            <td colspan="7">{{ $empresa->nombre }}</td>
+            {{--<td colspan="{{ $columnas + 1 }}" style="text-align: end">{{ auth()->user()->email }}</td>--}}
         </tr>
         <tr>
-            <td colspan="3">R.I.F: {{ $empresa->rif }}</td>
-            <td colspan="{{ $columnas + 1 }}" style="text-align: end">
-                Fecha: {{ $hoy }}</td>
+            <td colspan="7">R.I.F: {{ $empresa->rif }}</td>
+            {{--<td colspan="{{ $columnas + 1 }}" style="text-align: end">
+                Fecha: {{ $hoy }}</td>--}}
         </tr>
         <tr>
             <td colspan="{{ $columnas + 3 }}">&nbsp;</td>
@@ -328,7 +328,7 @@
             @endforeach
 
             <tr>
-                <td colspan="5">&nbsp;</td>
+                <td colspan="4">&nbsp;</td>
                 <td>Totales</td>
                 <td>&nbsp;</td>
                 <td>{{ $ajuste->total }}</td>

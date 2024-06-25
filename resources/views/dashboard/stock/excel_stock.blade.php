@@ -15,16 +15,16 @@
 <table>
     <tr>
         <td colspan="4">Empresa</td>
-        <td colspan="{{ $columnas }}" style="text-align: end">Usuario:</td>
+        {{--<td colspan="{{ $columnas }}" style="text-align: end">Usuario:</td>--}}
     </tr>
     <tr>
         <td colspan="4">{{ $empresa->nombre }}</td>
-        <td colspan="{{ $columnas }}" style="text-align: end">{{ auth()->user()->email }}</td>
+        {{--<td colspan="{{ $columnas }}" style="text-align: end">{{ auth()->user()->email }}</td>--}}
     </tr>
     <tr>
         <td colspan="4">R.I.F: {{ $empresa->rif }}</td>
-        <td colspan="{{ $columnas }}" style="text-align: end">
-            Fecha: {{ $fecha }}</td>
+        {{--<td colspan="{{ $columnas }}" style="text-align: end">
+            Fecha: {{ $fecha }}</td>--}}
     </tr>
     <tr>
         <td colspan="{{ $columnas + 3 }}">&nbsp;</td>

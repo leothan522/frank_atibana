@@ -14,7 +14,12 @@
                              alt="Almacen">
                     </div>
                     <h3 class="profile-username text-center text-uppercase">{{ $almacen->nombre }}</h3>
-                    <p class="text-muted text-center text-uppercase">{{ $almacen->codigo }}</p>
+                    <p class="text-muted text-center text-uppercase">
+                        {{ $almacen->codigo }}
+                        <button type="button" class="row btn btn-tool" wire:click="setLimit" @if($rows > $almacen->rows) disabled @endif >
+                            <i class="fas fa-sort-amount-down-alt"></i> Ver más
+                        </button>
+                    </p>
                     <ul class="list-group list-group-unbordered">
                         <li class="dropdown-divider ml-3 mr-3"></li>
                         <!-- Conversations are loaded here -->

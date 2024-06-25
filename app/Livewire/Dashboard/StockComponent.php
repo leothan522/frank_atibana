@@ -4,12 +4,17 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\AjusDetalle;
 use App\Models\Ajuste;
+use App\Models\AjusTipo;
 use App\Models\Almacen;
 use App\Models\Articulo;
+use App\Models\Despacho;
+use App\Models\DespDetalle;
 use App\Models\Empresa;
 use App\Models\Parametro;
+use App\Models\ReceDetalle;
 use App\Models\Stock;
 use App\Models\Unidad;
+use Carbon\Carbon;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -18,12 +23,13 @@ class StockComponent extends Component
 {
     use LivewireAlert;
 
-    public $rows = 0;
-    public $empresas_id, $empresa, $viewMovimientos = false;
+    public $rows = 0, $numero = 14, $empresas_id, $tableStyle = false;
+    public $empresa, $viewMovimientos = false;
     public $modalEmpresa, $modalArticulo, $modalStock, $modalUnidad;
-    public $getNombre, $getAjustes, $getAlmacen, $getLimit = 15, $getSaldo, $modulo = 'stock';
-    public $limit = 100;
-    public $compartirQr;
+    //public $modulo = 'stock';
+
+    public $rowsMovimientos = 0, $listarMovimientos;
+    public $almacenes_id, $almacen;
 
     public function mount()
     {
@@ -42,6 +48,11 @@ class StockComponent extends Component
                 ->limit($this->rows)
                 ->get();
             $almacen->stock = $stock;
+            $rows = Stock::where('empresas_id', $this->empresas_id)
+                ->where('almacenes_id', $almacen->id)
+                ->orderBy('actual', 'DESC')
+                ->count();
+            $almacen->rows = $rows;
         });
 
         return view('livewire.dashboard.stock-component')
@@ -50,7 +61,11 @@ class StockComponent extends Component
 
     public function setLimit()
     {
-        if (numRowsPaginate() < 10) { $rows = 10; } else { $rows = numRowsPaginate(); }
+        if (numRowsPaginate() < $this->numero) {
+            $rows = $this->numero;
+        } else {
+            $rows = numRowsPaginate();
+        }
         $this->rows = $this->rows + $rows;
     }
 
@@ -59,13 +74,15 @@ class StockComponent extends Component
     {
         $this->empresas_id = $empresaID;
         $this->limpiarStock();
-        $this->reset(['viewMovimientos', 'getAlmacen']);
     }
 
     public function limpiarStock()
     {
         $this->reset([
-            'getAjustes', 'getAjustes', 'getLimit', 'getNombre', 'getSaldo', 'viewMovimientos'
+            'empresa', 'viewMovimientos',
+            'modalEmpresa', 'modalArticulo', 'modalStock', 'modalUnidad',
+            'rowsMovimientos', 'listarMovimientos',
+            'almacenes_id', 'almacen'
         ]);
     }
 
@@ -78,28 +95,144 @@ class StockComponent extends Component
             ->where('articulos_id', $id)
             ->where('unidades_id', $unidad)
             ->get();
-
     }
 
     public function verMovimientos($id)
     {
-        if ($this->getLimit > $this->limit){
-            $this->limit = $this->limit + 100;
+        $this->almacenes_id = $id;
+        $this->almacen = Almacen::find($this->almacenes_id);
+
+        $ajustes = Ajuste::where('empresas_id', $this->empresas_id)
+            ->where('estatus', 1)
+            ->orderBy('created_at', 'DESC')
+            ->limit($this->rows)
+            ->get();
+        $i = 0;
+        $listarMovimientos = [];
+        foreach ($ajustes as $ajuste){
+
+            $ajustes_id = $ajuste->id;
+            $code = $ajuste->codigo;
+            $fecha = Carbon::parse($ajuste->created_at)->format('Y-m-d H:i:s');;
+            $segmento = null;
+            if ($ajuste->segmentos_id){
+                $segmento = $ajuste->segmentos->descripcion;
+            }
+
+            $detalles = AjusDetalle::where('ajustes_id', $ajuste->id)->where('almacenes_id', $this->almacenes_id)->get();
+            $y = 0;
+            $listarDetalles = [];
+            foreach ($detalles as $detalle){
+                $tipo = $detalle->tipo->codigo;
+                $articulos_id = $detalle->articulos_id;
+                $codigo = $detalle->articulo->codigo;
+                $articulo = $detalle->articulo->descripcion;
+                $unidades_id = $detalle->unidades_id;
+                $unidad = $detalle->unidad->codigo;
+                $cantidad = $detalle->cantidad;
+                if ($detalle->tipo->tipo == 1){
+                    $entrada = true;
+                }else{
+                    $entrada = false;
+                }
+                $listarDetalles[$y] = [
+                    'tipo' => $tipo,
+                    'codigo' => $codigo,
+                    'articulo' => $articulo,
+                    'unidad' => $unidad,
+                    'cantidad' => $cantidad,
+                    'entrada' => $entrada,
+                    'articulos_id' => $articulos_id,
+                    'almacenes_id' => $this->almacenes_id,
+                    'unidades_id' => $unidades_id
+                ];
+                $y++;
+                $this->rowsMovimientos++;
+            }
+
+            $listarMovimientos[$i] = [
+                'tabla' => 'ajustes',
+                'id' => $ajustes_id,
+                'codigo' => $code,
+                'fecha' => $fecha,
+                'segmento' => $segmento,
+                'detalles' => $listarDetalles
+            ];
+            $i++;
         }
 
-        $this->getAlmacen = $id;
-        $almacen = Almacen::find($this->getAlmacen);
-        $this->getNombre = $almacen->nombre;
-        $this->getAjustes = Ajuste::where('empresas_id', $this->empresas_id)
+        $arrayAjustes = $listarMovimientos;
+
+        $despachos = Despacho::where('empresas_id', $this->empresas_id)
             ->where('estatus', 1)
-            ->orderBy('fecha', 'DESC')
-            ->limit($this->limit)
+            ->orderBy('created_at', 'DESC')
+            ->limit($this->rows)
             ->get();
-        $this->getAjustes->each( function ($ajuste){
-            $ajuste->detalles = AjusDetalle::where('ajustes_id', $ajuste->id)
-                ->where('almacenes_id', $this->getAlmacen)->get();
-            $ajuste->detalles->each(function ($detalle){
-                $stock = Stock::where('empresas_id', $this->empresas_id)
+
+        $i = 0;
+        $listarMovimientos = [];
+        foreach ($despachos as $despacho){
+
+            $despachos_id = $despacho->id;
+            $code = $despacho->codigo;
+            $fecha = Carbon::parse($despacho->created_at)->format('Y-m-d H:i:s');
+            $segmento = null;
+            if ($despacho->segmentos_id){
+                $segmento = $despacho->segmentos->descripcion;
+            }
+
+            $detalles = DespDetalle::where('despachos_id', $despacho->id)->where('almacenes_id', $this->almacenes_id)->get();
+
+            foreach ($detalles as $detalle){
+                $getTipo = AjusTipo::where('tipo', 2)->first();
+                $tipo = $getTipo->codigo;
+
+                $recetas = ReceDetalle::where('recetas_id', $detalle->recetas_id)->get();
+                $y = 0;
+                $listarDetalles = [];
+                foreach ($recetas as $receta){
+                    $articulos_id = $receta->articulos_id;
+                    $codigo = $receta->articulo->codigo;
+                    $articulo = $receta->articulo->descripcion;
+                    $unidades_id = $receta->unidades_id;
+                    $unidad = $receta->unidad->codigo;
+                    $cantidad = $detalle->cantidad * $receta->cantidad;
+                    $listarDetalles[$y] = [
+                        'tipo' => $tipo,
+                        'codigo' => $codigo,
+                        'articulo' => $articulo,
+                        'unidad' => $unidad,
+                        'cantidad' => $cantidad,
+                        'entrada' => false,
+                        'articulos_id' => $articulos_id,
+                        'almacenes_id' => $this->almacenes_id,
+                        'unidades_id' => $unidades_id
+                    ];
+                    $y++;
+                    $this->rowsMovimientos++;
+                }
+            }
+
+            $listarMovimientos[$i] = [
+                'tabla' => 'despachos',
+                'id' => $despachos_id,
+                'codigo' => $code,
+                'fecha' => $fecha,
+                'segmento' => $segmento,
+                'detalles' => $listarDetalles
+            ];
+            $i++;
+        }
+
+        $arrayDespachos = $listarMovimientos;
+
+        $arrayCombinados = array_merge($arrayAjustes, $arrayDespachos);
+
+        $this->listarMovimientos = collect($arrayCombinados)->sortByDesc('fecha');
+
+        //dd($listarMovimientos);
+
+        /*$stock = Stock::where('empresas_id', $this->empresas_id)
                     ->where('articulos_id', $detalle->articulos_id)
                     ->where('almacenes_id', $detalle->almacenes_id)
                     ->where('unidades_id', $detalle->unidades_id)
@@ -108,62 +241,27 @@ class StockComponent extends Component
                     $this->getSaldo = $stock->actual;
                 }else{
                     $this->getSaldo = 0;
-                }
-            });
-        });
+                }*/
 
+        //dd($this->rowsMovimientos);
+
+        if ($this->rowsMovimientos > $this->numero) {
+            $this->tableStyle = true;
+        }
         $this->viewMovimientos = true;
-    }
-
-    public function aumetarLimit()
-    {
-        if (numRowsPaginate() < 10) { $rows = 10; } else { $rows = numRowsPaginate(); }
-        $this->getLimit = $this->getLimit + $rows;
-        $this->verMovimientos($this->getAlmacen);
     }
 
     public function irAjuste($id, $codigo)
     {
         $this->dispatch('show', id: $id)->to(AjustesComponent::class);
         $this->dispatch('buscar', keyword: $codigo)->to(AjustesComponent::class);
-        //$this->alert('success', 'pendiente '.$codigo);
     }
 
     #[On('showStock')]
     public function showStock()
     {
-        if ($this->getAlmacen){
-            $this->verMovimientos($this->getAlmacen);
-        }
-    }
-
-    #[On('compartirQr')]
-    public function compartirQr($borrar = false)
-    {
-        $parametro = Parametro::where('nombre','compartir_stock_qr')->where('tabla_id', $this->empresas_id)->first();
-        $token = generarStringAleatorio(30);
-        if ($parametro){
-            if (!$borrar){
-                $this->compartirQr = route('stock.compartirqr', $parametro->valor);
-            }else{
-                $parametro->delete();
-                $this->reset(['compartirQr']);
-            }
-        }else{
-
-            do{
-                $parametro = Parametro::where('nombre','compartir_stock_qr')->where('valor', $token)->first();
-                if ($parametro){
-                    $token = generarStringAleatorio(30);
-                }
-            }while($parametro);
-
-            $parametro = new Parametro();
-            $parametro->nombre = 'compartir_stock_qr';
-            $parametro->tabla_id = $this->empresas_id;
-            $parametro->valor = $token;
-            $parametro->save();
-            $this->compartirQr = route('stock.compartirqr', $parametro->valor);
+        if ($this->almacenes_id){
+            $this->verMovimientos($this->almacenes_id);
         }
     }
 
