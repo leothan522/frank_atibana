@@ -8,9 +8,9 @@
                 <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $rowsMovimientos) disabled @endif >
                     <i class="fas fa-sort-amount-down-alt"></i> Ver más
                 </button>
-                {{--<a href="{{ route('movimientos.reportes', [$getAlmacen ?? 0, $empresas_id ?? 1, $getLimit]) }}" class="btn btn-tool btn-sm" target="_blank">
+                <a href="{{ route('movimientos.reportes', [$almacenes_id, $empresas_id, $rowsMovimientos]) }}" class="btn btn-tool btn-sm" target="_blank">
                     <i class="fas fa-download"></i>
-                </a>--}}
+                </a>
                 <button type="button" class="btn btn-tool" data-card-widget="remove" wire:click="limpiarStock" {{--onclick="verSpinnerOculto()"--}}>
                     <i class="fas fa-times"></i>
                 </button>
@@ -23,7 +23,7 @@
                 <tr>
                     <th class="d-none d-md-table-cell">Tipo</th>
                     <th class="d-none d-md-table-cell">Modulo</th>
-                    <th class="d-none d-md-table-cell">Codigo</th>
+                    <th class="d-none d-md-table-cell">Código</th>
                     <th class="d-none d-md-table-cell">Fecha</th>
                     <th>Articulo</th>
                     <th>Descripción</th>

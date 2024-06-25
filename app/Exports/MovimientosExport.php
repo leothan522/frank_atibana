@@ -13,37 +13,35 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class MovimientosExport implements FromView, ShouldAutoSize, WithTitle, WithColumnFormatting
 {
-    public $getAjustes, $getSaldo, $limit, $getNombre, $empresa;
+    public $almacenes_id, $almacen, $empresa, $listarMovimientos;
 
-    public function __construct($getAjustes, $getSaldo, $limit, $getNombre, $empresa)
+    public function __construct($empresa, $almacenes_id, $almacen, $listarMovimientos)
     {
-        $this->getAjustes = $getAjustes;
-        $this->getSaldo = $getSaldo;
-        $this->limit = $limit;
-        $this->getNombre = $getNombre;
         $this->empresa = $empresa;
+        $this->almacenes_id = $almacenes_id;
+        $this->almacen = $almacen;
+        $this->listarMovimientos = $listarMovimientos;
     }
 
     public function view(): View
     {
         return view('dashboard.stock.excel_movimientos')
-            ->with('getAjustes', $this->getAjustes)
-            ->with('getSaldo', $this->getSaldo)
-            ->with('getLimit', $this->limit)
-            ->with('getNombre', $this->getNombre)
             ->with('empresa', $this->empresa)
+            ->with('almacenes_id', $this->almacenes_id)
+            ->with('almacen', $this->almacen)
+            ->with('listarMovimientos', $this->listarMovimientos)
             ;
     }
 
     public function title(): string
     {
-        return mb_strtoupper($this->getNombre, 'utf8');
+        return mb_strtoupper($this->almacen->nombre, 'utf8');
     }
 
     public function columnFormats(): array
     {
         return [
-            'H' => NumberFormat::FORMAT_NUMBER_00,
+            'D' => NumberFormat::FORMAT_DATE_DATETIME,
             'I' => NumberFormat::FORMAT_NUMBER_00,
         ];
     }
