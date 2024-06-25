@@ -4,7 +4,7 @@
     <div class="card-header">
         <h3 class="card-title">
             @if($new_receta)
-                Nuevo Receta
+                Nueva Receta
             @endif
             @if(!$new_receta && $view == 'form')
                 Editar Receta
