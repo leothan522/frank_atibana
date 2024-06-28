@@ -23,13 +23,12 @@ class AjustesComponent extends Component
     public $rows = 0, $numero = 14, $tableStyle = false;
     public $empresas_id, $keyword, $editar = false, $footer, $view;
     public $nuevo = false, $btn_nuevo = true, $btn_editar = false, $btn_cancelar = false;
-    public $ajuste_id, $ajuste_codigo, $ajuste_fecha, $ajuste_descripcion, $ajuste_contador = 1, $listarDetalles,
-        $opcionDestroy, $ajuste_estatus, $ajuste_segmento, $ajuste_label_segmento;
-    public $ajusteTipo = [], $classTipo = [], $ajusteArticulo = [], $classArticulo = [], $ajusteDescripcion = [],
+    public $ajustes_id, $codigo, $fecha, $descripcion, $estatus, $segmentos_id, $verSegmento, $listarDetalles,  $opcionDestroy;
+    public $contador = 1, $ajusteTipo = [], $classTipo = [], $ajusteArticulo = [], $classArticulo = [], $ajusteDescripcion = [],
         $ajusteUnidad = [], $selectUnidad = [], $ajusteAlmacen = [], $classAlmacen = [], $ajusteCantidad = [],
         $ajuste_tipos_id = [], $ajuste_articulos_id = [], $ajuste_almacenes_id = [], $ajuste_tipos_tipo = [],
-        $ajuste_almacenes_tipo = [], $ajusteItem, $ajusteListarArticulos, $keywordAjustesArticulos, $detalles_id = [],
-        $borraritems = [];
+        $ajuste_almacenes_tipo = [],  $ajusteListarArticulos, $detalles_id = [];
+    public $keywordArticulos, $item, $borraritems = [];
     public $proximo_codigo;
 
     public function mount()
@@ -39,11 +38,12 @@ class AjustesComponent extends Component
 
     public function render()
     {
-        $this->proximo_codigo = nextCodigoAjuste($this->empresas_id);
+        //$this->proximo_codigo = nextCodigoAjuste($this->empresas_id);
 
         $ajustes = Ajuste::buscar($this->keyword)
             ->where('empresas_id', $this->empresas_id)
             ->orderBy('fecha', 'desc')
+            ->orderBy('codigo', 'desc')
             ->limit($this->rows)
             ->get();
         $rowsAjustes = Ajuste::count();
@@ -74,19 +74,19 @@ class AjustesComponent extends Component
     {
         $this->empresas_id = $empresaID;
         $this->limpiarAjustes();
-        $this->reset(['keyword', 'ajuste_id']);
+        $this->reset(['keyword', 'ajustes_id']);
     }
 
     public function limpiarAjustes()
     {
         $this->reset([
             'view', 'footer', 'nuevo', 'btn_nuevo', 'btn_editar', 'btn_cancelar',
-            'ajuste_contador', 'ajuste_codigo', 'ajuste_descripcion', 'ajuste_fecha',
+            'contador', 'codigo', 'descripcion', 'fecha',
             'ajusteTipo', 'classTipo', 'ajusteArticulo', 'classArticulo', 'ajusteDescripcion', 'ajusteUnidad',
-            'selectUnidad', 'ajusteAlmacen', 'ajusteCantidad', 'ajusteListarArticulos', 'keywordAjustesArticulos', 'ajusteItem',
+            'selectUnidad', 'ajusteAlmacen', 'ajusteCantidad', 'ajusteListarArticulos', 'keywordArticulos', 'item',
             'ajuste_tipos_id', 'ajuste_articulos_id', 'ajuste_almacenes_id', 'ajuste_almacenes_tipo',
-            'listarDetalles', 'detalles_id', 'borraritems', 'ajuste_estatus',
-            'ajuste_segmento', 'ajuste_label_segmento'
+            'listarDetalles', 'detalles_id', 'borraritems', 'estatus',
+            'segmentos_id', 'verSegmento'
         ]);
         $this->resetErrorBag();
     }
@@ -100,6 +100,8 @@ class AjustesComponent extends Component
         $this->btn_cancelar = true;
         $this->btn_editar = false;
         $this->footer = false;
+        $this->proximo_codigo = $this->getNextCodigo();
+
         $this->ajusteTipo[0] = null;
         $this->classTipo[0] = null;
         $this->ajusteArticulo[0] = null;
@@ -116,30 +118,30 @@ class AjustesComponent extends Component
     public function btnCancelar()
     {
         $this->limpiarAjustes();
-        if ($this->ajuste_id) {
+        if ($this->ajustes_id) {
             //show ajuste
-            $this->show($this->ajuste_id);
+            $this->show($this->ajustes_id);
         }
     }
 
     public function btnContador($opcion)
     {
         if ($opcion == "add") {
-            $this->ajusteTipo[$this->ajuste_contador] = null;
-            $this->ajuste_tipos_tipo[$this->ajuste_contador] = null;
-            $this->classTipo[$this->ajuste_contador] = null;
-            $this->ajusteArticulo[$this->ajuste_contador] = null;
-            $this->ajuste_articulos_id[$this->ajuste_contador] = null;
-            $this->classArticulo[$this->ajuste_contador] = null;
-            $this->ajusteDescripcion[$this->ajuste_contador] = null;
-            $this->selectUnidad[$this->ajuste_contador] = array();
-            $this->ajusteUnidad[$this->ajuste_contador] = null;
-            $this->ajusteAlmacen[$this->ajuste_contador] = null;
-            $this->ajuste_almacenes_id[$this->ajuste_contador] = null;
-            $this->classAlmacen[$this->ajuste_contador] = null;
-            $this->ajusteCantidad[$this->ajuste_contador] = null;
-            $this->detalles_id[$this->ajuste_contador] = null;
-            $this->ajuste_contador++;
+            $this->ajusteTipo[$this->contador] = null;
+            $this->ajuste_tipos_tipo[$this->contador] = null;
+            $this->classTipo[$this->contador] = null;
+            $this->ajusteArticulo[$this->contador] = null;
+            $this->ajuste_articulos_id[$this->contador] = null;
+            $this->classArticulo[$this->contador] = null;
+            $this->ajusteDescripcion[$this->contador] = null;
+            $this->selectUnidad[$this->contador] = array();
+            $this->ajusteUnidad[$this->contador] = null;
+            $this->ajusteAlmacen[$this->contador] = null;
+            $this->ajuste_almacenes_id[$this->contador] = null;
+            $this->classAlmacen[$this->contador] = null;
+            $this->ajusteCantidad[$this->contador] = null;
+            $this->detalles_id[$this->contador] = null;
+            $this->contador++;
         } else {
 
             if ($this->detalles_id[$opcion]) {
@@ -148,7 +150,7 @@ class AjustesComponent extends Component
                 ];
             }
 
-            for ($i = $opcion; $i < $this->ajuste_contador - 1; $i++) {
+            for ($i = $opcion; $i < $this->contador - 1; $i++) {
                 $this->ajusteTipo[$i] = $this->ajusteTipo[$i + 1];
                 $this->ajuste_tipos_tipo[$i] = $this->ajuste_tipos_tipo[$i + 1];
                 $this->classTipo[$i] = $this->classTipo[$i + 1];
@@ -164,28 +166,28 @@ class AjustesComponent extends Component
                 $this->ajusteCantidad[$i] = $this->ajusteCantidad[$i + 1];
                 $this->detalles_id[$i] = $this->detalles_id[$i + 1];
             }
-            $this->ajuste_contador--;
-            unset($this->ajusteTipo[$this->ajuste_contador]);
-            unset($this->classTipo[$this->ajuste_contador]);
-            unset($this->ajusteArticulo[$this->ajuste_contador]);
-            unset($this->classArticulo[$this->ajuste_contador]);
-            unset($this->ajusteDescripcion[$this->ajuste_contador]);
-            unset($this->selectUnidad[$this->ajuste_contador]);
-            unset($this->ajusteUnidad[$this->ajuste_contador]);
-            unset($this->ajusteAlmacen[$this->ajuste_contador]);
-            unset($this->classAlmacen[$this->ajuste_contador]);
-            unset($this->ajusteCantidad[$this->ajuste_contador]);
-            unset($this->detalles_id[$this->ajuste_contador]);
+            $this->contador--;
+            unset($this->ajusteTipo[$this->contador]);
+            unset($this->classTipo[$this->contador]);
+            unset($this->ajusteArticulo[$this->contador]);
+            unset($this->classArticulo[$this->contador]);
+            unset($this->ajusteDescripcion[$this->contador]);
+            unset($this->selectUnidad[$this->contador]);
+            unset($this->ajusteUnidad[$this->contador]);
+            unset($this->ajusteAlmacen[$this->contador]);
+            unset($this->classAlmacen[$this->contador]);
+            unset($this->ajusteCantidad[$this->contador]);
+            unset($this->detalles_id[$this->contador]);
         }
     }
 
     protected function rules()
     {
         return [
-            'ajuste_codigo' => ['nullable', 'min:4', 'alpha_dash:ascii', Rule::unique('ajustes', 'codigo')->ignore($this->ajuste_id)],
-            'ajuste_fecha' => 'nullable',
-            'ajuste_descripcion' => 'required|min:4',
-            /*'ajuste_segmento' => 'required',*/
+            'codigo' => ['nullable', 'min:4', 'alpha_dash:ascii', Rule::unique('ajustes', 'codigo')->ignore($this->ajustes_id)],
+            'fecha' => 'nullable',
+            'descripcion' => 'required|min:4',
+            /*'segmentos_id' => 'required',*/
             'ajusteTipo.*' => ['required', Rule::exists('ajustes_tipos', 'codigo')],
             'ajusteArticulo.*' => ['required', Rule::exists('articulos', 'codigo')],
             'ajusteUnidad.*' => 'required',
@@ -199,18 +201,18 @@ class AjustesComponent extends Component
 
         $this->validate();
 
-        if (empty($this->ajuste_codigo)) {
-            $this->ajuste_codigo = $this->proximo_codigo['formato'] . cerosIzquierda($this->proximo_codigo['proximo'], numSizeCodigo());
+        if (empty($this->codigo)) {
+            $this->codigo = $this->proximo_codigo['formato'] . cerosIzquierda($this->proximo_codigo['proximo'], numSizeCodigo());
         }
 
-        if (empty($this->ajuste_fecha)) {
-            $this->ajuste_fecha = date("Y-m-d H:i");
+        if (empty($this->fecha)) {
+            $this->fecha = date("Y-m-d H:i");
         }
 
         $procesar = true;
         $html = null;
 
-        for ($i = 0; $i < $this->ajuste_contador; $i++) {
+        for ($i = 0; $i < $this->contador; $i++) {
             if ($this->ajuste_tipos_tipo[$i] == 2) {
                 $stock = Stock::where('empresas_id', $this->empresas_id)
                     ->where('articulos_id', $this->ajuste_articulos_id[$i])
@@ -236,19 +238,17 @@ class AjustesComponent extends Component
 
             $ajuste = new Ajuste();
             $ajuste->empresas_id = $this->empresas_id;
-            $ajuste->codigo = $this->ajuste_codigo;
-            $ajuste->descripcion = $this->ajuste_descripcion;
-            $ajuste->segmentos_id = $this->ajuste_segmento;
-            //$date = new \DateTime($this->ajuste_fecha);
+            $ajuste->codigo = $this->codigo;
+            $ajuste->descripcion = $this->descripcion;
+            $ajuste->segmentos_id = $this->segmentos_id;
+            //$date = new \DateTime($this->fecha);
             //$ajuste->fecha = $date->format('Y-m-d H:i');
-            $ajuste->fecha = $this->ajuste_fecha;
+            $ajuste->fecha = $this->fecha;
             $ajuste->save();
 
-            $parametro = Parametro::find($this->proximo_codigo['id']);
-            $parametro->valor++;
-            $parametro->save();
+            $this->setNexCodigo($this->proximo_codigo['id'], $this->proximo_codigo['proximo']);
 
-            for ($i = 0; $i < $this->ajuste_contador; $i++) {
+            for ($i = 0; $i < $this->contador; $i++) {
                 $detalles = new AjusDetalle();
                 $detalles->ajustes_id = $ajuste->id;
                 $detalles->tipos_id = $this->ajuste_tipos_id[$i];
@@ -388,23 +388,23 @@ class AjustesComponent extends Component
         }
     }
 
-    public function itemTemporalAjuste($int)
+    public function itemTemporal($int)
     {
-        $this->ajusteItem = $int;
+        $this->item = $int;
     }
 
-    public function buscarAjustesArticulos()
+    public function buscarArticulos()
     {
-        $this->ajusteListarArticulos = Articulo::buscar($this->keywordAjustesArticulos)
+        $this->ajusteListarArticulos = Articulo::buscar($this->keywordArticulos)
             ->where('empresas_id', $this->empresas_id)
             ->where('estatus', 1)
             ->limit(100)
             ->get();
     }
 
-    public function selectArticuloAjuste($codigo)
+    public function selectArticulo($codigo)
     {
-        $this->ajusteArticulo[$this->ajusteItem] = $codigo;
+        $this->ajusteArticulo[$this->item] = $codigo;
         $this->updatedAjusteArticulo();
     }
 
@@ -412,20 +412,20 @@ class AjustesComponent extends Component
     public function show($id)
     {
         $this->limpiarAjustes();
-        $this->ajuste_id = $id;
+        $this->ajustes_id = $id;
         $this->btn_editar = true;
         $this->footer = true;
-        $ajuste = Ajuste::find($this->ajuste_id);
-        $this->ajuste_codigo = $ajuste->codigo;
-        $this->ajuste_fecha = $ajuste->fecha;
-        $this->ajuste_descripcion = $ajuste->descripcion;
-        $this->ajuste_segmento = $ajuste->segmentos_id;
-        if ($this->ajuste_segmento){
-            $this->ajuste_label_segmento = $ajuste->segmentos->descripcion;
+        $ajuste = Ajuste::find($this->ajustes_id);
+        $this->codigo = $ajuste->codigo;
+        $this->fecha = $ajuste->fecha;
+        $this->descripcion = $ajuste->descripcion;
+        $this->segmentos_id = $ajuste->segmentos_id;
+        if ($this->segmentos_id){
+            $this->verSegmento = $ajuste->segmentos->descripcion;
         }
-        $this->ajuste_estatus = $ajuste->estatus;
-        $this->listarDetalles = AjusDetalle::where('ajustes_id', $this->ajuste_id)->get();
-        $this->ajuste_contador = AjusDetalle::where('ajustes_id', $this->ajuste_id)->count();
+        $this->estatus = $ajuste->estatus;
+        $this->listarDetalles = AjusDetalle::where('ajustes_id', $this->ajustes_id)->get();
+        $this->contador = AjusDetalle::where('ajustes_id', $this->ajustes_id)->count();
         $this->view = 'show';
     }
 
@@ -436,6 +436,7 @@ class AjustesComponent extends Component
         $this->btn_editar = false;
         $this->btn_cancelar = true;
         $this->footer = false;
+        $this->proximo_codigo = $this->getNextCodigo();
 
         $i = 0;
         foreach ($this->listarDetalles as $detalle) {
@@ -476,41 +477,45 @@ class AjustesComponent extends Component
 
         $this->validate();
 
-        if (empty($this->ajuste_codigo)) {
-            $this->ajuste_codigo = $this->proximo_codigo['formato'] . cerosIzquierda($this->proximo_codigo['proximo'], numSizeCodigo());
+        if (empty($this->codigo)) {
+            $this->codigo = $this->proximo_codigo['formato'] . cerosIzquierda($this->proximo_codigo['proximo'], numSizeCodigo());
         }
 
-        if (empty($this->ajuste_fecha)) {
-            $this->ajuste_fecha = date("Y-m-d H:i:s");
+        if (empty($this->fecha)) {
+            $this->fecha = date("Y-m-d H:i:s");
         }
 
         $procesar_ajuste = false;
         $html = null;
 
-        $ajuste = Ajuste::find($this->ajuste_id);
+        $ajuste = Ajuste::find($this->ajustes_id);
         $db_codigo = $ajuste->codigo;
         $db_fecha = $ajuste->fecha;
         $db_descripcion = $ajuste->descripcion;
         $db_segmento = $ajuste->segmentos_id;
 
-        if ($db_codigo != $this->ajuste_codigo) {
+        if ($db_codigo != $this->codigo) {
             $procesar_ajuste = true;
-            $ajuste->codigo = $this->ajuste_codigo;
+            $ajuste->codigo = $this->codigo;
         }
 
-        if ($db_fecha != $this->ajuste_fecha) {
+        if ($db_fecha != $this->fecha) {
             $procesar_ajuste = true;
-            $ajuste->fecha = $this->ajuste_fecha;
+            $ajuste->fecha = $this->fecha;
         }
 
-        if ($db_descripcion != $this->ajuste_descripcion) {
+        if ($db_descripcion != $this->descripcion) {
             $procesar_ajuste = true;
-            $ajuste->descripcion = $this->ajuste_descripcion;
+            $ajuste->descripcion = $this->descripcion;
         }
 
-        if ($db_segmento != $this->ajuste_segmento) {
+        if ($db_segmento != $this->segmentos_id) {
             $procesar_ajuste = true;
-            $ajuste->segmentos_id = $this->ajuste_segmento;
+            if ($this->segmentos_id){
+                $ajuste->segmentos_id = $this->segmentos_id;
+            }else{
+                $ajuste->segmentos_id = null;
+            }
         }
 
         //***** Detalles ******
@@ -563,7 +568,7 @@ class AjustesComponent extends Component
         }
 
 
-        for ($i = 0; $i < $this->ajuste_contador; $i++) {
+        for ($i = 0; $i < $this->contador; $i++) {
 
             $detalle_id = $this->detalles_id[$i];
             $tipo_id = $this->ajuste_tipos_id[$i];
@@ -944,7 +949,7 @@ class AjustesComponent extends Component
 
             if (!empty($procesar_detalles)) {
 
-                for ($i = 0; $i < $this->ajuste_contador; $i++) {
+                for ($i = 0; $i < $this->contador; $i++) {
                     if ($this->detalles_id[$i]) {
                         //edito
                         $detalles = AjusDetalle::find($this->detalles_id[$i]);
@@ -952,7 +957,7 @@ class AjustesComponent extends Component
                         //nuevo
                         $detalles = new AjusDetalle();
                     }
-                    $detalles->ajustes_id = $this->ajuste_id;
+                    $detalles->ajustes_id = $this->ajustes_id;
                     $detalles->tipos_id = $this->ajuste_tipos_id[$i];
                     $detalles->articulos_id = $this->ajuste_articulos_id[$i];
                     $detalles->almacenes_id = $this->ajuste_almacenes_id[$i];
@@ -1008,7 +1013,7 @@ class AjustesComponent extends Component
 
             }
 
-            $this->show($this->ajuste_id);
+            $this->show($this->ajustes_id);
             $this->dispatch('showStock')->to(StockComponent::class);
             $this->alert('success', 'Ajuste Actualizado.');
 
@@ -1026,7 +1031,7 @@ class AjustesComponent extends Component
                 ]);
             } else {
                 $this->alert('info', 'No se realizo ningún cambio.');
-                $this->show($this->ajuste_id);
+                $this->show($this->ajustes_id);
             }
         }
 
@@ -1050,7 +1055,7 @@ class AjustesComponent extends Component
     #[On('confirmedBorrarAjuste')]
     public function confirmedBorrarAjuste()
     {
-        $ajuste = Ajuste::find($this->ajuste_id);
+        $ajuste = Ajuste::find($this->ajustes_id);
         $estatus = $ajuste->estatus;
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
@@ -1121,7 +1126,7 @@ class AjustesComponent extends Component
 
             if ($this->opcionDestroy == "delete") {
                 $ajuste->delete();
-                $this->reset('ajuste_id');
+                $this->reset('ajustes_id');
                 $this->limpiarAjustes();
                 $message = "Ajuste Eliminado.";
             } else {
@@ -1154,12 +1159,73 @@ class AjustesComponent extends Component
     #[On('showAjustes')]
     public function showAjustes()
     {
-        if ($this->ajuste_id) {
-            $this->show($this->ajuste_id);
+        if ($this->ajustes_id) {
+            $this->show($this->ajustes_id);
         } else {
             $this->limpiarAjustes();
         }
         $this->reset('keyword');
+    }
+
+    protected function getNextCodigo(): array
+    {
+        $codigo = array();
+
+        $parametro = Parametro::where("nombre", "proximo_codigo_ajustes")->where('tabla_id', $this->empresas_id)->first();
+        if ($parametro) {
+            $codigo['id'] = $parametro->id;
+            $codigo['proximo'] = (int)$parametro->valor;
+        }else{
+            $codigo['id'] = null;
+            $codigo['proximo'] = 1;
+        }
+
+        $parametro = Parametro::where("nombre", "formato_codigo_ajustes")->where('tabla_id', $this->empresas_id)->first();
+        if ($parametro) {
+            $codigo['formato'] = $parametro->valor;
+        }else{
+            $codigo['formato'] = 'N'.$this->empresas_id.'-';
+        }
+
+        $parametro = Parametro::where("nombre", "editable_codigo_ajustes")->where('tabla_id', $this->empresas_id)->first();
+        if ($parametro){
+            if ($parametro->valor == 1){
+                $codigo['editable'] = true;
+            }else{
+                $codigo['editable'] = false;
+            }
+        }else{
+            $codigo['editable'] = false;
+        }
+
+        $parametro = Parametro::where("nombre", "editable_fecha_ajustes")->where('tabla_id', $this->empresas_id)->first();
+        if ($parametro){
+            if ($parametro->valor == 1){
+                $codigo['editable_fecha'] = true;
+            }else{
+                $codigo['editable_fecha'] = false;
+            }
+        }else{
+            $codigo['editable_fecha'] = false;
+        }
+
+        return $codigo;
+
+    }
+
+    protected function setNexCodigo($id, $proximo)
+    {
+        if (empty($id)){
+            //nuevo
+            $parametro = new Parametro();
+            $parametro->tabla_id = $this->empresas_id;
+            $parametro->nombre = "proximo_codigo_ajustes";
+        }else{
+            //edito
+            $parametro = Parametro::find($id);
+        }
+        $parametro->valor = $proximo + 1;
+        $parametro->save();
     }
 
 }

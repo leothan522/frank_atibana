@@ -37,7 +37,7 @@
         <ul class="todo-list" data-widget="todo-list">
             @if($listarAjustes->isNotEmpty())
                 @foreach($listarAjustes as $ajuste)
-                    <li class=" @if(!$ajuste->estatus) done @endif @if($ajuste->id == $ajuste_id) text-warning @endif ""
+                    <li class=" @if(!$ajuste->estatus) done @endif @if($ajuste->id == $ajustes_id) text-warning @endif ""
                     >
                     <!-- todo text -->
                     <span class="text text-uppercase">

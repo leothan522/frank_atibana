@@ -5,20 +5,20 @@
             <label>Código:</label>
         </div>
         <div class="col-md-2 mb-2">
-            <input type="text" class="form-control form-control-sm @error('ajuste_codigo') is-invalid @enderror"
-                   placeholder="Código" wire:model="ajuste_codigo"
+            <input type="text" class="form-control form-control-sm @error('codigo') is-invalid @enderror"
+                   placeholder="Código" wire:model="codigo"
                    @if(!$proximo_codigo['editable']) readonly @endif>
         </div>
         <div class="col-md-3">
-            &nbsp; @error('ajuste_codigo') {{ $message }} @endif
+           {{-- &nbsp; @error('codigo') {{ $message }} @endif--}}
         </div>
         <div class="col-md-2 text-md-right">
             <label>Fecha:</label>
         </div>
         <div class="col-md-3">
             <input type="datetime-local"
-                   class="form-control form-control-sm @error('ajuste_fecha') is-invalid @enderror"
-                   wire:model="ajuste_fecha" @if(!$proximo_codigo['editable_fecha']) readonly @endif>
+                   class="form-control form-control-sm @error('fecha') is-invalid @enderror"
+                   wire:model="fecha" @if(!$proximo_codigo['editable_fecha']) readonly @endif>
         </div>
     </div>
 
@@ -27,12 +27,12 @@
             <label>Descripción:</label>
         </div>
         <div class="col-md-6">
-            <input type="text" class="form-control form-control-sm @error('ajuste_descripcion') is-invalid @enderror"
-                   placeholder="Descripción" wire:model="ajuste_descripcion">
+            <input type="text" class="form-control form-control-sm @error('descripcion') is-invalid @enderror"
+                   placeholder="Descripción" wire:model="descripcion">
         </div>
         <div class="col-md-4">
-            <select class="custom-select custom-select-sm @error('ajuste_segmento') is-invalid @enderror"
-                    wire:model="ajuste_segmento">
+            <select class="custom-select custom-select-sm @error('segmentos_id') is-invalid @enderror"
+                    wire:model="segmentos_id">
                 <option value="">Segmento (Opcional)</option>
                 @foreach($selectSegmentos as $segmento)
                     <option value="{{ $segmento->id }}">{{ $segmento->descripcion }}</option>
@@ -56,7 +56,7 @@
                                 <i class="fas fa-plus"></i>
                             </button>--}}
                             {{--<button type="button" wire:click="btnContador('remove')" class="btn btn-default btn-sm"
-                                    @if($ajuste_contador == 1) disabled @endif>
+                                    @if($contador == 1) disabled @endif>
                                 <i class="fas fa-minus"></i>
                             </button>--}}
                         </div>
@@ -84,7 +84,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @for($i = 0; $i < $ajuste_contador; $i++)
+                                @for($i = 0; $i < $contador; $i++)
                                     @include('dashboard.stock.ajustes.from_detalles')
                                 @endfor
                                 </tbody>

@@ -1,6 +1,6 @@
 <tr xmlns:wire="http://www.w3.org/1999/xhtml">
     <th scope="row" class="text-nowrap">
-        @if($ajuste_contador == 1)
+        @if($contador == 1)
             <span class="btn btn-default btn-xs disabled">
                 <i class="fas fa-minus"></i>
             </span>
@@ -22,7 +22,7 @@
     </td>
     <td>
         <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend" wire:click="itemTemporalAjuste({{ $i }})"
+            <div class="input-group-prepend" wire:click="itemTemporal({{ $i }})"
                  data-toggle="modal" data-target="#modal-buscar-articulo" style="cursor: pointer">
                 <span class="input-group-text"><i class="fas fa-search"></i></span>
             </div>

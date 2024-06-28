@@ -14,10 +14,10 @@
 
                 <div class="row justify-content-center">
                     <div class="col-md-6 justify-content-end">
-                        <form wire:submit="buscarAjustesArticulos">
+                        <form wire:submit="buscarArticulos">
                             <div class="input-group close">
                                 <input type="search" class="form-control" placeholder="Buscar"
-                                       wire:model="keywordAjustesArticulos">
+                                       wire:model="keywordArticulos">
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-default">
                                         <i class="fa fa-search"></i>
@@ -45,7 +45,7 @@
                                     <td>{{ $articulo->descripcion }}</td>
                                     <td class="justify-content-end">
                                         <div class="btn-group">
-                                            <button wire:click="selectArticuloAjuste('{{ $articulo->codigo }}')"
+                                            <button wire:click="selectArticulo('{{ $articulo->codigo }}')"
                                                     class="btn btn-primary btn-sm" data-dismiss="modal">
                                                 <i class="fas fa-check"></i>
                                             </button>
@@ -64,7 +64,7 @@
                 <div class="row col-12">
                     <div class="col-md-6">
                         <span>
-                            Item: <strong>{{ $ajusteItem + 1  }}</strong>
+                            Item: <strong>{{ $item + 1  }}</strong>
                         </span>
                     </div>
                     <div class="col-md-6 text-right p-0">

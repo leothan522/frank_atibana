@@ -1,16 +1,16 @@
-@if($ajuste_id)
+@if($ajustes_id)
     <div class="row col-12 mb-2">
         <div class="col-md-2">
             <label>Código:</label>
         </div>
         <div class="col-md-5 mb-2">
-            <span class="border badge-pill text-uppercase">{{ $ajuste_codigo }}</span>
+            <span class="border badge-pill text-uppercase">{{ $codigo }}</span>
         </div>
         <div class="col-md-2 text-md-right">
             <label>Fecha:</label>
         </div>
         <div class="col-md-3">
-            <span class="border badge-pill text-nowrap">{{ verFecha($ajuste_fecha, 'd/m/Y h:i a') }}</span>
+            <span class="border badge-pill text-nowrap">{{ verFecha($fecha, 'd/m/Y h:i a') }}</span>
         </div>
     </div>
 
@@ -19,11 +19,11 @@
             <label>Descripción:</label>
         </div>
         <div class="col-md-6">
-            <span class="border badge-pill text-uppercase">{{ $ajuste_descripcion }}</span>
+            <span class="border badge-pill text-uppercase">{{ $descripcion }}</span>
         </div>
-        @if($ajuste_label_segmento)
+        @if($verSegmento)
             <div class="col-md-4">
-                <span class="border badge-pill text-uppercase text-nowrap">{{ $ajuste_label_segmento }}</span>
+                <span class="border badge-pill text-uppercase text-nowrap">{{ $verSegmento }}</span>
             </div>
         @endif
     </div>
