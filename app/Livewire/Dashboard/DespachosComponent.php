@@ -166,12 +166,12 @@ class DespachosComponent extends Component
                 $disponible = $stock->disponible;
                 if ($articulo['cantidad'] > $disponible) {
                     $procesar = false;
-                    $html .= 'Para <strong>' . formatoMillares($articulo['cantidad'], 3) . ' '.$articulo['unidad'].' </strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>' . formatoMillares($disponible, 3) . '</strong><br>';
+                    $html .= '<span class="text-sm">Para <strong>' . formatoMillares($articulo['cantidad'], 3) . ' '.$articulo['unidad'].' </strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>' . formatoMillares($disponible, 3) . '</strong></span><br>';
                     $this->addError('cantidad.' . $articulo['i'], 'error');
                 }
             } else {
                 $procesar = false;
-                $html .= 'Para <strong>' . formatoMillares($articulo['cantidad'], 3) . '</strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>0,000</strong><br>';
+                $html .= '<span class="text-sm">Para <strong>' . formatoMillares($articulo['cantidad'], 3) . '</strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>0,000</strong></span><br>';
                 $this->addError('cantidad.' . $articulo['i'], 'error');
             }
         }
@@ -400,13 +400,13 @@ class DespachosComponent extends Component
                     $error[$articulo['i']] = true;
                     $mostrarCantidad = $articulo['cantidad'] - ($cantidadEliminados + $cantidadRevisados);
                     $mostrarStock = $disponible - ($cantidadEliminados + $cantidadRevisados);
-                    $html .= 'Para <strong>' . formatoMillares($mostrarCantidad, 3) . ' '.$articulo['unidad'].' </strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>' . formatoMillares($mostrarStock, 3) . '</strong><br>';
+                    $html .= '<span class="text-sm">Para <strong>' . formatoMillares($mostrarCantidad, 3) . ' '.$articulo['unidad'].' </strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>' . formatoMillares($mostrarStock, 3) . '</strong></span><br>';
                     $this->addError('cantidad.' . $articulo['i'], 'error');
                 }
 
             } else {
                 $error[$articulo['i']] = true;
-                $html .= 'Para <strong>' . formatoMillares($articulo['cantidad'], 3) . '</strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>0,000</strong><br>';
+                $html .= '<span class="text-sm">Para <strong>' . formatoMillares($articulo['cantidad'], 3) . '</strong> del articulo <strong>' . $articulo['codigo'] . '</strong>. El stock es <strong>0,000</strong></span><br>';
                 $this->addError('cantidad.' . $articulo['i'], 'error');
             }
         }

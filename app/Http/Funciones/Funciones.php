@@ -564,56 +564,6 @@ function calcularPrecios($empresa_id, $articulo_id, $tributarios_id, $unidades_i
     return $resultado;
 }
 
-function nextCodigoAjuste($empresa_id){
-    $codigo = array();
-
-    $parametro = Parametro::where("nombre", "proximo_codigo_ajutes")->where('tabla_id', $empresa_id)->first();
-    if ($parametro) {
-        $codigo['id'] = $parametro->id;
-        $codigo['proximo'] = (int)$parametro->valor;
-    }else{
-        $parametro = new Parametro();
-        $parametro->tabla_id = $empresa_id;
-        $parametro->nombre = "proximo_codigo_ajutes";
-        $parametro->valor = 1;
-        $parametro->save();
-        $codigo['id'] = $parametro->id;
-        $codigo['proximo'] = (int)$parametro->valor;
-    }
-
-    $parametro = Parametro::where("nombre", "formato_codigo_ajutes")->where('tabla_id', $empresa_id)->first();
-    if ($parametro) {
-        $codigo['formato'] = $parametro->valor;
-    }else{
-        $codigo['formato'] = 'N'.$empresa_id.'-';
-    }
-
-    $parametro = Parametro::where("nombre", "editable_codigo_ajutes")->where('tabla_id', $empresa_id)->first();
-    if ($parametro){
-        if ($parametro->valor == 1){
-            $codigo['editable'] = true;
-        }else{
-            $codigo['editable'] = false;
-        }
-    }else{
-        $codigo['editable'] = false;
-    }
-
-    $parametro = Parametro::where("nombre", "editable_fecha_ajutes")->where('tabla_id', $empresa_id)->first();
-    if ($parametro){
-        if ($parametro->valor == 1){
-            $codigo['editable_fecha'] = true;
-        }else{
-            $codigo['editable_fecha'] = false;
-        }
-    }else{
-        $codigo['editable_fecha'] = false;
-    }
-
-    return $codigo;
-
-}
-
 function nextCodigo($parametros_nombre, $parametros_tabla_id, $nombre_formato = null){
 
     $next = 1;

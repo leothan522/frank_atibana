@@ -24,11 +24,11 @@ class AjustesComponent extends Component
     public $empresas_id, $keyword, $editar = false, $footer, $view;
     public $nuevo = false, $btn_nuevo = true, $btn_editar = false, $btn_cancelar = false;
     public $ajustes_id, $codigo, $fecha, $descripcion, $estatus, $segmentos_id, $verSegmento, $listarDetalles,  $opcionDestroy;
-    public $contador = 1, $ajusteTipo = [], $classTipo = [], $ajusteArticulo = [], $classArticulo = [], $ajusteDescripcion = [],
-        $ajusteUnidad = [], $selectUnidad = [], $ajusteAlmacen = [], $classAlmacen = [], $ajusteCantidad = [],
-        $ajuste_tipos_id = [], $ajuste_articulos_id = [], $ajuste_almacenes_id = [], $ajuste_tipos_tipo = [],
-        $ajuste_almacenes_tipo = [],  $ajusteListarArticulos, $detalles_id = [];
-    public $keywordArticulos, $item, $borraritems = [];
+    public $contador = 1, $codigoTipo = [], $classTipo = [], $tipos_id = [], $tipos_tipo = [],
+        $codigoArticulo = [], $classArticulo = [], $descripcionArticulo = [], $articulos_id = [], $unidades_id = [],  $selectUnidad = [],
+        $codigoAlmacen = [], $classAlmacen = [], $almacenes_id = [], $almacenes_tipo = [],
+        $cantidad = [], $detalles_id = [];
+    public $keywordArticulos, $item, $listarArticulos, $borraritems = [];
     public $proximo_codigo;
 
     public function mount()
@@ -38,8 +38,6 @@ class AjustesComponent extends Component
 
     public function render()
     {
-        //$this->proximo_codigo = nextCodigoAjuste($this->empresas_id);
-
         $ajustes = Ajuste::buscar($this->keyword)
             ->where('empresas_id', $this->empresas_id)
             ->orderBy('fecha', 'desc')
@@ -82,9 +80,9 @@ class AjustesComponent extends Component
         $this->reset([
             'view', 'footer', 'nuevo', 'btn_nuevo', 'btn_editar', 'btn_cancelar',
             'contador', 'codigo', 'descripcion', 'fecha',
-            'ajusteTipo', 'classTipo', 'ajusteArticulo', 'classArticulo', 'ajusteDescripcion', 'ajusteUnidad',
-            'selectUnidad', 'ajusteAlmacen', 'ajusteCantidad', 'ajusteListarArticulos', 'keywordArticulos', 'item',
-            'ajuste_tipos_id', 'ajuste_articulos_id', 'ajuste_almacenes_id', 'ajuste_almacenes_tipo',
+            'codigoTipo', 'classTipo', 'codigoArticulo', 'classArticulo', 'descripcionArticulo', 'unidades_id',
+            'selectUnidad', 'codigoAlmacen', 'cantidad', 'listarArticulos', 'keywordArticulos', 'item',
+            'tipos_id', 'articulos_id', 'almacenes_id', 'almacenes_tipo',
             'listarDetalles', 'detalles_id', 'borraritems', 'estatus',
             'segmentos_id', 'verSegmento'
         ]);
@@ -102,83 +100,17 @@ class AjustesComponent extends Component
         $this->footer = false;
         $this->proximo_codigo = $this->getNextCodigo();
 
-        $this->ajusteTipo[0] = null;
+        $this->codigoTipo[0] = null;
         $this->classTipo[0] = null;
-        $this->ajusteArticulo[0] = null;
+        $this->codigoArticulo[0] = null;
         $this->classArticulo[0] = null;
-        $this->ajusteDescripcion[0] = null;
+        $this->descripcionArticulo[0] = null;
         $this->selectUnidad[0] = array();
-        $this->ajusteUnidad[0] = null;
-        $this->ajusteAlmacen[0] = null;
+        $this->unidades_id[0] = null;
+        $this->codigoAlmacen[0] = null;
         $this->classAlmacen[0] = null;
-        $this->ajusteCantidad[0] = null;
+        $this->cantidad[0] = null;
         $this->detalles_id[0] = null;
-    }
-
-    public function btnCancelar()
-    {
-        $this->limpiarAjustes();
-        if ($this->ajustes_id) {
-            //show ajuste
-            $this->show($this->ajustes_id);
-        }
-    }
-
-    public function btnContador($opcion)
-    {
-        if ($opcion == "add") {
-            $this->ajusteTipo[$this->contador] = null;
-            $this->ajuste_tipos_tipo[$this->contador] = null;
-            $this->classTipo[$this->contador] = null;
-            $this->ajusteArticulo[$this->contador] = null;
-            $this->ajuste_articulos_id[$this->contador] = null;
-            $this->classArticulo[$this->contador] = null;
-            $this->ajusteDescripcion[$this->contador] = null;
-            $this->selectUnidad[$this->contador] = array();
-            $this->ajusteUnidad[$this->contador] = null;
-            $this->ajusteAlmacen[$this->contador] = null;
-            $this->ajuste_almacenes_id[$this->contador] = null;
-            $this->classAlmacen[$this->contador] = null;
-            $this->ajusteCantidad[$this->contador] = null;
-            $this->detalles_id[$this->contador] = null;
-            $this->contador++;
-        } else {
-
-            if ($this->detalles_id[$opcion]) {
-                $this->borraritems[] = [
-                    'id' => $this->detalles_id[$opcion]
-                ];
-            }
-
-            for ($i = $opcion; $i < $this->contador - 1; $i++) {
-                $this->ajusteTipo[$i] = $this->ajusteTipo[$i + 1];
-                $this->ajuste_tipos_tipo[$i] = $this->ajuste_tipos_tipo[$i + 1];
-                $this->classTipo[$i] = $this->classTipo[$i + 1];
-                $this->ajusteArticulo[$i] = $this->ajusteArticulo[$i + 1];
-                $this->ajuste_articulos_id[$i] = $this->ajuste_articulos_id[$i + 1];
-                $this->classArticulo[$i] = $this->classArticulo[$i + 1];
-                $this->ajusteDescripcion[$i] = $this->ajusteDescripcion[$i + 1];
-                $this->selectUnidad[$i] = $this->selectUnidad[$i + 1];
-                $this->ajusteUnidad[$i] = $this->ajusteUnidad[$i + 1];
-                $this->ajusteAlmacen[$i] = $this->ajusteAlmacen[$i + 1];
-                $this->ajuste_almacenes_id[$i] = $this->ajuste_almacenes_id[$i + 1];
-                $this->classAlmacen[$i] = $this->classAlmacen[$i + 1];
-                $this->ajusteCantidad[$i] = $this->ajusteCantidad[$i + 1];
-                $this->detalles_id[$i] = $this->detalles_id[$i + 1];
-            }
-            $this->contador--;
-            unset($this->ajusteTipo[$this->contador]);
-            unset($this->classTipo[$this->contador]);
-            unset($this->ajusteArticulo[$this->contador]);
-            unset($this->classArticulo[$this->contador]);
-            unset($this->ajusteDescripcion[$this->contador]);
-            unset($this->selectUnidad[$this->contador]);
-            unset($this->ajusteUnidad[$this->contador]);
-            unset($this->ajusteAlmacen[$this->contador]);
-            unset($this->classAlmacen[$this->contador]);
-            unset($this->ajusteCantidad[$this->contador]);
-            unset($this->detalles_id[$this->contador]);
-        }
     }
 
     protected function rules()
@@ -188,11 +120,11 @@ class AjustesComponent extends Component
             'fecha' => 'nullable',
             'descripcion' => 'required|min:4',
             /*'segmentos_id' => 'required',*/
-            'ajusteTipo.*' => ['required', Rule::exists('ajustes_tipos', 'codigo')],
-            'ajusteArticulo.*' => ['required', Rule::exists('articulos', 'codigo')],
-            'ajusteUnidad.*' => 'required',
-            'ajusteAlmacen.*' => ['required', Rule::exists('almacenes', 'codigo')],
-            'ajusteCantidad.*' => 'required'
+            'codigoTipo.*' => ['required', Rule::exists('ajustes_tipos', 'codigo')],
+            'codigoArticulo.*' => ['required', Rule::exists('articulos', 'codigo')],
+            'unidades_id.*' => 'required',
+            'codigoAlmacen.*' => ['required', Rule::exists('almacenes', 'codigo')],
+            'cantidad.*' => 'required'
         ];
     }
 
@@ -213,23 +145,23 @@ class AjustesComponent extends Component
         $html = null;
 
         for ($i = 0; $i < $this->contador; $i++) {
-            if ($this->ajuste_tipos_tipo[$i] == 2) {
+            if ($this->tipos_tipo[$i] == 2) {
                 $stock = Stock::where('empresas_id', $this->empresas_id)
-                    ->where('articulos_id', $this->ajuste_articulos_id[$i])
-                    ->where('almacenes_id', $this->ajuste_almacenes_id[$i])
-                    ->where('unidades_id', $this->ajusteUnidad[$i])
+                    ->where('articulos_id', $this->articulos_id[$i])
+                    ->where('almacenes_id', $this->almacenes_id[$i])
+                    ->where('unidades_id', $this->unidades_id[$i])
                     ->first();
                 if ($stock) {
                     $disponible = $stock->disponible;
-                    if ($this->ajusteCantidad[$i] > $disponible) {
+                    if ($this->cantidad[$i] > $disponible) {
                         $procesar = false;
-                        $html .= 'Para <strong>' . formatoMillares($this->ajusteCantidad[$i], 3) . '</strong> del articulo <strong>' . $this->ajusteArticulo[$i] . '</strong>. el stock actual es <strong>' . formatoMillares($disponible, 3) . '</strong><br>';
-                        $this->addError('ajusteCantidad.' . $i, 'error');
+                        $html .= 'Para <strong>' . formatoMillares($this->cantidad[$i], 3) . '</strong> del articulo <strong>' . $this->codigoArticulo[$i] . '</strong>. el stock es <strong>' . formatoMillares($disponible, 3) . '</strong><br>';
+                        $this->addError('cantidad.' . $i, 'error');
                     }
                 } else {
                     $procesar = false;
-                    $html .= 'Para <strong>' . formatoMillares($this->ajusteCantidad[$i], 3) . '</strong> del articulo <strong>' . $this->ajusteArticulo[$i] . '</strong>. el stock actual es <strong>0,000</strong><br>';
-                    $this->addError('ajusteCantidad.' . $i, 'error');
+                    $html .= 'Para <strong>' . formatoMillares($this->cantidad[$i], 3) . '</strong> del articulo <strong>' . $this->codigoArticulo[$i] . '</strong>. el stock es <strong>0,000</strong><br>';
+                    $this->addError('cantidad.' . $i, 'error');
                 }
             }
         }
@@ -251,28 +183,28 @@ class AjustesComponent extends Component
             for ($i = 0; $i < $this->contador; $i++) {
                 $detalles = new AjusDetalle();
                 $detalles->ajustes_id = $ajuste->id;
-                $detalles->tipos_id = $this->ajuste_tipos_id[$i];
-                $detalles->articulos_id = $this->ajuste_articulos_id[$i];
-                $detalles->almacenes_id = $this->ajuste_almacenes_id[$i];
-                $detalles->unidades_id = $this->ajusteUnidad[$i];
-                $detalles->cantidad = $this->ajusteCantidad[$i];
+                $detalles->tipos_id = $this->tipos_id[$i];
+                $detalles->articulos_id = $this->articulos_id[$i];
+                $detalles->almacenes_id = $this->almacenes_id[$i];
+                $detalles->unidades_id = $this->unidades_id[$i];
+                $detalles->cantidad = $this->cantidad[$i];
                 $detalles->save();
                 $exite = Stock::where('empresas_id', $this->empresas_id)
-                    ->where('articulos_id', $this->ajuste_articulos_id[$i])
-                    ->where('almacenes_id', $this->ajuste_almacenes_id[$i])
-                    ->where('unidades_id', $this->ajusteUnidad[$i])
+                    ->where('articulos_id', $this->articulos_id[$i])
+                    ->where('almacenes_id', $this->almacenes_id[$i])
+                    ->where('unidades_id', $this->unidades_id[$i])
                     ->first();
                 if ($exite) {
                     //edito
                     $stock = Stock::find($exite->id);
                     $compometido = $stock->comprometido;
                     $disponible = $stock->disponible;
-                    if ($this->ajuste_tipos_tipo[$i] == 1) {
+                    if ($this->tipos_tipo[$i] == 1) {
                         //sumo entrada
-                        $stock->disponible = $disponible + $this->ajusteCantidad[$i];
+                        $stock->disponible = $disponible + $this->cantidad[$i];
                     } else {
                         //resto salida
-                        $stock->disponible = $disponible - $this->ajusteCantidad[$i];
+                        $stock->disponible = $disponible - $this->cantidad[$i];
                     }
                     $stock->actual = $compometido + $stock->disponible;
                     $stock->save();
@@ -280,14 +212,14 @@ class AjustesComponent extends Component
                     //nuevo
                     $stock = new Stock();
                     $stock->empresas_id = $this->empresas_id;
-                    $stock->articulos_id = $this->ajuste_articulos_id[$i];
-                    $stock->almacenes_id = $this->ajuste_almacenes_id[$i];
-                    $stock->unidades_id = $this->ajusteUnidad[$i];
-                    $stock->actual = $this->ajusteCantidad[$i];
+                    $stock->articulos_id = $this->articulos_id[$i];
+                    $stock->almacenes_id = $this->almacenes_id[$i];
+                    $stock->unidades_id = $this->unidades_id[$i];
+                    $stock->actual = $this->cantidad[$i];
                     $stock->comprometido = 0;
-                    $stock->disponible = $this->ajusteCantidad[$i];
+                    $stock->disponible = $this->cantidad[$i];
                     $stock->vendido = 0;
-                    $stock->almacen_principal = $this->ajuste_almacenes_tipo[$i];
+                    $stock->almacen_principal = $this->almacenes_tipo[$i];
                     $stock->save();
                 }
             }
@@ -309,111 +241,13 @@ class AjustesComponent extends Component
 
     }
 
-    public function updatedAjusteTipo()
-    {
-        foreach ($this->ajusteTipo as $key => $value) {
-            if ($value) {
-                $tipo = AjusTipo::where('codigo', $value)->first();
-                if ($tipo) {
-                    $this->ajuste_tipos_id[$key] = $tipo->id;
-                    $this->ajuste_tipos_tipo[$key] = $tipo->tipo;
-                    $this->classTipo[$key] = "is-valid";
-                    $this->resetErrorBag('ajusteTipo.' . $key);
-                } else {
-                    $this->classTipo[$key] = "is-invalid";
-                    $this->ajuste_tipos_id[$key] = null;
-                    $this->ajuste_tipos_tipo[$key] = null;
-                }
-            }
-        }
-    }
-
-    public function updatedAjusteArticulo()
-    {
-        foreach ($this->ajusteArticulo as $key => $value) {
-            $array = array();
-            if ($value) {
-                $articulo = Articulo::where('codigo', $value)
-                    ->where('empresas_id', $this->empresas_id)
-                    ->where('estatus', 1)
-                    ->first();
-                if ($articulo && !empty($articulo->unidades_id)) {
-                    $array[] = [
-                        'id' => $articulo->unidades_id,
-                        'codigo' => $articulo->unidad->codigo
-                    ];
-                    $unidades = ArtUnid::where('articulos_id', $articulo->id)->get();
-                    foreach ($unidades as $unidad) {
-                        $array[] = [
-                            'id' => $unidad->unidades_id,
-                            'codigo' => $unidad->unidad->codigo
-                        ];
-                    }
-                    $this->ajusteDescripcion[$key] = $articulo->descripcion;
-                    $this->selectUnidad[$key] = $array;
-                    if (is_null($this->ajusteUnidad[$key])) {
-                        $this->ajusteUnidad[$key] = $articulo->unidades_id;
-                    }
-                    $this->resetErrorBag('ajusteArticulo.' . $key);
-                    $this->resetErrorBag('ajusteUnidad.' . $key);
-                    $this->ajuste_articulos_id[$key] = $articulo->id;
-                    $this->classArticulo[$key] = "is-valid";
-                } else {
-                    $this->classArticulo[$key] = "is-invalid";
-                    $this->ajusteDescripcion[$key] = null;
-                    $this->ajuste_articulos_id[$key] = null;
-                    $this->selectUnidad[$key] = array();
-                    $this->ajusteUnidad[$key] = null;
-                }
-            }
-        }
-    }
-
-    public function updatedAjusteAlmacen()
-    {
-        foreach ($this->ajusteAlmacen as $key => $value) {
-            if ($value) {
-                $almacen = Almacen::where('codigo', $value)->where('empresas_id', $this->empresas_id)->first();
-                if ($almacen) {
-                    $this->resetErrorBag('ajusteAlmacen.' . $key);
-                    $this->ajuste_almacenes_id[$key] = $almacen->id;
-                    $this->ajuste_almacenes_tipo[$key] = $almacen->tipo;
-                    $this->classAlmacen[$key] = "is-valid";
-                } else {
-                    $this->ajuste_almacenes_id[$key] = null;
-                    $this->ajuste_almacenes_tipo[$key] = null;
-                    $this->classAlmacen[$key] = "is-invalid";
-                }
-            }
-        }
-    }
-
-    public function itemTemporal($int)
-    {
-        $this->item = $int;
-    }
-
-    public function buscarArticulos()
-    {
-        $this->ajusteListarArticulos = Articulo::buscar($this->keywordArticulos)
-            ->where('empresas_id', $this->empresas_id)
-            ->where('estatus', 1)
-            ->limit(100)
-            ->get();
-    }
-
-    public function selectArticulo($codigo)
-    {
-        $this->ajusteArticulo[$this->item] = $codigo;
-        $this->updatedAjusteArticulo();
-    }
-
     #[On('show')]
     public function show($id)
     {
         $this->limpiarAjustes();
         $this->ajustes_id = $id;
         $this->btn_editar = true;
+        $this->view = 'show';
         $this->footer = true;
         $ajuste = Ajuste::find($this->ajustes_id);
         $this->codigo = $ajuste->codigo;
@@ -424,19 +258,9 @@ class AjustesComponent extends Component
             $this->verSegmento = $ajuste->segmentos->descripcion;
         }
         $this->estatus = $ajuste->estatus;
+
         $this->listarDetalles = AjusDetalle::where('ajustes_id', $this->ajustes_id)->get();
         $this->contador = AjusDetalle::where('ajustes_id', $this->ajustes_id)->count();
-        $this->view = 'show';
-    }
-
-    public function btnEditar()
-    {
-        $this->view = 'form';
-        $this->nuevo = false;
-        $this->btn_editar = false;
-        $this->btn_cancelar = true;
-        $this->footer = false;
-        $this->proximo_codigo = $this->getNextCodigo();
 
         $i = 0;
         foreach ($this->listarDetalles as $detalle) {
@@ -452,24 +276,25 @@ class AjustesComponent extends Component
                     'codigo' => $unidad->unidad->codigo
                 ];
             }
-            $this->ajusteTipo[$i] = $detalle->tipo->codigo;
-            $this->ajuste_tipos_id[$i] = $detalle->tipo->id;
-            $this->ajuste_tipos_tipo[$i] = $detalle->tipo->tipo;
+            $this->codigoTipo[$i] = $detalle->tipo->codigo;
+            $this->tipos_id[$i] = $detalle->tipo->id;
+            $this->tipos_tipo[$i] = $detalle->tipo->tipo;
             $this->classTipo[$i] = null;
-            $this->ajusteArticulo[$i] = $detalle->articulo->codigo;
-            $this->ajuste_articulos_id[$i] = $detalle->articulos_id;
+            $this->codigoArticulo[$i] = $detalle->articulo->codigo;
+            $this->articulos_id[$i] = $detalle->articulos_id;
             $this->classArticulo[$i] = null;
-            $this->ajusteDescripcion[$i] = $detalle->articulo->descripcion;
+            $this->descripcionArticulo[$i] = $detalle->articulo->descripcion;
             $this->selectUnidad[$i] = $array;
-            $this->ajusteUnidad[$i] = $detalle->unidades_id;
-            $this->ajusteAlmacen[$i] = $detalle->almacen->codigo;
-            $this->ajuste_almacenes_id[$i] = $detalle->almacenes_id;
-            $this->ajuste_almacenes_tipo[$i] = $detalle->almacen->tipo;
+            $this->unidades_id[$i] = $detalle->unidades_id;
+            $this->codigoAlmacen[$i] = $detalle->almacen->codigo;
+            $this->almacenes_id[$i] = $detalle->almacenes_id;
+            $this->almacenes_tipo[$i] = $detalle->almacen->tipo;
             $this->classAlmacen[$i] = null;
-            $this->ajusteCantidad[$i] = $detalle->cantidad;
+            $this->cantidad[$i] = $detalle->cantidad;
             $this->detalles_id[$i] = $detalle->id;
             $i++;
         }
+
     }
 
     public function update()
@@ -562,7 +387,7 @@ class AjustesComponent extends Component
                 } else {
                     $error[-1] = true;
                     $html .= '<span class="text-sm">Para <strong> - ' . formatoMillares($db_cantidad, 3) . '</strong> del articulo <strong>' . $detalles->articulo->codigo . '</strong>. el stock actual es <strong>0,000 ' . $detalles->unidad->codigo . '</strong></span><br>';
-                    //$this->addError('ajusteCantidad.' . $i, 'error');
+                    //$this->addError('cantidad.' . $i, 'error');
                 }
             }
         }
@@ -571,12 +396,12 @@ class AjustesComponent extends Component
         for ($i = 0; $i < $this->contador; $i++) {
 
             $detalle_id = $this->detalles_id[$i];
-            $tipo_id = $this->ajuste_tipos_id[$i];
-            $accion = $this->ajuste_tipos_tipo[$i];
-            $articulo_id = $this->ajuste_articulos_id[$i];
-            $almacen_id = $this->ajuste_almacenes_id[$i];
-            $unidad_id = $this->ajusteUnidad[$i];
-            $cantidad = $this->ajusteCantidad[$i];
+            $tipo_id = $this->tipos_id[$i];
+            $accion = $this->tipos_tipo[$i];
+            $articulo_id = $this->articulos_id[$i];
+            $almacen_id = $this->almacenes_id[$i];
+            $unidad_id = $this->unidades_id[$i];
+            $cantidad = $this->cantidad[$i];
 
             if ($detalle_id) {
                 //seguimos validando
@@ -648,8 +473,8 @@ class AjustesComponent extends Component
                                 } else {
                                     $revertido = null;
                                     $error[$i] = true;
-                                    $html .= '<span class="text-sm">Para1 <strong> - ' . formatoMillares($this->ajusteCantidad[$i], 3) . '</strong> del articulo <strong>' . $stock->articulo->codigo . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . ' ' . $db_unidad_codigo . '</strong></span><br>';
-                                    $this->addError('ajusteCantidad.' . $i, 'error');
+                                    $html .= '<span class="text-sm">Para <strong> - ' . formatoMillares($this->cantidad[$i], 3) . '</strong> del articulo <strong>' . $stock->articulo->codigo . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . ' ' . $db_unidad_codigo . '</strong></span><br>';
+                                    $this->addError('cantidad.' . $i, 'error');
                                 }
                             } else {
                                 //revierto salida
@@ -695,7 +520,7 @@ class AjustesComponent extends Component
                                         'unidad_id' => $unidad_id,
                                         'actual' => $cantidad,
                                         'disponible' => $cantidad,
-                                        'almacen_pricipal' => $this->ajuste_almacenes_tipo[$i]
+                                        'almacen_pricipal' => $this->almacenes_tipo[$i]
                                     ];
                                 }
 
@@ -713,13 +538,13 @@ class AjustesComponent extends Component
                                         ];
                                     } else {
                                         $error[$i] = true;
-                                        $html .= 'Para <strong>2 - ' . formatoMillares($this->ajusteCantidad[$i], 3) . '</strong> del articulo <strong>' . $this->ajusteArticulo[$i] . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . '</strong><br>';
-                                        $this->addError('ajusteCantidad.' . $i, 'error');
+                                        $html .= 'Para <strong> - ' . formatoMillares($this->cantidad[$i], 3) . '</strong> del articulo <strong>' . $this->codigoArticulo[$i] . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . '</strong><br>';
+                                        $this->addError('cantidad.' . $i, 'error');
                                     }
                                 } else {
                                     $error[$i] = true;
-                                    $html .= 'Para <strong>3 - ' . formatoMillares($this->ajusteCantidad[$i], 3) . '</strong> del articulo <strong>' . $this->ajusteArticulo[$i] . '</strong>. el stock actual es <strong>0,000</strong><br>';
-                                    $this->addError('ajusteCantidad.' . $i, 'error');
+                                    $html .= 'Para <strong> - ' . formatoMillares($this->cantidad[$i], 3) . '</strong> del articulo <strong>' . $this->codigoArticulo[$i] . '</strong>. el stock actual es <strong>0,000</strong><br>';
+                                    $this->addError('cantidad.' . $i, 'error');
                                 }
                             }
 
@@ -750,8 +575,8 @@ class AjustesComponent extends Component
                                         $db_disponible = $db_disponible - $diferencia;
                                     } else {
                                         $error[$i] = true;
-                                        $html .= '<span class="text-sm">Para4 <strong> - ' . formatoMillares($diferencia, 3) . '</strong> del articulo <strong>' . $stock->articulo->codigo . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . ' ' . $db_unidad_codigo . '</strong></span><br>';
-                                        $this->addError('ajusteCantidad.' . $i, 'error');
+                                        $html .= '<span class="text-sm">Para <strong> - ' . formatoMillares($diferencia, 3) . '</strong> del articulo <strong>' . $stock->articulo->codigo . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . ' ' . $db_unidad_codigo . '</strong></span><br>';
+                                        $this->addError('cantidad.' . $i, 'error');
                                     }
                                 }
                                 $revisados[$i] = [
@@ -776,8 +601,8 @@ class AjustesComponent extends Component
                                         $db_disponible = $db_disponible - $diferencia;
                                     } else {
                                         $error[$i] = true;
-                                        $html .= '<span class="text-sm">Para5 <strong> - ' . formatoMillares($diferencia, 3) . '</strong> del articulo <strong>' . $stock->articulo->codigo . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . ' ' . $db_unidad_codigo . '</strong></span><br>';
-                                        $this->addError('ajusteCantidad.' . $i, 'error');
+                                        $html .= '<span class="text-sm">Para <strong> - ' . formatoMillares($diferencia, 3) . '</strong> del articulo <strong>' . $stock->articulo->codigo . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . ' ' . $db_unidad_codigo . '</strong></span><br>';
+                                        $this->addError('cantidad.' . $i, 'error');
                                     }
                                 }
                                 $revisados[$i] = [
@@ -844,7 +669,7 @@ class AjustesComponent extends Component
                             'unidad_id' => $unidad_id,
                             'actual' => $cantidad,
                             'disponible' => $cantidad,
-                            'almacen_pricipal' => $this->ajuste_almacenes_tipo[$i],
+                            'almacen_pricipal' => $this->almacenes_tipo[$i],
                             'array' => false
                         ];
                     }
@@ -880,13 +705,13 @@ class AjustesComponent extends Component
                             ];
                         } else {
                             $error[$i] = true;
-                            $html .= 'Para6 <strong>' . formatoMillares($this->ajusteCantidad[$i], 3) . '</strong> del articulo <strong>' . $this->ajusteArticulo[$i] . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . '</strong><br>';
-                            $this->addError('ajusteCantidad.' . $i, 'error');
+                            $html .= 'Para <strong>' . formatoMillares($this->cantidad[$i], 3) . '</strong> del articulo <strong>' . $this->codigoArticulo[$i] . '</strong>. el stock actual es <strong>' . formatoMillares($db_disponible, 3) . '</strong><br>';
+                            $this->addError('cantidad.' . $i, 'error');
                         }
                     } else {
                         $error[$i] = true;
-                        $html .= 'Para7 <strong>' . formatoMillares($this->ajusteCantidad[$i], 3) . '</strong> del articulo <strong>' . $this->ajusteArticulo[$i] . '</strong>. el stock actual es <strong>0,000</strong><br>';
-                        $this->addError('ajusteCantidad.' . $i, 'error');
+                        $html .= 'Para <strong>' . formatoMillares($this->cantidad[$i], 3) . '</strong> del articulo <strong>' . $this->codigoArticulo[$i] . '</strong>. el stock actual es <strong>0,000</strong><br>';
+                        $this->addError('cantidad.' . $i, 'error');
                     }
                 }
 
@@ -958,11 +783,11 @@ class AjustesComponent extends Component
                         $detalles = new AjusDetalle();
                     }
                     $detalles->ajustes_id = $this->ajustes_id;
-                    $detalles->tipos_id = $this->ajuste_tipos_id[$i];
-                    $detalles->articulos_id = $this->ajuste_articulos_id[$i];
-                    $detalles->almacenes_id = $this->ajuste_almacenes_id[$i];
-                    $detalles->unidades_id = $this->ajusteUnidad[$i];
-                    $detalles->cantidad = $this->ajusteCantidad[$i];
+                    $detalles->tipos_id = $this->tipos_id[$i];
+                    $detalles->articulos_id = $this->articulos_id[$i];
+                    $detalles->almacenes_id = $this->almacenes_id[$i];
+                    $detalles->unidades_id = $this->unidades_id[$i];
+                    $detalles->cantidad = $this->cantidad[$i];
                     $detalles->save();
                 }
 
@@ -1073,10 +898,13 @@ class AjustesComponent extends Component
             ]);
         } else {
 
+            $procesar = true;
+
             if ($estatus){
 
                 $listarDetalles = AjusDetalle::where('ajustes_id', $ajuste->id)->get();
-
+                $html = null;
+                //valido el stock
                 foreach ($listarDetalles as $detalle) {
 
                     $db_articulo_id = $detalle->articulos_id;
@@ -1093,54 +921,272 @@ class AjustesComponent extends Component
 
                     if ($stock) {
 
-                        $db_id = $stock->id;
                         $db_disponible = $stock->disponible;
-                        $db_comprometido = $stock->comprometido;
+                        $codigo = mb_strtoupper($stock->articulo->codigo);
+                        $unidad = mb_strtoupper($stock->unidad->codigo);
 
                         if ($db_accion == 1) {
                             //revierto entrada
-                            if ($db_disponible >= $db_cantidad) {
-                                $disponible = $db_disponible - $db_cantidad;
-                            } else {
-                                $disponible = 0;
+                            if ($db_cantidad > $db_disponible) {
+                                $procesar = false;
+                                $html .= '<span class="text-sm">Para <strong>'.formatoMillares($db_cantidad, 3).' '.$unidad.'</strong> del articulo <strong>'.$codigo.'</strong>, el stock es <strong>'.formatoMillares($db_disponible, 3).' '.$unidad.'</strong><span class="text-sm"><br>';
+                                //$this->addError('cantidad.' . $i, 'error');
                             }
-                            $actual = $disponible + $db_comprometido;
-                        } else {
-                            //revierto salida
-                            $disponible = $db_disponible + $db_cantidad;
-                            $actual = $disponible + $db_comprometido;
                         }
-                        //aplico los cambios
-                        $stock = Stock::find($db_id);
-                        $stock->actual = $actual;
-                        $stock->disponible = $disponible;
-                        $stock->save();
+
+                    }else{
+                        $procesar = false;
                     }
 
                 }
 
+                if (!$procesar){
+                    //error
+                    $this->alert('warning', '¡Stock Insuficiente!', [
+                        'position' => 'center',
+                        'timer' => '',
+                        'toast' => false,
+                        'html' => $html,
+                        'showConfirmButton' => true,
+                        'onConfirmed' => '',
+                        'confirmButtonText' => 'OK',
+                    ]);
+                }
             }
 
-            $ajuste->estatus = 0;
-            $ajuste->save();
+            if ($procesar){
 
-            if ($this->opcionDestroy == "delete") {
-                $ajuste->delete();
-                $this->reset('ajustes_id');
-                $this->limpiarAjustes();
-                $message = "Ajuste Eliminado.";
-            } else {
-                $this->show($ajuste->id);
-                $message = "Ajuste Anulado.";
+                if ($estatus){
+                    foreach ($listarDetalles as $detalle) {
+                        $db_articulo_id = $detalle->articulos_id;
+                        $db_almacen_id = $detalle->almacenes_id;
+                        $db_unidad_id = $detalle->unidades_id;
+                        $db_cantidad = $detalle->cantidad;
+                        $db_accion = $detalle->tipo->tipo;
+                        $stock = Stock::where('empresas_id', $this->empresas_id)
+                            ->where('articulos_id', $db_articulo_id)
+                            ->where('almacenes_id', $db_almacen_id)
+                            ->where('unidades_id', $db_unidad_id)
+                            ->first();
+                        if ($stock) {
+                            $db_id = $stock->id;
+                            $db_disponible = $stock->disponible;
+                            $db_comprometido = $stock->comprometido;
+                            if ($db_accion == 1) {
+                                //revierto entrada
+                                if ($db_disponible >= $db_cantidad) {
+                                    $disponible = $db_disponible - $db_cantidad;
+                                    $actual = $disponible + $db_comprometido;
+                                }
+                            } else {
+                                //revierto salida
+                                $disponible = $db_disponible + $db_cantidad;
+                                $actual = $disponible + $db_comprometido;
+                            }
+                            //aplico los cambios
+                            $stock = Stock::find($db_id);
+                            $stock->actual = $actual;
+                            $stock->disponible = $disponible;
+                            $stock->save();
+                        }
+                    }
+                }
+
+                $ajuste->estatus = 0;
+
+                if ($this->opcionDestroy == "delete") {
+                    $ajuste->codigo = "*". $ajuste->codigo;
+                    $ajuste->save();
+                    $ajuste->delete();
+                    $this->reset('ajustes_id');
+                    $this->limpiarAjustes();
+                    $this->alert('success', "Ajuste Eliminado.");
+                } else {
+                    $ajuste->save();
+                    $this->show($ajuste->id);
+                    $this->alert('success', "Ajuste Anulado.");
+                }
+
+                $this->dispatch('showStock')->to(StockComponent::class);
+
             }
-
-            $this->dispatch('showStock')->to(StockComponent::class);
-            $this->alert(
-                'success',
-                $message
-            );
 
         }
+    }
+
+    public function btnCancelar()
+    {
+        $this->limpiarAjustes();
+        if ($this->ajustes_id) {
+            //show ajuste
+            $this->show($this->ajustes_id);
+        }
+    }
+
+    public function btnContador($opcion)
+    {
+        if ($opcion == "add") {
+            $this->codigoTipo[$this->contador] = null;
+            $this->tipos_tipo[$this->contador] = null;
+            $this->classTipo[$this->contador] = null;
+            $this->codigoArticulo[$this->contador] = null;
+            $this->articulos_id[$this->contador] = null;
+            $this->classArticulo[$this->contador] = null;
+            $this->descripcionArticulo[$this->contador] = null;
+            $this->selectUnidad[$this->contador] = array();
+            $this->unidades_id[$this->contador] = null;
+            $this->codigoAlmacen[$this->contador] = null;
+            $this->almacenes_id[$this->contador] = null;
+            $this->classAlmacen[$this->contador] = null;
+            $this->cantidad[$this->contador] = null;
+            $this->detalles_id[$this->contador] = null;
+            $this->contador++;
+        } else {
+
+            if ($this->detalles_id[$opcion]) {
+                $this->borraritems[] = [
+                    'id' => $this->detalles_id[$opcion]
+                ];
+            }
+
+            for ($i = $opcion; $i < $this->contador - 1; $i++) {
+                $this->codigoTipo[$i] = $this->codigoTipo[$i + 1];
+                $this->tipos_tipo[$i] = $this->tipos_tipo[$i + 1];
+                $this->classTipo[$i] = $this->classTipo[$i + 1];
+                $this->codigoArticulo[$i] = $this->codigoArticulo[$i + 1];
+                $this->articulos_id[$i] = $this->articulos_id[$i + 1];
+                $this->classArticulo[$i] = $this->classArticulo[$i + 1];
+                $this->descripcionArticulo[$i] = $this->descripcionArticulo[$i + 1];
+                $this->selectUnidad[$i] = $this->selectUnidad[$i + 1];
+                $this->unidades_id[$i] = $this->unidades_id[$i + 1];
+                $this->codigoAlmacen[$i] = $this->codigoAlmacen[$i + 1];
+                $this->almacenes_id[$i] = $this->almacenes_id[$i + 1];
+                $this->classAlmacen[$i] = $this->classAlmacen[$i + 1];
+                $this->cantidad[$i] = $this->cantidad[$i + 1];
+                $this->detalles_id[$i] = $this->detalles_id[$i + 1];
+            }
+            $this->contador--;
+            unset($this->codigoTipo[$this->contador]);
+            unset($this->classTipo[$this->contador]);
+            unset($this->codigoArticulo[$this->contador]);
+            unset($this->classArticulo[$this->contador]);
+            unset($this->descripcionArticulo[$this->contador]);
+            unset($this->selectUnidad[$this->contador]);
+            unset($this->unidades_id[$this->contador]);
+            unset($this->codigoAlmacen[$this->contador]);
+            unset($this->classAlmacen[$this->contador]);
+            unset($this->cantidad[$this->contador]);
+            unset($this->detalles_id[$this->contador]);
+        }
+    }
+
+    public function updatedCodigoTipo()
+    {
+        foreach ($this->codigoTipo as $key => $value) {
+            if ($value) {
+                $tipo = AjusTipo::where('codigo', $value)->first();
+                if ($tipo) {
+                    $this->tipos_id[$key] = $tipo->id;
+                    $this->tipos_tipo[$key] = $tipo->tipo;
+                    $this->classTipo[$key] = "is-valid";
+                    $this->resetErrorBag('codigoTipo.' . $key);
+                } else {
+                    $this->classTipo[$key] = "is-invalid";
+                    $this->tipos_id[$key] = null;
+                    $this->tipos_tipo[$key] = null;
+                }
+            }
+        }
+    }
+
+    public function updatedCodigoArticulo()
+    {
+        foreach ($this->codigoArticulo as $key => $value) {
+            $array = array();
+            if ($value) {
+                $articulo = Articulo::where('codigo', $value)
+                    ->where('empresas_id', $this->empresas_id)
+                    ->where('estatus', 1)
+                    ->first();
+                if ($articulo && !empty($articulo->unidades_id)) {
+                    $array[] = [
+                        'id' => $articulo->unidades_id,
+                        'codigo' => $articulo->unidad->codigo
+                    ];
+                    $unidades = ArtUnid::where('articulos_id', $articulo->id)->get();
+                    foreach ($unidades as $unidad) {
+                        $array[] = [
+                            'id' => $unidad->unidades_id,
+                            'codigo' => $unidad->unidad->codigo
+                        ];
+                    }
+                    $this->descripcionArticulo[$key] = $articulo->descripcion;
+                    $this->selectUnidad[$key] = $array;
+                    if (is_null($this->unidades_id[$key])) {
+                        $this->unidades_id[$key] = $articulo->unidades_id;
+                    }
+                    $this->resetErrorBag('codigoArticulo.' . $key);
+                    $this->resetErrorBag('unidades_id.' . $key);
+                    $this->articulos_id[$key] = $articulo->id;
+                    $this->classArticulo[$key] = "is-valid";
+                } else {
+                    $this->classArticulo[$key] = "is-invalid";
+                    $this->descripcionArticulo[$key] = null;
+                    $this->articulos_id[$key] = null;
+                    $this->selectUnidad[$key] = array();
+                    $this->unidades_id[$key] = null;
+                }
+            }
+        }
+    }
+
+    public function updatedCodigoAlmacen()
+    {
+        foreach ($this->codigoAlmacen as $key => $value) {
+            if ($value) {
+                $almacen = Almacen::where('codigo', $value)->where('empresas_id', $this->empresas_id)->first();
+                if ($almacen) {
+                    $this->resetErrorBag('codigoAlmacen.' . $key);
+                    $this->almacenes_id[$key] = $almacen->id;
+                    $this->almacenes_tipo[$key] = $almacen->tipo;
+                    $this->classAlmacen[$key] = "is-valid";
+                } else {
+                    $this->almacenes_id[$key] = null;
+                    $this->almacenes_tipo[$key] = null;
+                    $this->classAlmacen[$key] = "is-invalid";
+                }
+            }
+        }
+    }
+
+    public function itemTemporal($int)
+    {
+        $this->item = $int;
+    }
+
+    public function buscarArticulos()
+    {
+        $this->listarArticulos = Articulo::buscar($this->keywordArticulos)
+            ->where('empresas_id', $this->empresas_id)
+            ->where('estatus', 1)
+            ->limit(100)
+            ->get();
+    }
+
+    public function selectArticulo($codigo)
+    {
+        $this->codigoArticulo[$this->item] = $codigo;
+        $this->updatedCodigoArticulo();
+    }
+
+    public function btnEditar()
+    {
+        $this->view = 'form';
+        $this->nuevo = false;
+        $this->btn_editar = false;
+        $this->btn_cancelar = true;
+        $this->footer = false;
+        $this->proximo_codigo = $this->getNextCodigo();
     }
 
     #[On('buscar')]

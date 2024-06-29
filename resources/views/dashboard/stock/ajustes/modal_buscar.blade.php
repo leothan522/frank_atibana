@@ -38,8 +38,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if(!is_null($ajusteListarArticulos))
-                            @foreach($ajusteListarArticulos as $articulo)
+                        @if(!is_null($listarArticulos))
+                            @foreach($listarArticulos as $articulo)
                                 <tr>
                                     <td>{{ $articulo->codigo }}</td>
                                     <td>{{ $articulo->descripcion }}</td>
