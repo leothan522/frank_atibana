@@ -4,13 +4,13 @@
     <div class="card-header">
         <h3 class="card-title">
             @if($new_despacho)
-                Nuevo Receta
+                Nuevo Despacho
             @endif
             @if(!$new_despacho && $view == 'form')
-                Editar Receta
+                Editar Despacho
             @endif
             @if($view != "form")
-                Ver Receta
+                Ver Despacho
             @endif
         </h3>
         <div class="card-tools">
@@ -43,7 +43,7 @@
 
         @if($view != 'form' && $view != 'show')
             <div class="row m-5">
-                Debes seleccionar una Receta ó Precionar el boton Nuevo para empezar...
+                Debes seleccionar un Despacho ó Precionar el boton Nuevo para empezar...
             </div>
         @endif
 
