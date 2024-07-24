@@ -12,7 +12,7 @@
         </h3>
 
         <div class="card-tools">
-            <button type="button" class="btn btn-tool" wire:click="limpiarArticulos">
+            <button type="button" class="btn btn-tool" wire:click="actualizar" onclick="verSpinnerOculto()">
                 <i class="fas fa-sync-alt"></i>
             </button>
             <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $listarArticulos->count()) disabled @endif>

@@ -488,6 +488,12 @@ class ArticulosComponent extends Component
         }
     }
 
+    public function actualizar()
+    {
+        $this->reset(['articulos_id', 'edit']);
+        $this->limpiarArticulos();
+    }
+
     #[On('clickBtnUnidad')]
     public function clickBtnUnidad()
     {

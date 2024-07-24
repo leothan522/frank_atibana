@@ -330,6 +330,12 @@ class ProveedoresComponent extends Component
         $this->dispatch('cerrarModal');
     }
 
+    public function actualizar()
+    {
+        $this->reset(['proveedores_id', 'edit']);
+        $this->limpiar();
+    }
+
     #[On('cerrarModal')]
     public function cerrarModal()
     {

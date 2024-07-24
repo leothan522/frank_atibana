@@ -4,6 +4,9 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Articulo;
 use App\Models\ArtUnid;
+use App\Models\DespDetalle;
+use App\Models\PlanDetalle;
+use App\Models\Planificacion;
 use App\Models\ReceDetalle;
 use App\Models\Receta;
 use Illuminate\Validation\Rule;
@@ -147,120 +150,129 @@ class RecetasComponent extends Component
     {
         $this->limpiar();
         $receta = Receta::find($id);
-        $this->edit = true;
-        $this->view = "show";
-        $this->footer = true;
-        $this->recetas_id = $receta->id;
-        $this->codigo = $receta->codigo;
-        $this->fecha = $receta->fecha;
-        $this->descripcion = $receta->descripcion;
-        $this->cantidad = $receta->cantidad;
-        $this->estatus = $receta->estatus;
+        if ($receta){
+            $this->edit = true;
+            $this->view = "show";
+            $this->footer = true;
+            $this->recetas_id = $receta->id;
+            $this->codigo = $receta->codigo;
+            $this->fecha = $receta->fecha;
+            $this->descripcion = $receta->descripcion;
+            $this->cantidad = $receta->cantidad;
+            $this->estatus = $receta->estatus;
 
-        $this->listarDetalles = ReceDetalle::where('recetas_id', $this->recetas_id)->get();
-        $this->ajuste_contador = ReceDetalle::where('recetas_id', $this->recetas_id)->count();
+            $this->listarDetalles = ReceDetalle::where('recetas_id', $this->recetas_id)->get();
+            $this->ajuste_contador = ReceDetalle::where('recetas_id', $this->recetas_id)->count();
+        }else{
+            $this->limpiar();
+        }
     }
 
     public function update()
     {
         $this->validate();
-
         $procesar = false;
-
         $receta = Receta::find($this->recetas_id);
-        $db_codigo = $receta->codigo;
-        $db_fecha = $receta->fecha;
-        $db_descripcion = $receta->descripcion;
-        $db_cantidad = $receta->cantidad;
 
-        if ($db_codigo != $this->codigo) {
-            $procesar = true;
-            $receta->codigo = $this->codigo;
-        }
+        if ($receta){
 
-        if ($db_fecha != $this->fecha) {
-            $procesar = true;
-            $receta->fecha = $this->fecha;
-        }
+            $db_codigo = $receta->codigo;
+            $db_fecha = $receta->fecha;
+            $db_descripcion = $receta->descripcion;
+            $db_cantidad = $receta->cantidad;
 
-        if ($db_descripcion != $this->descripcion) {
-            $procesar = true;
-            $receta->descripcion = $this->descripcion;
-        }
+            if ($db_codigo != $this->codigo) {
+                $procesar = true;
+                $receta->codigo = $this->codigo;
+            }
 
-        if ($db_cantidad != $this->cantidad) {
-            $procesar = true;
-            $receta->cantidad = $this->cantidad;
-        }
+            if ($db_fecha != $this->fecha) {
+                $procesar = true;
+                $receta->fecha = $this->fecha;
+            }
 
-        //***** Detalles ******
+            if ($db_descripcion != $this->descripcion) {
+                $procesar = true;
+                $receta->descripcion = $this->descripcion;
+            }
 
-        if (!empty($this->borraritems)) {
-            $procesar = true;
-        }
+            if ($db_cantidad != $this->cantidad) {
+                $procesar = true;
+                $receta->cantidad = $this->cantidad;
+            }
 
-        for ($i = 0; $i < $this->ajuste_contador; $i++) {
+            //***** Detalles ******
 
-            $detalle_id = $this->detalles_id[$i];
-            $articulo_id = $this->ajuste_articulos_id[$i];
-            $unidad_id = $this->ajusteUnidad[$i];
-            $cantidad = $this->ajusteCantidad[$i];
-
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = ReceDetalle::find($detalle_id);
-                $db_articulo_id = $detalles->articulos_id;
-                $db_unidad_id = $detalles->unidades_id;
-                $db_cantidad = $detalles->cantidad;
-
-                if ($db_articulo_id != $articulo_id) {
-                    $procesar = true;
-                }
-                if ($db_unidad_id != $unidad_id) {
-                    $procesar = true;
-                }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-
-            } else {
-                //nuevo renglon
+            if (!empty($this->borraritems)) {
                 $procesar = true;
             }
 
-        }
+            for ($i = 0; $i < $this->ajuste_contador; $i++) {
 
-        // fin detalles
+                $detalle_id = $this->detalles_id[$i];
+                $articulo_id = $this->ajuste_articulos_id[$i];
+                $unidad_id = $this->ajusteUnidad[$i];
+                $cantidad = $this->ajusteCantidad[$i];
 
-        if ($procesar){
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = ReceDetalle::find($detalle_id);
+                    $db_articulo_id = $detalles->articulos_id;
+                    $db_unidad_id = $detalles->unidades_id;
+                    $db_cantidad = $detalles->cantidad;
 
-            $receta->save();
+                    if ($db_articulo_id != $articulo_id) {
+                        $procesar = true;
+                    }
+                    if ($db_unidad_id != $unidad_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
 
-            //************** Detalles *********************
+                } else {
+                    //nuevo renglon
+                    $procesar = true;
+                }
 
-            //borramos los item viejos
-            $itemViejos = ReceDetalle::where('recetas_id', $receta->id)->get();
-            foreach ($itemViejos as $item){
+            }
+
+            // fin detalles
+
+            if ($procesar){
+
+                $receta->save();
+
+                //************** Detalles *********************
+
+                //borramos los item viejos
+                $itemViejos = ReceDetalle::where('recetas_id', $receta->id)->get();
+                foreach ($itemViejos as $item){
                     $detalle = ReceDetalle::find($item->id);
                     $detalle->delete();
-            }
+                }
 
-            //guardamos los item nuevos
-            for ($i = 0; $i < $this->ajuste_contador; $i++) {
-                $detalles = new ReceDetalle();
-                $detalles->recetas_id = $receta->id;
-                $detalles->articulos_id = $this->ajuste_articulos_id[$i];
-                $detalles->unidades_id = $this->ajusteUnidad[$i];
-                $detalles->cantidad = $this->ajusteCantidad[$i];
-                $detalles->save();
-            }
+                //guardamos los item nuevos
+                for ($i = 0; $i < $this->ajuste_contador; $i++) {
+                    $detalles = new ReceDetalle();
+                    $detalles->recetas_id = $receta->id;
+                    $detalles->articulos_id = $this->ajuste_articulos_id[$i];
+                    $detalles->unidades_id = $this->ajusteUnidad[$i];
+                    $detalles->cantidad = $this->ajusteCantidad[$i];
+                    $detalles->save();
+                }
 
-            $this->show($receta->id);
-            $this->alert('success', 'Receta Actualizada.');
+                $this->show($receta->id);
+                $this->alert('success', 'Receta Actualizada.');
+
+            }else{
+                $this->alert('info', 'No se realizo ningún cambio.');
+                $this->show($this->recetas_id);
+            }
 
         }else{
-            $this->alert('info', 'No se realizo ningún cambio.');
-            $this->show($this->recetas_id);
+            $this->limpiar();
         }
 
     }
@@ -282,10 +294,19 @@ class RecetasComponent extends Component
     public function confirmed()
     {
         $receta = Receta::find($this->recetas_id);
-        $receta->codigo = "*".$receta->codigo;
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
+
+        $despachos = DespDetalle::where('recetas_id', $this->recetas_id)->first();
+        if ($despachos){
+            $vinculado = true;
+        }
+
+        $planificaciones = PlanDetalle::where('recetas_id', $this->recetas_id)->first();
+        if ($planificaciones){
+            $vinculado = true;
+        }
 
         if ($vinculado) {
             $this->alert('warning', '¡No se puede Borrar!', [
@@ -298,10 +319,13 @@ class RecetasComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $receta->save();
-            $receta->delete();
-            $this->alert('success', 'Receta Eliminada.');
-            $this->edit = false;
+            if ($receta){
+                $receta->codigo = "*".$receta->codigo;
+                $receta->save();
+                $receta->delete();
+                $this->edit = false;
+                $this->alert('success', 'Receta Eliminada.');
+            }
             $this->limpiar();
         }
     }
@@ -466,17 +490,27 @@ class RecetasComponent extends Component
     public function btnActivoInactivo()
     {
         $receta = Receta::find($this->recetas_id);
-        if ($this->estatus){
-            $receta->estatus = 0;
-            $this->estatus = 0;
-            $message = "Receta Inactiva";
+        if ($receta){
+            if ($this->estatus){
+                $receta->estatus = 0;
+                $this->estatus = 0;
+                $message = "Receta Inactiva";
+            }else{
+                $receta->estatus = 1;
+                $this->estatus = 1;
+                $message = "Receta Activa";
+            }
+            $receta->update();
+            $this->alert('success', $message);
         }else{
-            $receta->estatus = 1;
-            $this->estatus = 1;
-            $message = "Receta Activa";
+            $this->limpiar();
         }
-        $receta->update();
-        $this->alert('success', $message);
+    }
+
+    public function actualizar()
+    {
+        $this->reset(['recetas_id', 'edit']);
+        $this->limpiar();
     }
 
 }
