@@ -78,27 +78,27 @@ class TributariosComponent extends Component
             $tributario = Tributario::find($this->tributarios_id);
             $message = "Taza Actualizada.";
         }
-        $tributario->codigo = $this->codigo;
-        $tributario->taza = $this->tributario_nombre;
 
-        $tributario->save();
-        $this->dispatch('listarSelect', tabla: 'tributarios')->to(ArticulosComponent::class);
+        if ($tributario){
+            $tributario->codigo = $this->codigo;
+            $tributario->taza = $this->tributario_nombre;
+            $tributario->save();
+            $this->dispatch('listarSelect', tabla: 'tributarios')->to(ArticulosComponent::class);
+            $this->alert('success', $message);
+        }
+
         $this->limpiarTributarios();
-        $this->alert(
-            'success',
-            $message
-        );
-
-
     }
 
     public function edit($id)
     {
         $tributario = Tributario::find($id);
-        $this->tributarios_id = $tributario->id;
-        $this->codigo = $tributario->codigo;
-        $this->tributario_nombre = $tributario->taza;
-        //$this->selectFormArticulos();
+        if ($tributario){
+            $this->tributarios_id = $tributario->id;
+            $this->codigo = $tributario->codigo;
+            $this->tributario_nombre = $tributario->taza;
+            //$this->selectFormArticulos();
+        }
     }
 
     public function destroy($id)
@@ -122,7 +122,7 @@ class TributariosComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $articulo = Articulo::where('tributarios_id', $tributario->id)->first();
+        $articulo = Articulo::where('tributarios_id', $this->tributarios_id)->first();
         if ($articulo){
             $vinculado = true;
         }
@@ -138,15 +138,12 @@ class TributariosComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $tributario->delete();
-            $this->alert(
-                'success',
-                'Taza Eliminada.'
-            );
-
-            $this->dispatch('listarSelect', tabla: 'tributarios')->to(ArticulosComponent::class);
+            if ($tributario){
+                $tributario->delete();
+                $this->alert('success', 'Taza Eliminada.');
+                $this->dispatch('listarSelect', tabla: 'tributarios')->to(ArticulosComponent::class);
+            }
         }
-
         $this->limpiarTributarios();
     }
 
