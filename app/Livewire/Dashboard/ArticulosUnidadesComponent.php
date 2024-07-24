@@ -53,18 +53,21 @@ class ArticulosUnidadesComponent extends Component
             'primaria', 'primaria_id', 'primaria_code', 'primaria_nombre', 'unidades_id', 'primaria_edit', 'editar'
         ]);
         $articulo = Articulo::find($this->articulos_id);
-        if ($articulo->unidades_id) {
-            $this->primaria = true;
-            $this->primaria_id = $articulo->unidades_id;
-            $this->primaria_code = $articulo->unidad->codigo;
-            $this->primaria_nombre = $articulo->unidad->nombre;
-            $stock = Stock::where('articulos_id', $this->articulos_id)
-                ->where('unidades_id', $this->primaria_id)
-                ->first();
-            if (!$stock){
-                $this->primaria_edit = true;
+        if ($articulo) {
+            if ($articulo->unidades_id){
+                $this->primaria = true;
+                $this->primaria_id = $articulo->unidades_id;
+                $this->primaria_code = $articulo->unidad->codigo;
+                $this->primaria_nombre = $articulo->unidad->nombre;
+                $stock = Stock::where('articulos_id', $this->articulos_id)
+                    ->where('unidades_id', $this->primaria_id)
+                    ->first();
+                if (!$stock){
+                    $this->primaria_edit = true;
+                }
             }
-
+        }else{
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_unidades');
         }
     }
 
@@ -72,25 +75,34 @@ class ArticulosUnidadesComponent extends Component
     {
         $rules = ['unidades_id' => 'required'];
         $this->validate($rules);
-        if (!$this->primaria || $this->editar){
-            $articulo = Articulo::find($this->articulos_id);
-            $articulo->unidades_id = $this->unidades_id;
-            $articulo->save();
+        $articulo = Articulo::find($this->articulos_id);
+        if ($articulo){
+            if (!$this->primaria || $this->editar){
+                $articulo->unidades_id = $this->unidades_id;
+                $articulo->save();
+            }else{
+                $artUnd = new ArtUnid();
+                $artUnd->articulos_id = $this->articulos_id;
+                $artUnd->unidades_id = $this->unidades_id;
+                $artUnd->save();
+            }
+            $this->alert('success', 'Unidad Establecida.');
+            $this->limpiarUnidades();
         }else{
-            $artUnd = new ArtUnid();
-            $artUnd->articulos_id = $this->articulos_id;
-            $artUnd->unidades_id = $this->unidades_id;
-            $artUnd->save();
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_unidades');
         }
-        $this->limpiarUnidades();
-        $this->alert('success', 'Unidad Establecida.');
     }
 
     public function edit()
     {
-        $this->unidades_id = $this->primaria_id;
-        $this->editar = true;
-        $this->dispatch('setUnd', id: $this->unidades_id);
+        $articulo = Articulo::find($this->articulos_id);
+        if ($articulo){
+            $this->unidades_id = $this->primaria_id;
+            $this->editar = true;
+            $this->dispatch('setUnd', id: $this->unidades_id);
+        }else{
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_unidades');
+        }
     }
 
     public function destroy($id)
@@ -99,11 +111,14 @@ class ArticulosUnidadesComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $articulo_id = $artund->articulos_id;
-        $unidad_id = $artund->unidades_id;
-        $stock = Stock::where('articulos_id', $articulo_id)->where('unidades_id', $unidad_id)->first();
-        if ($stock){
-            $vinculado = true;
+
+        if ($artund){
+            $articulo_id = $artund->articulos_id;
+            $unidad_id = $artund->unidades_id;
+            $stock = Stock::where('articulos_id', $articulo_id)->where('unidades_id', $unidad_id)->first();
+            if ($stock){
+                $vinculado = true;
+            }
         }
 
         if ($vinculado) {
@@ -117,13 +132,12 @@ class ArticulosUnidadesComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $artund->delete();
-            $this->limpiarUnidades();
-            $this->alert(
-                'success',
-                'Unidad Eliminada.'
-            );
+            if ($artund){
+                $artund->delete();
+                $this->alert('success', 'Unidad Eliminada.');
+            }
         }
+        $this->limpiarUnidades();
     }
 
     #[On('setUnd')]

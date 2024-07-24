@@ -26,7 +26,7 @@
                 </button>
             @endif
             @if($cancelar)
-                <button class="btn btn-tool" wire:click="btnCancelar"><i class="fas fa-ban"></i> Cancelar</button>
+                <button class="btn btn-tool" wire:click="btnCancelar" id="btn_articulos_card_view_cancelar"><i class="fas fa-ban"></i> Cancelar</button>
             @endif
         </div>
     </div>

@@ -93,7 +93,7 @@
             </div>
 
             <div class="modal-footer card-footer">
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="btn_modal_articulos_proveedores">Cerrar</button>
             </div>
 
             {!! verSpinner() !!}

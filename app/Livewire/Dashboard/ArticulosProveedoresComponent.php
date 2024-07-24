@@ -59,8 +59,12 @@ class ArticulosProveedoresComponent extends Component
     public function destroy($id)
     {
         $proveedor = ArtProv::find($id);
-        $proveedor->delete();
-        $this->getArticuloProveedores($this->articulos_id);
+        if ($proveedor){
+            $proveedor->delete();
+            $this->getArticuloProveedores($this->articulos_id);
+        }else{
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_proveedores');
+        }
     }
 
 

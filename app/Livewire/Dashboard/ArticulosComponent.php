@@ -113,7 +113,6 @@ class ArticulosComponent extends Component
 
     public function save()
     {
-        $tipo = 'success';
         $message = null;
         if ($this->articulos_id && !$this->new_articulo){
             $codigo = ['required', 'min:4', 'max:8', 'alpha_num:ascii', Rule::unique('articulos', 'codigo')->ignore($this->articulos_id)];
@@ -148,100 +147,110 @@ class ArticulosComponent extends Component
         ];
         $this->validate($rules, $messages);
 
+        $categ = false;
         if ($this->articulos_id && !$this->new_articulo) {
             //editar
             $articulo = Articulo::find($this->articulos_id);
+            if ($articulo){
+                $categ = $articulo->categorias_id;
+            }
             $unidad = false;
-            $categ = $articulo->categorias_id;
             $message = "Articulo Actualizado.";
         } else {
             //nuevo
             $articulo = new Articulo();
             $unidad = true;
-            $categ = false;
             $message = "Articulo Creado.";
         }
 
-        $articulo->codigo = $this->codigo;
-        $articulo->descripcion = $this->descripcion;
-        $articulo->tipos_id = $this->tipos_id;
-        $articulo->categorias_id = $this->categorias_id;
-        $articulo->procedencias_id = $this->procedencias_id;
-        $articulo->tributarios_id = $this->tributarios_id;
-        $articulo->marca = $this->marca;
-        $articulo->modelo = $this->modelo;
-        $articulo->referencia = $this->referencia;
-        $articulo->adicional = $this->adicional;
-        $articulo->empresas_id = $this->empresas_id;
+        if ($articulo){
+            $articulo->codigo = $this->codigo;
+            $articulo->descripcion = $this->descripcion;
+            $articulo->tipos_id = $this->tipos_id;
+            $articulo->categorias_id = $this->categorias_id;
+            $articulo->procedencias_id = $this->procedencias_id;
+            $articulo->tributarios_id = $this->tributarios_id;
+            $articulo->marca = $this->marca;
+            $articulo->modelo = $this->modelo;
+            $articulo->referencia = $this->referencia;
+            $articulo->adicional = $this->adicional;
+            $articulo->empresas_id = $this->empresas_id;
+            $articulo->save();
+            $this->reset('keyword');
+            $this->showArticulos($articulo->id);
 
-        $articulo->save();
-        $this->reset('keyword');
-        $this->showArticulos($articulo->id);
-        if ($unidad) {
-            $this->dispatch('clickBtnUnidad');
+            if ($unidad) {
+                $this->dispatch('clickBtnUnidad');
+            }
+
+            if ($categ) {
+                $categoria = Categoria::find($categ);
+                if ($categoria){
+                    $categoria->cantidad = $categoria->cantidad - 1;
+                    $categoria->update();
+                }
+            }
+
+            $categoria = Categoria::find($articulo->categorias_id);
+            if ($categoria){
+                $categoria->cantidad = $categoria->cantidad + 1;
+                $categoria->update();
+            }
+
+            $this->alert('success', $message);
+        }else{
+            $this->limpiarArticulos();
         }
 
-        if ($categ) {
-            $categoria = Categoria::find($categ);
-            $categoria->cantidad = $categoria->cantidad - 1;
-            $categoria->update();
-        }
-
-        $categoria = Categoria::find($articulo->categorias_id);
-        $categoria->cantidad = $categoria->cantidad + 1;
-        $categoria->update();
-
-        $this->alert(
-            $tipo,
-            $message
-        );
     }
 
     public function showArticulos($id)
     {
         $this->limpiarArticulos();
         $articulo = Articulo::find($id);
-        $this->edit = true;
-        $this->view = "show";
-        $this->footer = true;
-        $this->articulos_id = $articulo->id;
-        $this->codigo = $articulo->codigo;
-        $this->descripcion = $articulo->descripcion;
+        if ($articulo){
+            $this->edit = true;
+            $this->view = "show";
+            $this->footer = true;
+            $this->articulos_id = $articulo->id;
+            $this->codigo = $articulo->codigo;
+            $this->descripcion = $articulo->descripcion;
 
-        $this->tipos_id = $articulo->tipos_id;
-        if ($this->tipos_id) {
-            $this->tipo = $articulo->tipo->nombre;
+            $this->tipos_id = $articulo->tipos_id;
+            if ($this->tipos_id) {
+                $this->tipo = $articulo->tipo->nombre;
+            }
+
+            $this->categorias_id = $articulo->categorias_id;
+            if ($this->categorias_id) {
+                $this->categorias_code = $articulo->categoria->codigo;
+                $this->categoria = $articulo->categoria->nombre;
+            }
+
+            $this->procedencias_id = $articulo->procedencias_id;
+            if ($this->procedencias_id) {
+                $this->procedencias_code = $articulo->procedencia->codigo;
+                $this->procedencia = $articulo->procedencia->nombre;
+            }
+
+            $this->tributarios_id = $articulo->tributarios_id;
+            if ($this->tributarios_id) {
+                $this->tributario = $articulo->tributario->codigo;
+            }
+
+            if ($articulo->unidades_id) {
+                $this->unidades_code = $articulo->unidad->codigo;
+                $this->unidad = $articulo->unidad->nombre;
+            }
+
+            $this->marca = $articulo->marca;
+            $this->modelo = $articulo->modelo;
+            $this->referencia = $articulo->referencia;
+            $this->adicional = $articulo->adicional;
+            $this->decimales = $articulo->decimales;
+            $this->estatus = $articulo->estatus;
+            $this->fecha = $articulo->created_at;
         }
-
-        $this->categorias_id = $articulo->categorias_id;
-        if ($this->categorias_id) {
-            $this->categorias_code = $articulo->categoria->codigo;
-            $this->categoria = $articulo->categoria->nombre;
-        }
-
-        $this->procedencias_id = $articulo->procedencias_id;
-        if ($this->procedencias_id) {
-            $this->procedencias_code = $articulo->procedencia->codigo;
-            $this->procedencia = $articulo->procedencia->nombre;
-        }
-
-        $this->tributarios_id = $articulo->tributarios_id;
-        if ($this->tributarios_id) {
-            $this->tributario = $articulo->tributario->codigo;
-        }
-
-        if ($articulo->unidades_id) {
-            $this->unidades_code = $articulo->unidad->codigo;
-            $this->unidad = $articulo->unidad->nombre;
-        }
-
-        $this->marca = $articulo->marca;
-        $this->modelo = $articulo->modelo;
-        $this->referencia = $articulo->referencia;
-        $this->adicional = $articulo->adicional;
-        $this->decimales = $articulo->decimales;
-        $this->estatus = $articulo->estatus;
-        $this->fecha = $articulo->created_at;
     }
 
     public function destroy()
@@ -265,12 +274,12 @@ class ArticulosComponent extends Component
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
 
-        $stock = Stock::where('articulos_id', $articulo->id)->first();
+        $stock = Stock::where('articulos_id', $this->articulos_id)->first();
         if ($stock) {
             $vinculado = true;
         }
 
-        $recetas = ReceDetalle::where('articulos_id', $articulo->id)->first();
+        $recetas = ReceDetalle::where('articulos_id', $this->articulos_id)->first();
         if ($recetas){
             $vinculado = true;
         }
@@ -286,12 +295,11 @@ class ArticulosComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $articulo->delete();
-            $this->alert(
-                'success',
-                'Articulo Eliminado.'
-            );
-            $this->edit = false;
+            if ($articulo){
+                $articulo->delete();
+                $this->alert('success', 'Articulo Eliminado.');
+                $this->edit = false;
+            }
             $this->limpiarArticulos();
         }
     }
@@ -337,20 +345,21 @@ class ArticulosComponent extends Component
         $this->imagen = false;
         $this->existencias = false;
         $articulo = Articulo::find($this->articulos_id);
-        if ($this->estatus){
-            $articulo->estatus = 0;
-            $this->estatus = 0;
-            $message = "Articulo Inactivo";
+        if ($articulo){
+            if ($this->estatus){
+                $articulo->estatus = 0;
+                $this->estatus = 0;
+                $message = "Articulo Inactivo";
+            }else{
+                $articulo->estatus = 1;
+                $this->estatus = 1;
+                $message = "Articulo Activo";
+            }
+            $articulo->update();
+            $this->alert('success', $message);
         }else{
-            $articulo->estatus = 1;
-            $this->estatus = 1;
-            $message = "Articulo Activo";
+            $this->limpiarArticulos();
         }
-        $articulo->update();
-        $this->alert(
-            'success',
-            $message
-        );
     }
 
     #[On('listarSelect')]
@@ -432,15 +441,51 @@ class ArticulosComponent extends Component
 
     public function btnImagen()
     {
-        $this->dispatch('getArticuloImagenes', articuloID: $this->articulos_id)->to(ArticulosImagenesComponent::class);
-        $this->imagen = true;
-        $this->existencias = false;
-        $this->cancelar = true;
+        $articulo = Articulo::find($this->articulos_id);
+        if ($articulo){
+            $this->dispatch('getArticuloImagenes', articuloID: $this->articulos_id)->to(ArticulosImagenesComponent::class);
+            $this->imagen = true;
+            $this->existencias = false;
+            $this->cancelar = true;
+        }else{
+            $this->limpiarArticulos();
+        }
     }
 
     public function btnUnidad()
     {
-        $this->dispatch('getArticuloUnidades', articuloID: $this->articulos_id)->to(ArticulosUnidadesComponent::class);
+        $articulo = Articulo::find($this->articulos_id);
+        if ($articulo){
+            $this->dispatch('getArticuloUnidades', articuloID: $this->articulos_id)->to(ArticulosUnidadesComponent::class);
+        }else{
+            $this->limpiarArticulos();
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_unidades');
+        }
+    }
+
+    public function btnExistencias()
+    {
+        $articulo = Articulo::find($this->articulos_id);
+        if ($articulo){
+            $this->dispatch('getArticuloExistencias', articuloID: $this->articulos_id)->to(ArticulosExistenciasComponent::class);
+            $this->existencias = true;
+            $this->imagen = false;
+            $this->cancelar = true;
+        }else{
+            $this->limpiarArticulos();
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_unidades');
+        }
+    }
+
+    public function btnProveedores()
+    {
+        $articulo = Articulo::find($this->articulos_id);
+        if ($articulo){
+            $this->dispatch('getArticuloProveedores', articuloID: $this->articulos_id)->to(ArticulosProveedoresComponent::class);
+        }else{
+            $this->limpiarArticulos();
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_proveedores');
+        }
     }
 
     #[On('clickBtnUnidad')]
@@ -449,7 +494,13 @@ class ArticulosComponent extends Component
         //JS
     }
 
-    public function btnPrecios()
+    #[On('cerrarModalArticulosPropiedades')]
+    public function cerrarModalArticulosPropiedades($selector)
+    {
+        //JS
+    }
+
+    /*public function btnPrecios()
     {
         $this->dispatch('getArticuloPrecios', articuloID: $this->articulos_id)->to(ArticulosPreciosComponent::class);
     }
@@ -457,19 +508,6 @@ class ArticulosComponent extends Component
     public function btnIdentificadores()
     {
         $this->dispatch('getArticuloIdentificadores', articuloID: $this->articulos_id)->to(ArticulosIdentificadoresComponent::class);
-    }
-
-    public function btnExistencias()
-    {
-        $this->dispatch('getArticuloExistencias', articuloID: $this->articulos_id)->to(ArticulosExistenciasComponent::class);
-        $this->existencias = true;
-        $this->imagen = false;
-        $this->cancelar = true;
-    }
-
-    public function btnProveedores()
-    {
-        $this->dispatch('getArticuloProveedores', articuloID: $this->articulos_id)->to(ArticulosProveedoresComponent::class);
-    }
+    }*/
 
 }

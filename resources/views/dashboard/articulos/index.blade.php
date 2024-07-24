@@ -172,18 +172,26 @@
             $('.cargar_indentificador').removeClass('d-none');
         }
 
+        Livewire.on('cerrarModalArticulosPropiedades', ({ selector }) => {
+            $('#' + selector).click();
+        });
 
-        /*function buscar() {
+        Livewire.on('cerrarImagenes', () => {
+            $('#btn_articulos_card_view_cancelar').click();
+        });
+
+        function buscar() {
+            verSpinnerOculto();
             let input = $("#navbarSearch");
             let keyword = input.val();
             if (keyword.length > 0) {
                 input.blur();
-                alert('Falta vincular con el componente Livewire');
-                //Livewire.dispatch('buscar', { keyword: keyword });
+                //alert('Falta vincular con el componente Livewire');
+                Livewire.dispatch('buscar', { keyword: keyword });
                 $('#nabvar_cerrar_buscar').click();
             }
             return false;
-        }*/
+        }
 
         console.log('Hi!');
     </script>

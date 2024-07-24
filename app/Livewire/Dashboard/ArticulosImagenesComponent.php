@@ -40,48 +40,52 @@ class ArticulosImagenesComponent extends Component
         ]);
         $this->resetErrorBag();
         $articulo = Articulo::find($this->articulos_id);
-        $this->img_principal = $articulo->imagen;
-        $this->img_ver = $articulo->mini;
-        $this->listarGaleria = ArtImg::where('articulos_id', $articulo->id)->get();
-        $this->btn_editar = false;
-        $this->btn_cancelar = true;
-        $this->view = "imagen";
-        $listarGaleria = ArtImg::where('articulos_id', $this->articulos_id)->get();
-        $i = 0;
-        foreach ($listarGaleria as $galeria){
-            $i++;
-            switch ($i){
-                case 1:
-                    $this->db_galeria1 = $galeria->imagen;
-                    $this->ver_galeria1 = $galeria->mini;
-                    $this->galeria_id1 = $galeria->id;
-                    break;
-                case 2:
-                    $this->db_galeria2 = $galeria->imagen;
-                    $this->ver_galeria2 = $galeria->mini;
-                    $this->galeria_id2 = $galeria->id;
-                    break;
-                case 3:
-                    $this->db_galeria3 = $galeria->imagen;
-                    $this->ver_galeria3 = $galeria->mini;
-                    $this->galeria_id3 = $galeria->id;
-                    break;
-                case 4:
-                    $this->db_galeria4 = $galeria->imagen;
-                    $this->ver_galeria4 = $galeria->mini;
-                    $this->galeria_id4 = $galeria->id;
-                    break;
-                case 5:
-                    $this->db_galeria5 = $galeria->imagen;
-                    $this->ver_galeria5 = $galeria->mini;
-                    $this->galeria_id5 = $galeria->id;
-                    break;
-                case 6:
-                    $this->db_galeria6 = $galeria->imagen;
-                    $this->ver_galeria6 = $galeria->mini;
-                    $this->galeria_id6 = $galeria->id;
-                    break;
+        if ($articulo){
+            $this->img_principal = $articulo->imagen;
+            $this->img_ver = $articulo->mini;
+            $this->listarGaleria = ArtImg::where('articulos_id', $articulo->id)->get();
+            $this->btn_editar = false;
+            $this->btn_cancelar = true;
+            $this->view = "imagen";
+            $listarGaleria = ArtImg::where('articulos_id', $this->articulos_id)->get();
+            $i = 0;
+            foreach ($listarGaleria as $galeria){
+                $i++;
+                switch ($i){
+                    case 1:
+                        $this->db_galeria1 = $galeria->imagen;
+                        $this->ver_galeria1 = $galeria->mini;
+                        $this->galeria_id1 = $galeria->id;
+                        break;
+                    case 2:
+                        $this->db_galeria2 = $galeria->imagen;
+                        $this->ver_galeria2 = $galeria->mini;
+                        $this->galeria_id2 = $galeria->id;
+                        break;
+                    case 3:
+                        $this->db_galeria3 = $galeria->imagen;
+                        $this->ver_galeria3 = $galeria->mini;
+                        $this->galeria_id3 = $galeria->id;
+                        break;
+                    case 4:
+                        $this->db_galeria4 = $galeria->imagen;
+                        $this->ver_galeria4 = $galeria->mini;
+                        $this->galeria_id4 = $galeria->id;
+                        break;
+                    case 5:
+                        $this->db_galeria5 = $galeria->imagen;
+                        $this->ver_galeria5 = $galeria->mini;
+                        $this->galeria_id5 = $galeria->id;
+                        break;
+                    case 6:
+                        $this->db_galeria6 = $galeria->imagen;
+                        $this->ver_galeria6 = $galeria->mini;
+                        $this->galeria_id6 = $galeria->id;
+                        break;
+                }
             }
+        }else{
+            $this->dispatch('cerrarImagenes');
         }
 
     }
@@ -124,121 +128,126 @@ class ArticulosImagenesComponent extends Component
         ], $messages);
 
         $articulo  = Articulo::find($this->articulos_id);
-
-        if ($this->principalPhoto){
-            //imagen actual database
-            $imagen = $articulo->imagen;
-            $ruta = $this->principalPhoto->store('public/articulos');
-            $articulo->imagen = str_replace('public/', 'storage/', $ruta);
-            //miniaturas
-            $nombre = explode('articulos/', $articulo->imagen);
-            $path_data = "storage/articulos/size_".$nombre[1];
-            $miniatura = crearMiniaturas($articulo->imagen, $path_data);
-            $articulo->mini = $miniatura['mini'];
-            /*$articulo->detail = $miniatura['detail'];
-            $articulo->cart = $miniatura['cart'];
-            $articulo->banner = $miniatura['banner'];*/
-            //borramos imagenes anteriones si existen
-            if ($this->img_borrar_principal){
-                borrarImagenes($imagen, 'articulos');
-            }
-            $alert = true;
-        }else{
-            if ($this->img_borrar_principal){
-                $articulo->imagen = null;
-                $articulo->mini = null;
-                $articulo->detail = null;
-                $articulo->cart = null;
-                $articulo->banner = null;
-                borrarImagenes($this->img_borrar_principal, 'articulos');
-                $alert = true;
-            }
-        }
-
-        if ($alert){
-            $articulo->update();
-            $this->reset('img_borrar_principal');
-            $this->alert('success', 'Imagenes Actualizadas.');
-        }
-
-        // Galeria
-        for ($i = 1; $i <= 6; $i++){
-            $alert_galeria = false;
-            switch ($i){
-                case 1:
-                    $photo = $this->photo1;
-                    $galeria_id = $this->galeria_id1;
-                    $borrar_galeria = $this->borrar_galeria1;
-                    break;
-                case 2:
-                    $photo = $this->photo2;
-                    $galeria_id = $this->galeria_id2;
-                    $borrar_galeria = $this->borrar_galeria2;
-                    break;
-                case 3:
-                    $photo = $this->photo3;
-                    $galeria_id = $this->galeria_id3;
-                    $borrar_galeria = $this->borrar_galeria3;
-                    break;
-                case 4:
-                    $photo = $this->photo4;
-                    $galeria_id = $this->galeria_id4;
-                    $borrar_galeria = $this->borrar_galeria4;
-                    break;
-                case 5:
-                    $photo = $this->photo5;
-                    $galeria_id = $this->galeria_id5;
-                    $borrar_galeria = $this->borrar_galeria5;
-                    break;
-                case 6:
-                    $photo = $this->photo6;
-                    $galeria_id = $this->galeria_id6;
-                    $borrar_galeria = $this->borrar_galeria6;
-                    break;
-            }
-
-            if ($galeria_id){
-                //editar
-                $galeria = ArtImg::find($galeria_id);
-                $galeria_imagen = $galeria->imagen;
-            }else{
-                //nuevo
-                $galeria = new ArtImg();
-                $galeria_imagen = null;
-            }
-
-            if ($photo){
-                //$ruta = $photo->store('public/galeria/art_id_'.$this->articulos_id);
-                $ruta = $photo->store('public/galeria');
-                $galeria->imagen = str_replace('public/', 'storage/', $ruta);
+        if ($articulo){
+            if ($this->principalPhoto){
+                //imagen actual database
+                $imagen = $articulo->imagen;
+                $ruta = $this->principalPhoto->store('public/articulos');
+                $articulo->imagen = str_replace('public/', 'storage/', $ruta);
                 //miniaturas
-                $nombre = explode('galeria/', $galeria->imagen);
-                $path_data = "storage/galeria/size_".$nombre[1];
-                $miniatura = crearMiniaturas($galeria->imagen, $path_data);
-                $galeria->mini = $miniatura['mini'];
-                /*$galeria->detail = $miniatura['detail'];
-                $galeria->cart = $miniatura['cart'];
-                $galeria->banner = $miniatura['banner'];*/
-                $galeria->articulos_id = $this->articulos_id;
-                $galeria->save();
-                $alert_galeria = true;
-                if ($borrar_galeria){
-                    borrarImagenes($galeria_imagen, 'galeria');
+                $nombre = explode('articulos/', $articulo->imagen);
+                $path_data = "storage/articulos/size_".$nombre[1];
+                $miniatura = crearMiniaturas($articulo->imagen, $path_data);
+                $articulo->mini = $miniatura['mini'];
+                /*$articulo->detail = $miniatura['detail'];
+                $articulo->cart = $miniatura['cart'];
+                $articulo->banner = $miniatura['banner'];*/
+                //borramos imagenes anteriones si existen
+                if ($this->img_borrar_principal){
+                    borrarImagenes($imagen, 'articulos');
                 }
+                $alert = true;
             }else{
-                if ($borrar_galeria){
-                    $galeria->delete();
-                    $alert_galeria = true;
-                    borrarImagenes($galeria_imagen, 'galeria');
+                if ($this->img_borrar_principal){
+                    $articulo->imagen = null;
+                    $articulo->mini = null;
+                    $articulo->detail = null;
+                    $articulo->cart = null;
+                    $articulo->banner = null;
+                    borrarImagenes($this->img_borrar_principal, 'articulos');
+                    $alert = true;
                 }
             }
 
-            if ($alert_galeria){
+            if ($alert){
+                $articulo->update();
+                $this->reset('img_borrar_principal');
                 $this->alert('success', 'Imagenes Actualizadas.');
             }
 
+            // Galeria
+            for ($i = 1; $i <= 6; $i++){
+                $alert_galeria = false;
+                switch ($i){
+                    case 1:
+                        $photo = $this->photo1;
+                        $galeria_id = $this->galeria_id1;
+                        $borrar_galeria = $this->borrar_galeria1;
+                        break;
+                    case 2:
+                        $photo = $this->photo2;
+                        $galeria_id = $this->galeria_id2;
+                        $borrar_galeria = $this->borrar_galeria2;
+                        break;
+                    case 3:
+                        $photo = $this->photo3;
+                        $galeria_id = $this->galeria_id3;
+                        $borrar_galeria = $this->borrar_galeria3;
+                        break;
+                    case 4:
+                        $photo = $this->photo4;
+                        $galeria_id = $this->galeria_id4;
+                        $borrar_galeria = $this->borrar_galeria4;
+                        break;
+                    case 5:
+                        $photo = $this->photo5;
+                        $galeria_id = $this->galeria_id5;
+                        $borrar_galeria = $this->borrar_galeria5;
+                        break;
+                    case 6:
+                        $photo = $this->photo6;
+                        $galeria_id = $this->galeria_id6;
+                        $borrar_galeria = $this->borrar_galeria6;
+                        break;
+                }
+
+                if ($galeria_id){
+                    //editar
+                    $galeria = ArtImg::find($galeria_id);
+                    $galeria_imagen = $galeria->imagen;
+                }else{
+                    //nuevo
+                    $galeria = new ArtImg();
+                    $galeria_imagen = null;
+                }
+
+                if ($galeria){
+                    if ($photo){
+                        //$ruta = $photo->store('public/galeria/art_id_'.$this->articulos_id);
+                        $ruta = $photo->store('public/galeria');
+                        $galeria->imagen = str_replace('public/', 'storage/', $ruta);
+                        //miniaturas
+                        $nombre = explode('galeria/', $galeria->imagen);
+                        $path_data = "storage/galeria/size_".$nombre[1];
+                        $miniatura = crearMiniaturas($galeria->imagen, $path_data);
+                        $galeria->mini = $miniatura['mini'];
+                        /*$galeria->detail = $miniatura['detail'];
+                        $galeria->cart = $miniatura['cart'];
+                        $galeria->banner = $miniatura['banner'];*/
+                        $galeria->articulos_id = $this->articulos_id;
+                        $galeria->save();
+                        $alert_galeria = true;
+                        if ($borrar_galeria){
+                            borrarImagenes($galeria_imagen, 'galeria');
+                        }
+                    }else{
+                        if ($borrar_galeria){
+                            $galeria->delete();
+                            $alert_galeria = true;
+                            borrarImagenes($galeria_imagen, 'galeria');
+                        }
+                    }
+
+                    if ($alert_galeria){
+                        $this->alert('success', 'Imagenes Actualizadas.');
+                    }
+                }
+
+            }
+            $this->getArticuloImagenes($this->articulos_id);
+        }else{
+            $this->dispatch('cerrarImagenes');
         }
-        $this->getArticuloImagenes($this->articulos_id);
 
     }
 
@@ -366,6 +375,12 @@ class ArticulosImagenesComponent extends Component
         if ($this->db_galeria6){
             $this->borrar_galeria6 = $this->db_galeria6;
         }
+    }
+
+    #[On('cerrarImagenes')]
+    public function cerrarImagenes()
+    {
+        //JS
     }
 
 }

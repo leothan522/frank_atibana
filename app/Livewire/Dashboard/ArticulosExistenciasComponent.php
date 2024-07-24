@@ -31,9 +31,13 @@ class ArticulosExistenciasComponent extends Component
     {
         $this->articulos_id = $articuloID;
         $articulo = Articulo::find($this->articulos_id);
-        $this->empresas_id = $articulo->empresas_id;
-        if ($articulo->unidades_id){
-            $this->principal_code = $articulo->unidad->codigo;
+        if ($articulo){
+            $this->empresas_id = $articulo->empresas_id;
+            if ($articulo->unidades_id){
+                $this->principal_code = $articulo->unidad->codigo;
+            }
+        }else{
+            $this->dispatch('cerrarModalArticulosPropiedades', selector: 'btn_modal_articulos_unidades');
         }
     }
 

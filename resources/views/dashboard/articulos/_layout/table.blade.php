@@ -4,7 +4,7 @@
         <h3 class="card-title">
             @if($keyword)
                 Búsqueda { <b class="text-warning">{{ $keyword }}</b> }
-                <button class="btn btn-tool text-warning" wire:click="cerrarBusqueda"><i class="fas fa-times-circle"></i>
+                <button class="btn btn-tool text-warning" wire:click="cerrarBusqueda" onclick="verSpinnerOculto()"><i class="fas fa-times-circle"></i>
                 </button>
             @else
                 Artículos [ <b class="text-warning">{{ $rowsArticulos }}</b> ]
@@ -12,6 +12,9 @@
         </h3>
 
         <div class="card-tools">
+            <button type="button" class="btn btn-tool" wire:click="limpiarArticulos">
+                <i class="fas fa-sync-alt"></i>
+            </button>
             <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $listarArticulos->count()) disabled @endif>
                 <i class="fas fa-sort-amount-down-alt"></i> Ver más
             </button>
