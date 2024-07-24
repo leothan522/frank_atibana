@@ -251,7 +251,8 @@ class PlanificacionComponent extends Component
 
 
         }else{
-            dd('error');
+            $this->alert('error', 'Ocurrio un error!');
+            $this->limpiar();
         }
 
     }
@@ -325,101 +326,107 @@ class PlanificacionComponent extends Component
     public function show($id)
     {
         $this->limpiar();
+        $this->edit = false;
         $planificacion = Planificacion::find($id);
-        $this->edit = true;
-        $this->view = "show";
-        $this->footer = true;
-        $this->planificaciones_id = $planificacion->id;
-        $this->codigo = $planificacion->codigo;
-        $this->fecha = $planificacion->fecha;
-        $this->descripcion = $planificacion->descripcion;
-        $this->estatus = $planificacion->estatus;
 
-        $semana = getSemana($this->fecha);
-        $this->verSemana = $semana[0]."-".$semana[8];
+        if ($planificacion){
 
-        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[1])->get();
-        $this->contador_lunes = 0;
-        foreach ($detalles as $detalle){
-            $this->idRecetaLunes[$this->contador_lunes] = $detalle->recetas_id;
-            $this->codigoRecetaLunes[$this->contador_lunes] = $detalle->receta->codigo;
-            $this->classRecetaLunes[$this->contador_lunes] = null;
-            $this->descripcionRecetaLunes[$this->contador_lunes] = $detalle->receta->descripcion;
-            $this->cantidadLunes[$this->contador_lunes] = $detalle->cantidad;
-            $this->detalles_id_lunes[$this->contador_lunes] = $detalle->id;
-            $this->contador_lunes++;
-        }
+            $this->edit = true;
+            $this->view = "show";
+            $this->footer = true;
+            $this->planificaciones_id = $planificacion->id;
+            $this->codigo = $planificacion->codigo;
+            $this->fecha = $planificacion->fecha;
+            $this->descripcion = $planificacion->descripcion;
+            $this->estatus = $planificacion->estatus;
 
-        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[2])->get();
-        $this->contador_martes = 0;
-        foreach ($detalles as $detalle){
-            $this->idRecetaMartes[$this->contador_martes] = $detalle->recetas_id;
-            $this->codigoRecetaMartes[$this->contador_martes] = $detalle->receta->codigo;
-            $this->classRecetaMartes[$this->contador_martes] = null;
-            $this->descripcionRecetaMartes[$this->contador_martes] = $detalle->receta->descripcion;
-            $this->cantidadMartes[$this->contador_martes] = $detalle->cantidad;
-            $this->detalles_id_martes[$this->contador_martes] = $detalle->id;
-            $this->contador_martes++;
-        }
+            $semana = getSemana($this->fecha);
+            $this->verSemana = $semana[0]."-".$semana[8];
 
-        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[3])->get();
-        $this->contador_miercoles = 0;
-        foreach ($detalles as $detalle){
-            $this->idRecetaMiercoles[$this->contador_miercoles] = $detalle->recetas_id;
-            $this->codigoRecetaMiercoles[$this->contador_miercoles] = $detalle->receta->codigo;
-            $this->classRecetaMiercoles[$this->contador_miercoles] = null;
-            $this->descripcionRecetaMiercoles[$this->contador_miercoles] = $detalle->receta->descripcion;
-            $this->cantidadMiercoles[$this->contador_miercoles] = $detalle->cantidad;
-            $this->detalles_id_miercoles[$this->contador_miercoles] = $detalle->id;
-            $this->contador_miercoles++;
-        }
+            $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[1])->get();
+            $this->contador_lunes = 0;
+            foreach ($detalles as $detalle){
+                $this->idRecetaLunes[$this->contador_lunes] = $detalle->recetas_id;
+                $this->codigoRecetaLunes[$this->contador_lunes] = $detalle->receta->codigo;
+                $this->classRecetaLunes[$this->contador_lunes] = null;
+                $this->descripcionRecetaLunes[$this->contador_lunes] = $detalle->receta->descripcion;
+                $this->cantidadLunes[$this->contador_lunes] = $detalle->cantidad;
+                $this->detalles_id_lunes[$this->contador_lunes] = $detalle->id;
+                $this->contador_lunes++;
+            }
 
-        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[4])->get();
-        $this->contador_jueves = 0;
-        foreach ($detalles as $detalle){
-            $this->idRecetaJueves[$this->contador_jueves] = $detalle->recetas_id;
-            $this->codigoRecetaJueves[$this->contador_jueves] = $detalle->receta->codigo;
-            $this->classRecetaJueves[$this->contador_jueves] = null;
-            $this->descripcionRecetaJueves[$this->contador_jueves] = $detalle->receta->descripcion;
-            $this->cantidadJueves[$this->contador_jueves] = $detalle->cantidad;
-            $this->detalles_id_jueves[$this->contador_jueves] = $detalle->id;
-            $this->contador_jueves++;
-        }
+            $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[2])->get();
+            $this->contador_martes = 0;
+            foreach ($detalles as $detalle){
+                $this->idRecetaMartes[$this->contador_martes] = $detalle->recetas_id;
+                $this->codigoRecetaMartes[$this->contador_martes] = $detalle->receta->codigo;
+                $this->classRecetaMartes[$this->contador_martes] = null;
+                $this->descripcionRecetaMartes[$this->contador_martes] = $detalle->receta->descripcion;
+                $this->cantidadMartes[$this->contador_martes] = $detalle->cantidad;
+                $this->detalles_id_martes[$this->contador_martes] = $detalle->id;
+                $this->contador_martes++;
+            }
 
-        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[5])->get();
-        $this->contador_viernes = 0;
-        foreach ($detalles as $detalle){
-            $this->idRecetaViernes[$this->contador_viernes] = $detalle->recetas_id;
-            $this->codigoRecetaViernes[$this->contador_viernes] = $detalle->receta->codigo;
-            $this->classRecetaViernes[$this->contador_viernes] = null;
-            $this->descripcionRecetaViernes[$this->contador_viernes] = $detalle->receta->descripcion;
-            $this->cantidadViernes[$this->contador_viernes] = $detalle->cantidad;
-            $this->detalles_id_viernes[$this->contador_viernes] = $detalle->id;
-            $this->contador_viernes++;
-        }
+            $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[3])->get();
+            $this->contador_miercoles = 0;
+            foreach ($detalles as $detalle){
+                $this->idRecetaMiercoles[$this->contador_miercoles] = $detalle->recetas_id;
+                $this->codigoRecetaMiercoles[$this->contador_miercoles] = $detalle->receta->codigo;
+                $this->classRecetaMiercoles[$this->contador_miercoles] = null;
+                $this->descripcionRecetaMiercoles[$this->contador_miercoles] = $detalle->receta->descripcion;
+                $this->cantidadMiercoles[$this->contador_miercoles] = $detalle->cantidad;
+                $this->detalles_id_miercoles[$this->contador_miercoles] = $detalle->id;
+                $this->contador_miercoles++;
+            }
 
-        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[6])->get();
-        $this->contador_sabado = 0;
-        foreach ($detalles as $detalle){
-            $this->idRecetaSabado[$this->contador_sabado] = $detalle->recetas_id;
-            $this->codigoRecetaSabado[$this->contador_sabado] = $detalle->receta->codigo;
-            $this->classRecetaSabado[$this->contador_sabado] = null;
-            $this->descripcionRecetaSabado[$this->contador_sabado] = $detalle->receta->descripcion;
-            $this->cantidadSabado[$this->contador_sabado] = $detalle->cantidad;
-            $this->detalles_id_sabado[$this->contador_sabado] = $detalle->id;
-            $this->contador_sabado++;
-        }
+            $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[4])->get();
+            $this->contador_jueves = 0;
+            foreach ($detalles as $detalle){
+                $this->idRecetaJueves[$this->contador_jueves] = $detalle->recetas_id;
+                $this->codigoRecetaJueves[$this->contador_jueves] = $detalle->receta->codigo;
+                $this->classRecetaJueves[$this->contador_jueves] = null;
+                $this->descripcionRecetaJueves[$this->contador_jueves] = $detalle->receta->descripcion;
+                $this->cantidadJueves[$this->contador_jueves] = $detalle->cantidad;
+                $this->detalles_id_jueves[$this->contador_jueves] = $detalle->id;
+                $this->contador_jueves++;
+            }
 
-        $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[7])->get();
-        $this->contador_domingo = 0;
-        foreach ($detalles as $detalle){
-            $this->idRecetaDomingo[$this->contador_domingo] = $detalle->recetas_id;
-            $this->codigoRecetaDomingo[$this->contador_domingo] = $detalle->receta->codigo;
-            $this->classRecetaDomingo[$this->contador_domingo] = null;
-            $this->descripcionRecetaDomingo[$this->contador_domingo] = $detalle->receta->descripcion;
-            $this->cantidadDomingo[$this->contador_domingo] = $detalle->cantidad;
-            $this->detalles_id_domingo[$this->contador_domingo] = $detalle->id;
-            $this->contador_domingo++;
+            $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[5])->get();
+            $this->contador_viernes = 0;
+            foreach ($detalles as $detalle){
+                $this->idRecetaViernes[$this->contador_viernes] = $detalle->recetas_id;
+                $this->codigoRecetaViernes[$this->contador_viernes] = $detalle->receta->codigo;
+                $this->classRecetaViernes[$this->contador_viernes] = null;
+                $this->descripcionRecetaViernes[$this->contador_viernes] = $detalle->receta->descripcion;
+                $this->cantidadViernes[$this->contador_viernes] = $detalle->cantidad;
+                $this->detalles_id_viernes[$this->contador_viernes] = $detalle->id;
+                $this->contador_viernes++;
+            }
+
+            $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[6])->get();
+            $this->contador_sabado = 0;
+            foreach ($detalles as $detalle){
+                $this->idRecetaSabado[$this->contador_sabado] = $detalle->recetas_id;
+                $this->codigoRecetaSabado[$this->contador_sabado] = $detalle->receta->codigo;
+                $this->classRecetaSabado[$this->contador_sabado] = null;
+                $this->descripcionRecetaSabado[$this->contador_sabado] = $detalle->receta->descripcion;
+                $this->cantidadSabado[$this->contador_sabado] = $detalle->cantidad;
+                $this->detalles_id_sabado[$this->contador_sabado] = $detalle->id;
+                $this->contador_sabado++;
+            }
+
+            $detalles = PlanDetalle::where('planificaciones_id', $this->planificaciones_id)->where('fecha', $semana[7])->get();
+            $this->contador_domingo = 0;
+            foreach ($detalles as $detalle){
+                $this->idRecetaDomingo[$this->contador_domingo] = $detalle->recetas_id;
+                $this->codigoRecetaDomingo[$this->contador_domingo] = $detalle->receta->codigo;
+                $this->classRecetaDomingo[$this->contador_domingo] = null;
+                $this->descripcionRecetaDomingo[$this->contador_domingo] = $detalle->receta->descripcion;
+                $this->cantidadDomingo[$this->contador_domingo] = $detalle->cantidad;
+                $this->detalles_id_domingo[$this->contador_domingo] = $detalle->id;
+                $this->contador_domingo++;
+            }
+
         }
 
     }
@@ -431,204 +438,211 @@ class PlanificacionComponent extends Component
         $procesar = false;
 
         $planificacion = Planificacion::find($this->planificaciones_id);
-        $db_codigo = $planificacion->codigo;
-        $db_fecha = $planificacion->fecha;
+        if ($planificacion){
 
-        if ($db_codigo != $this->codigo) {
-            $procesar = true;
-            $planificacion->codigo = $this->codigo;
-        }
+            $db_codigo = $planificacion->codigo;
+            $db_fecha = $planificacion->fecha;
 
-        if ($db_fecha != $this->fecha) {
-            $procesar = true;
-            $planificacion->fecha = $this->fecha;
-        }
+            if ($db_codigo != $this->codigo) {
+                $procesar = true;
+                $planificacion->codigo = $this->codigo;
+            }
 
-        //***** Detalles ******
+            if ($db_fecha != $this->fecha) {
+                $procesar = true;
+                $planificacion->fecha = $this->fecha;
+            }
 
-        if (!empty($this->borraritems)) {
-            $procesar = true;
-        }
+            //***** Detalles ******
 
-        //lunes
-        for ($i = 0; $i < $this->contador_lunes; $i++) {
-            $detalle_id = $this->detalles_id_lunes[$i];
-            $recetas_id = $this->idRecetaLunes[$i];
-            $cantidad = $this->cantidadLunes[$i];
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = PlanDetalle::find($detalle_id);
-                $db_recetas_id = $detalles->recetas_id;
-                $db_cantidad = $detalles->cantidad;
-                if ($db_recetas_id != $recetas_id) {
-                    $procesar = true;
-                }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-            } else {
-                //nuevo renglon
+            if (!empty($this->borraritems)) {
                 $procesar = true;
             }
-        }
 
-        //martes
-        for ($i = 0; $i < $this->contador_martes; $i++) {
-            $detalle_id = $this->detalles_id_martes[$i];
-            $recetas_id = $this->idRecetaMartes[$i];
-            $cantidad = $this->cantidadMartes[$i];
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = PlanDetalle::find($detalle_id);
-                $db_recetas_id = $detalles->recetas_id;
-                $db_cantidad = $detalles->cantidad;
-                if ($db_recetas_id != $recetas_id) {
+            //lunes
+            for ($i = 0; $i < $this->contador_lunes; $i++) {
+                $detalle_id = $this->detalles_id_lunes[$i];
+                $recetas_id = $this->idRecetaLunes[$i];
+                $cantidad = $this->cantidadLunes[$i];
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = PlanDetalle::find($detalle_id);
+                    $db_recetas_id = $detalles->recetas_id;
+                    $db_cantidad = $detalles->cantidad;
+                    if ($db_recetas_id != $recetas_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
+                } else {
+                    //nuevo renglon
                     $procesar = true;
                 }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-            } else {
-                //nuevo renglon
-                $procesar = true;
-            }
-        }
-
-        //miercoles
-        for ($i = 0; $i < $this->contador_miercoles; $i++) {
-            $detalle_id = $this->detalles_id_miercoles[$i];
-            $recetas_id = $this->idRecetaMiercoles[$i];
-            $cantidad = $this->cantidadMiercoles[$i];
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = PlanDetalle::find($detalle_id);
-                $db_recetas_id = $detalles->recetas_id;
-                $db_cantidad = $detalles->cantidad;
-                if ($db_recetas_id != $recetas_id) {
-                    $procesar = true;
-                }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-            } else {
-                //nuevo renglon
-                $procesar = true;
-            }
-        }
-
-        //jueves
-        for ($i = 0; $i < $this->contador_jueves; $i++) {
-            $detalle_id = $this->detalles_id_jueves[$i];
-            $recetas_id = $this->idRecetaJueves[$i];
-            $cantidad = $this->cantidadJueves[$i];
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = PlanDetalle::find($detalle_id);
-                $db_recetas_id = $detalles->recetas_id;
-                $db_cantidad = $detalles->cantidad;
-                if ($db_recetas_id != $recetas_id) {
-                    $procesar = true;
-                }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-            } else {
-                //nuevo renglon
-                $procesar = true;
-            }
-        }
-
-        //viernes
-        for ($i = 0; $i < $this->contador_viernes; $i++) {
-            $detalle_id = $this->detalles_id_viernes[$i];
-            $recetas_id = $this->idRecetaViernes[$i];
-            $cantidad = $this->cantidadViernes[$i];
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = PlanDetalle::find($detalle_id);
-                $db_recetas_id = $detalles->recetas_id;
-                $db_cantidad = $detalles->cantidad;
-                if ($db_recetas_id != $recetas_id) {
-                    $procesar = true;
-                }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-            } else {
-                //nuevo renglon
-                $procesar = true;
-            }
-        }
-
-        //sabado
-        for ($i = 0; $i < $this->contador_sabado; $i++) {
-            $detalle_id = $this->detalles_id_sabado[$i];
-            $recetas_id = $this->idRecetaSabado[$i];
-            $cantidad = $this->cantidadSabado[$i];
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = PlanDetalle::find($detalle_id);
-                $db_recetas_id = $detalles->recetas_id;
-                $db_cantidad = $detalles->cantidad;
-                if ($db_recetas_id != $recetas_id) {
-                    $procesar = true;
-                }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-            } else {
-                //nuevo renglon
-                $procesar = true;
-            }
-        }
-
-        //domingo
-        for ($i = 0; $i < $this->contador_domingo; $i++) {
-            $detalle_id = $this->detalles_id_domingo[$i];
-            $recetas_id = $this->idRecetaDomingo[$i];
-            $cantidad = $this->cantidadDomingo[$i];
-            if ($detalle_id) {
-                //seguimos validando
-                $detalles = PlanDetalle::find($detalle_id);
-                $db_recetas_id = $detalles->recetas_id;
-                $db_cantidad = $detalles->cantidad;
-                if ($db_recetas_id != $recetas_id) {
-                    $procesar = true;
-                }
-                if ($db_cantidad != $cantidad) {
-                    $procesar = true;
-                }
-            } else {
-                //nuevo renglon
-                $procesar = true;
-            }
-        }
-
-        // fin detalles
-
-        if ($procesar){
-
-            $semana = getSemana($this->fecha);
-            $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".verFecha($semana[1], 'd-m')." al ".verFecha($semana[7], 'd-m').")";
-            $planificacion->save();
-
-            //************** Detalles *********************
-
-            //borramos los item viejos
-            $itemViejos = PlanDetalle::where('planificaciones_id', $planificacion->id)->get();
-            foreach ($itemViejos as $item){
-                $detalle = PlanDetalle::find($item->id);
-                $detalle->delete();
             }
 
-            $this->saveDetalles($this->planificaciones_id, $semana);
+            //martes
+            for ($i = 0; $i < $this->contador_martes; $i++) {
+                $detalle_id = $this->detalles_id_martes[$i];
+                $recetas_id = $this->idRecetaMartes[$i];
+                $cantidad = $this->cantidadMartes[$i];
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = PlanDetalle::find($detalle_id);
+                    $db_recetas_id = $detalles->recetas_id;
+                    $db_cantidad = $detalles->cantidad;
+                    if ($db_recetas_id != $recetas_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
+                } else {
+                    //nuevo renglon
+                    $procesar = true;
+                }
+            }
 
-            $this->show($planificacion->id);
-            $this->alert('success', 'Planificación Actualizada.');
+            //miercoles
+            for ($i = 0; $i < $this->contador_miercoles; $i++) {
+                $detalle_id = $this->detalles_id_miercoles[$i];
+                $recetas_id = $this->idRecetaMiercoles[$i];
+                $cantidad = $this->cantidadMiercoles[$i];
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = PlanDetalle::find($detalle_id);
+                    $db_recetas_id = $detalles->recetas_id;
+                    $db_cantidad = $detalles->cantidad;
+                    if ($db_recetas_id != $recetas_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
+                } else {
+                    //nuevo renglon
+                    $procesar = true;
+                }
+            }
+
+            //jueves
+            for ($i = 0; $i < $this->contador_jueves; $i++) {
+                $detalle_id = $this->detalles_id_jueves[$i];
+                $recetas_id = $this->idRecetaJueves[$i];
+                $cantidad = $this->cantidadJueves[$i];
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = PlanDetalle::find($detalle_id);
+                    $db_recetas_id = $detalles->recetas_id;
+                    $db_cantidad = $detalles->cantidad;
+                    if ($db_recetas_id != $recetas_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
+                } else {
+                    //nuevo renglon
+                    $procesar = true;
+                }
+            }
+
+            //viernes
+            for ($i = 0; $i < $this->contador_viernes; $i++) {
+                $detalle_id = $this->detalles_id_viernes[$i];
+                $recetas_id = $this->idRecetaViernes[$i];
+                $cantidad = $this->cantidadViernes[$i];
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = PlanDetalle::find($detalle_id);
+                    $db_recetas_id = $detalles->recetas_id;
+                    $db_cantidad = $detalles->cantidad;
+                    if ($db_recetas_id != $recetas_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
+                } else {
+                    //nuevo renglon
+                    $procesar = true;
+                }
+            }
+
+            //sabado
+            for ($i = 0; $i < $this->contador_sabado; $i++) {
+                $detalle_id = $this->detalles_id_sabado[$i];
+                $recetas_id = $this->idRecetaSabado[$i];
+                $cantidad = $this->cantidadSabado[$i];
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = PlanDetalle::find($detalle_id);
+                    $db_recetas_id = $detalles->recetas_id;
+                    $db_cantidad = $detalles->cantidad;
+                    if ($db_recetas_id != $recetas_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
+                } else {
+                    //nuevo renglon
+                    $procesar = true;
+                }
+            }
+
+            //domingo
+            for ($i = 0; $i < $this->contador_domingo; $i++) {
+                $detalle_id = $this->detalles_id_domingo[$i];
+                $recetas_id = $this->idRecetaDomingo[$i];
+                $cantidad = $this->cantidadDomingo[$i];
+                if ($detalle_id) {
+                    //seguimos validando
+                    $detalles = PlanDetalle::find($detalle_id);
+                    $db_recetas_id = $detalles->recetas_id;
+                    $db_cantidad = $detalles->cantidad;
+                    if ($db_recetas_id != $recetas_id) {
+                        $procesar = true;
+                    }
+                    if ($db_cantidad != $cantidad) {
+                        $procesar = true;
+                    }
+                } else {
+                    //nuevo renglon
+                    $procesar = true;
+                }
+            }
+
+            // fin detalles
+
+            if ($procesar){
+
+                $semana = getSemana($this->fecha);
+                $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".verFecha($semana[1], 'd-m')." al ".verFecha($semana[7], 'd-m').")";
+                $planificacion->save();
+
+                //************** Detalles *********************
+
+                //borramos los item viejos
+                $itemViejos = PlanDetalle::where('planificaciones_id', $planificacion->id)->get();
+                foreach ($itemViejos as $item){
+                    $detalle = PlanDetalle::find($item->id);
+                    $detalle->delete();
+                }
+
+                $this->saveDetalles($this->planificaciones_id, $semana);
+
+                $this->show($planificacion->id);
+                $this->alert('success', 'Planificación Actualizada.');
+
+            }else{
+                $this->alert('info', 'No se realizo ningún cambio.');
+                $this->show($this->planificaciones_id);
+            }
+
 
         }else{
-            $this->alert('info', 'No se realizo ningún cambio.');
-            $this->show($this->planificaciones_id);
+            $this->limpiar();
         }
 
     }
@@ -665,10 +679,12 @@ class PlanificacionComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $planificacion->delete();
-            $this->edit = false;
+            if ($planificacion){
+                $planificacion->delete();
+                $this->edit = false;
+                $this->alert('success', 'Planificación Eliminada.');
+            }
             $this->limpiar();
-            $this->alert('success', 'Planificación Eliminada.');
         }
     }
 
@@ -1203,47 +1219,65 @@ class PlanificacionComponent extends Component
     public function btnExistencias()
     {
         $planificacion = Planificacion::find($this->planificaciones_id);
+        if ($planificacion){
 
-        $listarArticulos = [];
+            $listarArticulos = [];
 
-        //DETALLES PLANIFICACION
-        $detallesPlanificacion = PlanDetalle::where('planificaciones_id', $planificacion->id)->get();
-        foreach ($detallesPlanificacion as $planficacion){
-            //recetas
-            $idReceta = $planficacion->recetas_id;
-            //articulos
-            $detallesReceta = ReceDetalle::where('recetas_id', $idReceta)->get();
-            foreach ($detallesReceta as $articulo){
-                $idArticulo = $articulo->articulos_id;
-                $idUnidad = $articulo->articulo->unidades_id;
-                //stock
-                $stocks = Stock::where('empresas_id', $this->empresas_id)
-                    ->where('articulos_id', $idArticulo)
-                    ->where('unidades_id', $idUnidad)
-                    ->get();
-                $disponible = 0;
-                foreach ($stocks as $stock){
-                    $disponible = $disponible + $stock->disponible;
-                }
+            //DETALLES PLANIFICACION
+            $detallesPlanificacion = PlanDetalle::where('planificaciones_id', $planificacion->id)->get();
+            foreach ($detallesPlanificacion as $planficacion){
+                //recetas
+                $idReceta = $planficacion->recetas_id;
+                //articulos
+                $detallesReceta = ReceDetalle::where('recetas_id', $idReceta)->get();
+                foreach ($detallesReceta as $articulo){
+                    $idArticulo = $articulo->articulos_id;
+                    $idUnidad = $articulo->articulo->unidades_id;
+                    //stock
+                    $stocks = Stock::where('empresas_id', $this->empresas_id)
+                        ->where('articulos_id', $idArticulo)
+                        ->where('unidades_id', $idUnidad)
+                        ->get();
+                    $disponible = 0;
+                    foreach ($stocks as $stock){
+                        $disponible = $disponible + $stock->disponible;
+                    }
 
-                $buscar = array_key_exists(mb_strtoupper($articulo->articulo->codigo), $listarArticulos);
+                    $buscar = array_key_exists(mb_strtoupper($articulo->articulo->codigo), $listarArticulos);
 
-                if (!$buscar){
-                    $listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).''] = [
-                        'codigo' => mb_strtoupper($articulo->articulo->codigo),
-                        'descripcion' => mb_strtoupper($articulo->articulo->descripcion),
-                        'unidad' => mb_strtoupper($articulo->articulo->unidad->codigo),
-                        'cantidad' => $disponible
-                    ];
-                }else{
+                    if (!$buscar){
+                        $listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).''] = [
+                            'codigo' => mb_strtoupper($articulo->articulo->codigo),
+                            'descripcion' => mb_strtoupper($articulo->articulo->descripcion),
+                            'unidad' => mb_strtoupper($articulo->articulo->unidad->codigo),
+                            'cantidad' => $disponible
+                        ];
+                    }/*else{
                     //$cantidad = $listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'']['cantidad'];
                     //$listarArticulos[''.mb_strtoupper($articulo->articulo->codigo).'']['cantidad'] = $cantidad + $disponible;
+                }*/
+
                 }
-
             }
-        }
 
-        $this->listarExistencias = $listarArticulos;
+            $this->listarExistencias = $listarArticulos;
+
+        }else{
+            $this->limpiar();
+            $this->dispatch('cerrarModalExistencias');
+        }
+    }
+
+    public function actualizar()
+    {
+        $this->reset(['planificaciones_id', 'edit']);
+        $this->limpiar();
+    }
+
+    #[On('cerrarModalExistencias')]
+    public function cerrarModalExistencias()
+    {
+        //JS
     }
 
 }

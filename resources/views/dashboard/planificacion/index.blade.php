@@ -51,6 +51,10 @@
             Livewire.dispatch('updatedEmpresaID');
         });
 
+        Livewire.on('cerrarModalExistencias', () => {
+            $('#btn_modal_existencias_planificacion').click();
+        });
+
         function buscar(){
             verSpinnerOculto();
             let input = $("#navbarSearch");
