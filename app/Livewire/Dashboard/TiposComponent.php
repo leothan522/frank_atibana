@@ -72,24 +72,24 @@ class TiposComponent extends Component
             $tipo = TipoArticulo::find($this->tipos_id);
             $message = "Tipo Actualizado.";
         }
-        $tipo->nombre = $this->nombre;
 
-        $tipo->save();
-        $this->dispatch('listarSelect', tabla: 'tipos')->to(ArticulosComponent::class);
+        if ($tipo){
+            $tipo->nombre = $this->nombre;
+            $tipo->save();
+            $this->dispatch('listarSelect', tabla: 'tipos')->to(ArticulosComponent::class);
+            $this->alert('success', $message);
+        }
+
         $this->limpiarTipos();
-        $this->alert(
-            'success',
-            $message
-        );
-
-
     }
 
     public function edit($id)
     {
         $tipo = TipoArticulo::find($id);
-        $this->tipos_id = $tipo->id;
-        $this->nombre = $tipo->nombre;
+        if ($tipo){
+            $this->tipos_id = $tipo->id;
+            $this->nombre = $tipo->nombre;
+        }
     }
 
     public function destroy($id)
@@ -113,7 +113,7 @@ class TiposComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $articulo = Articulo::where('tipos_id', $tipo->id)->first();
+        $articulo = Articulo::where('tipos_id', $this->tipos_id)->first();
         if ($articulo){
             $vinculado = true;
         }
@@ -129,12 +129,11 @@ class TiposComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $tipo->delete();
-            $this->alert(
-                'success',
-                'Tipo Eliminado.'
-            );
-            $this->dispatch('listarSelect', tabla: 'tipos')->to(ArticulosComponent::class);
+            if ($tipo){
+                $tipo->delete();
+                $this->alert('success', 'Tipo Eliminado.');
+                $this->dispatch('listarSelect', tabla: 'tipos')->to(ArticulosComponent::class);
+            }
         }
 
         $this->limpiarTipos();
