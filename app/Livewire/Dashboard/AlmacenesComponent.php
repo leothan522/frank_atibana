@@ -84,26 +84,28 @@ class AlmacenesComponent extends Component
             $almacen = Almacen::find($this->almacenes_id);
             $message = "Almacen Actualizado.";
         }
-        $almacen->empresas_id = $this->empresas_id;
-        $almacen->codigo = strtoupper($this->codigo);
-        $almacen->nombre = $this->nombre;
-        $almacen->save();
 
-        $this->edit($almacen->id);
-
-        $this->alert(
-            'success',
-            $message
-        );
+        if ($almacen){
+            $almacen->empresas_id = $this->empresas_id;
+            $almacen->codigo = strtoupper($this->codigo);
+            $almacen->nombre = $this->nombre;
+            $almacen->save();
+            $this->limpiarAlmacenes();
+            $this->alert('success', $message);
+        }else{
+            $this->limpiarAlmacenes();
+        }
 
     }
 
     public function edit($id)
     {
         $almacen = Almacen::find($id);
-        $this->almacenes_id = $almacen->id;
-        $this->codigo = $almacen->codigo;
-        $this->nombre = $almacen->nombre;
+        if ($almacen){
+            $this->almacenes_id = $almacen->id;
+            $this->codigo = $almacen->codigo;
+            $this->nombre = $almacen->nombre;
+        }
     }
 
     public function destroy($id)
@@ -129,11 +131,11 @@ class AlmacenesComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $detalles = AjusDetalle::where('almacenes_id', $almacen->id)->first();
+        $detalles = AjusDetalle::where('almacenes_id', $this->almacenes_id)->first();
         if ($detalles){
             $vinculado = true;
         }
-        $stock = Stock::where('almacenes_id', $almacen->id)->first();
+        $stock = Stock::where('almacenes_id', $this->almacenes_id)->first();
         if ($stock){
             $vinculado = true;
         }
@@ -151,11 +153,10 @@ class AlmacenesComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $almacen->delete();
-            $this->alert(
-                'success',
-                'Almacen Eliminado.'
-            );
+            if ($almacen){
+                $almacen->delete();
+                $this->alert('success', 'Almacen Eliminado.');
+            }
             $this->limpiarAlmacenes();
         }
     }

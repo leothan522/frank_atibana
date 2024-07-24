@@ -11,7 +11,7 @@
         </h3>
 
         <div class="card-tools">
-            <button type="button" class="btn btn-tool" wire:click="limpiar">
+            <button type="button" class="btn btn-tool" wire:click="limpiarAlmacenes">
                 <i class="fas fa-sync-alt"></i>
             </button>
             <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $rowsAlmacenes) disabled @endif>
