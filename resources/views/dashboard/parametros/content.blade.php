@@ -1,11 +1,11 @@
 <div class="row justify-content-center">
 
     <div class="col-md-4">
-        @include('dashboard.parametros.card_form')
+        @include('dashboard.parametros.form')
     </div>
 
     <div class="col-md-8">
-        @include('dashboard.parametros.card_table')
+        @include('dashboard.parametros.table')
     </div>
 
 </div>

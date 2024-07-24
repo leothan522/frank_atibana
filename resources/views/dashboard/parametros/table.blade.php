@@ -2,22 +2,25 @@
     <div class="card-header">
         <h3 class="card-title">
             @if($keyword)
-                Búsqueda { <b class="text-danger">{{ $keyword }}</b> }
+                Busqueda { <b class="text-danger">{{ $keyword }}</b> }
                 <button class="btn btn-tool text-danger" wire:click="limpiar"><i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Parametros [ <b class="text-navy">{{ $rows }}</b> ]
+                Parametros [ <b class="text-navy">{{ $rowsParametros }}</b> ]
             @endif
         </h3>
 
         <div class="card-tools">
-            <ul class="pagination pagination-sm float-right m-1">
-                {{ $parametros->links() }}
-            </ul>
+            <button type="button" class="btn btn-tool" wire:click="limpiar">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $rowsParametros) disabled @endif >
+                <i class="fas fa-sort-amount-down-alt"></i> Ver más
+            </button>
         </div>
     </div>
-    <div class="card-body table-responsive p-0" {{--style="height: 400px;"--}}>
-        <table class="table {{--table-head-fixed--}} table-hover text-nowrap">
+    <div class="card-body table-responsive p-0" @if($tableStyle) style="height: 72vh;" @endif >
+        <table class="table table-sm table-head-fixed table-hover text-nowrap">
             <thead>
             <tr class="text-navy">
                 <th>id</th>
@@ -80,5 +83,10 @@
         </table>
 
     </div>
+
+    <div class="card-footer">
+        <small>Mostrando {{ $parametros->count() }}</small>
+    </div>
+
     {!! verSpinner() !!}
 </div>

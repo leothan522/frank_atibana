@@ -17,7 +17,7 @@
                             <li class="breadcrumb-item active" >{{ $edit_name }}</li>
                             <li class="breadcrumb-item active" >{{ $edit_email }}</li>
                             <li class="breadcrumb-item active" >{{ $rol_nombre }}</li>
-                            <li class="breadcrumb-item active" >{!! verEstatusUsuario($estatus, true) !!}</li>
+                            <li class="breadcrumb-item active" >{!! $this->getEstatusUsuario($estatus, true) !!}</li>
                         </ol>
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                 </button>
             </div>
 
-            <div class="overlay-wrapper" wire:loading wire:target="edit, savePermisos">
+            <div class="overlay-wrapper" wire:loading wire:target="edit, savePermisos, deletePermisos">
                 <div class="overlay">
                     <div class="spinner-border text-navy" role="status">
                         <span class="sr-only">Loading...</span>

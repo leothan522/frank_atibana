@@ -1,7 +1,5 @@
 @extends('adminlte::page')
 
-@section('plugins.Select2', true)
-
 @section('title', 'Usuarios')
 
 @section('content_header')
@@ -25,10 +23,6 @@
     @livewire('dashboard.roles-component')
 @endsection
 
-{{--@section('right-sidebar')
-    @include('dashboard.right-sidebar')
-@endsection--}}
-
 @section('footer')
     @include('dashboard.footer')
 @endsection
@@ -47,7 +41,7 @@
             Livewire.dispatch('save', { nombre: nombre });
         });
 
-        Livewire.on('addRolList', ({ id, nombre, rows }) => {
+        Livewire.on('addRoleList', ({ id, nombre, rows }) => {
             $('#input_role_nombre')
                 .val('')
                 .blur();
@@ -63,7 +57,7 @@
 
         function showRol(id){
             $('#div_ver_spinner_roles').removeClass('d-none');
-            Livewire.dispatch('edit', { id: id });
+            Livewire.dispatch('edit', { id: id } );
         }
 
         Livewire.on('setRolList', ({ id, nombre }) => {
@@ -88,29 +82,16 @@
             $('#div_ver_spinner_usuarios').removeClass('d-none');
         });
 
-        //acceso a empresas ******************************************************
-
-        function selectEmpresas(id, data)
-        {
-
-            $('#' + id).select2({
-                theme: 'bootstrap4',
-                data: data
-            });
-
-            $('#'  + id).val(null).trigger('change');
+        function search(){
+            let input = $("#navbarSearch");
+            let keyword  = input.val();
+            if (keyword.length > 0){
+                input.blur();
+                //alert('Falta vincular con el componente Livewire');
+                Livewire.dispatch('buscar', { keyword:keyword });
+            }
+            return false;
         }
-
-        Livewire.on('selectEmpresas', ({ data }) => {
-            selectEmpresas('select_acceso_empresas', data);
-        });
-
-        $("#select_acceso_empresas").on('change', function() {
-            var val = $(this).val();
-            Livewire.dispatch('empresasSeleccionadas', { data: val });
-            // te muestra un array de todos los seleccionados
-            //console.log(val);
-        });
 
         console.log('Hi!');
     </script>

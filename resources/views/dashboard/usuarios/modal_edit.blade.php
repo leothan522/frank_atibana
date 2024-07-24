@@ -3,7 +3,7 @@
         <div class="modal-content fondo">
             <div class="modal-header">
                 {{--<h4 class="modal-title">Large Modal</h4>--}}
-                <button type="button" wire:click="limpiar()" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" wire:click="limpiar" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -12,7 +12,7 @@
                 <div class="row justify-content-center">
                     <div class="row col-md-11">
 
-                        <div class="col-md-6">
+                        <div class="col-md-12 col-lg-6">
                             <div class="card card-navy card-outline">
                                 <div class="card-body box-profile">
                                     <div class="text-center">
@@ -39,11 +39,11 @@
                                         <li class="list-group-item">
                                             <b>Estatus</b>
                                             <a class="float-right text-danger">
-                                                {!! verEstatusUsuario($estatus) !!}
+                                                {!! $this->getEstatusUsuario($estatus) !!}
                                             </a>
                                         </li>
                                         <li class="list-group-item">
-                                            <b>Created_at</b>
+                                            <b>Creado</b>
                                             <a class="float-right">
                                                 {{ verFecha($created_at) }}
                                             </a>
@@ -61,20 +61,20 @@
                                             <div class="col-md-6">
                                                 @if ($estatus)
                                                     @php($clase = "btn-danger")
-                                                    @php($texto = "Suspender Usuario")
+                                                    @php($texto = "Suspender <br> Usuario")
                                                 @else
                                                     @php($clase = "btn-success")
-                                                    @php($texto = "Reactivar Usuario")
+                                                    @php($texto = "Reactivar <br> Usuario")
                                                 @endif
                                                 <button type="button" wire:click="cambiarEstatus({{ $usuarios_id }})" class="btn {{ $clase }} btn-block"
                                                         @if(!comprobarPermisos('usuarios.estatus')) disabled @endif>
-                                                    <b>{{ $texto }}</b>
+                                                    <b>{!! $texto !!}</b>
                                                 </button>
                                             </div>
                                             <div class="col-md-6">
                                                 <button type="button" wire:click="restablecerClave({{ $usuarios_id }})" class="btn btn-block btn-secondary"
                                                         @if(!comprobarPermisos('usuarios.password')) disabled @endif>
-                                                    <b>Restablecer Contraseña</b>
+                                                    <b>Restablecer <br> Contraseña</b>
                                                 </button>
                                             </div>
                                         </div>
@@ -84,7 +84,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-12 col-lg-6">
 
                             <div class="card card-navy" style="height: inherit; width: inherit; transition: all 0.15s ease 0s;">
 
@@ -167,18 +167,6 @@
                                             </div>
 
                                         @endif
-
-                                        <div class="form-group" >
-                                            <label>Acceso a Empresas</label>
-                                            <p class="col-md-12 text-sm text-bold text-primary">
-                                                {!! $ver_empresas !!}
-                                            </p>
-                                            <div wire:ignore>
-                                                <select class="form-control" multiple="multiple" {{--wire:model.live="select_empresas"--}}
-                                                data-placeholder="Seleccione las Empresas" id="select_acceso_empresas">
-                                                </select>
-                                            </div>
-                                        </div>
 
                                         <div class="form-group text-right">
                                             <input type="submit" class="btn btn-block btn-primary" value="Guardar Cambios">

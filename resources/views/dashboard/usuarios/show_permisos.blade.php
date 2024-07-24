@@ -2,7 +2,7 @@
     @php($i = 0)
     @foreach(allPermisos() as $modulo => $items)
         @php($i++)
-        <div class="col-md-4">
+        <div class="col-md-6 col-lg-4">
             <div class="card card-navy collapsed-card" wire:ignore.self>
                 <div class="card-header">
                     <h3 class="card-title">

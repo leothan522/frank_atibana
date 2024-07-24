@@ -1,9 +1,12 @@
-<div class="card card-navy" style="height: inherit; width: inherit; transition: all 0.15s ease 0s;">
+<div class="card card-navy" style="height: inherit; width: inherit; transition: all 0.15s ease 0s;"
+     xmlns:wire="http://www.w3.org/1999/xhtml">
 
     <div class="card-header">
         <h3 class="card-title">Crear Usuario</h3>
         <div class="card-tools">
-            <span class="btn btn-tool"><i class="fas fa-file"></i></span>
+            <button type="button" class="btn btn-tool" wire:click="limpiar">
+                <i class="fas fa-file"></i>
+            </button>
         </div>
     </div>
 

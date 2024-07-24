@@ -11,7 +11,8 @@ return [
         'toast' => true,
         'text' => null,
         'showCancelButton' => false,
-        'showConfirmButton' => false
+        'showConfirmButton' => false,
+        'timerProgressBar' => true,
     ],
     'confirm' => [
         'icon' => 'warning',
