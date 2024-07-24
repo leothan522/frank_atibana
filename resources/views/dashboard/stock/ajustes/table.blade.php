@@ -13,6 +13,9 @@
         </h3>
 
         <div class="card-tools">
+            <button type="button" class="btn btn-tool" wire:click="">
+                <i class="fas fa-sync-alt"></i>
+            </button>
             <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $listarAjustes->count()) disabled @endif>
                 <i class="fas fa-sort-amount-down-alt"></i> Ver más
             </button>

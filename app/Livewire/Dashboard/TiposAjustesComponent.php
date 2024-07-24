@@ -63,27 +63,28 @@ class TiposAjustesComponent extends Component
             $tipo = AjusTipo::find($this->tipos_id);
             $message = "Tipo de Ajuste Actualizado.";
         }
-        $tipo->codigo = $this->codigo;
-        $tipo->descripcion = $this->nombre;
-        $tipo->tipo = $this->tipo;
-        $tipo->save();
 
-        $this->edit($tipo->id);
-
-        $this->alert(
-            'success',
-            $message
-        );
-
+        if ($tipo){
+            $tipo->codigo = $this->codigo;
+            $tipo->descripcion = $this->nombre;
+            $tipo->tipo = $this->tipo;
+            $tipo->save();
+            $this->limpiarTiposAjuste();
+            $this->alert('success', $message);
+        }else{
+            $this->limpiarTiposAjuste();
+        }
     }
 
     public function edit($id)
     {
         $tipo = AjusTipo::find($id);
-        $this->tipos_id = $tipo->id;
-        $this->codigo = $tipo->codigo;
-        $this->nombre = $tipo->descripcion;
-        $this->tipo = $tipo->tipo;
+        if ($tipo){
+            $this->tipos_id = $tipo->id;
+            $this->codigo = $tipo->codigo;
+            $this->nombre = $tipo->descripcion;
+            $this->tipo = $tipo->tipo;
+        }
     }
 
     public function destroy($id)
@@ -109,7 +110,7 @@ class TiposAjustesComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $detalles = AjusDetalle::where('tipos_id', $tipo->id)->first();
+        $detalles = AjusDetalle::where('tipos_id', $this->tipos_id)->first();
         if ($detalles){
             $vinculado = true;
         }
@@ -126,11 +127,10 @@ class TiposAjustesComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $tipo->delete();
-            $this->alert(
-                'success',
-                'Tipo de Ajuste Eliminado.'
-            );
+            if ($tipo){
+                $tipo->delete();
+                $this->alert('success', 'Tipo de Ajuste Eliminado.');
+            }
             $this->limpiarTiposAjuste();
         }
     }
