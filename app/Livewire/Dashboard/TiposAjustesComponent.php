@@ -110,6 +110,7 @@ class TiposAjustesComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
+
         $detalles = AjusDetalle::where('tipos_id', $this->tipos_id)->first();
         if ($detalles){
             $vinculado = true;

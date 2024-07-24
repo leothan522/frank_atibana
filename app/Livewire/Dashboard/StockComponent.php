@@ -185,7 +185,11 @@ class StockComponent extends Component
 
             foreach ($detalles as $detalle){
                 $getTipo = AjusTipo::where('tipo', 2)->first();
-                $tipo = $getTipo->codigo;
+                if ($getTipo){
+                    $tipo = $getTipo->codigo;
+                }else{
+                    $tipo = 'S01';
+                }
 
                 $recetas = ReceDetalle::where('recetas_id', $detalle->recetas_id)->get();
                 $y = 0;

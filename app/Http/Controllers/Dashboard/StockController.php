@@ -60,15 +60,24 @@ class StockController extends Controller
         $label = str_replace(':', '-', $fecha);
 
         $empresa = Empresa::find($empresa_id);
+        if (!$empresa){
+            return redirect()->route('stock.index');
+        }
+
         $codigoUnidad = null;
         if ($unidad != "all"){
             $getUnidad = Unidad::find($unidad);
-            $codigoUnidad = $getUnidad->codigo;
+            if ($getUnidad){
+                $codigoUnidad = $getUnidad->codigo;
+            }
         }
+
         $codigoAlmacen = null;
         if ($almacen != "all"){
             $getAlmacen = Almacen::find($almacen);
-            $codigoAlmacen = $getAlmacen->codigo;
+            if ($getAlmacen){
+                $codigoAlmacen = $getAlmacen->codigo;
+            }
         }
 
 
@@ -110,22 +119,31 @@ class StockController extends Controller
 
         $stock->each(function ($stock) {
 
+            $stock->activo = null;
+            $stock->codigo = null;
+            $stock->articulo = null;
+            $stock->unidad = null;
+
             $articulo = Articulo::find($stock->articulos_id);
             $unidad = Unidad::find($stock->unidades_id);
 
-            $stock->activo = $articulo->estatus;
-            $stock->codigo = $articulo->codigo;
-            $stock->articulo = $articulo->descripcion;
-            $stock->unidad = $unidad->codigo;
+            if ($articulo){
+                $stock->activo = $articulo->estatus;
+                $stock->codigo = $articulo->codigo;
+                $stock->articulo = $articulo->descripcion;
+            }
+            if ($unidad){
+                $stock->unidad = $unidad->codigo;
+            }
 
-            $resultado = calcularPrecios($stock->empresas_id, $stock->articulos_id, $articulo->tributarios_id, $stock->unidades_id);
+            /*$resultado = calcularPrecios($stock->empresas_id, $stock->articulos_id, $articulo->tributarios_id, $stock->unidades_id);
             $stock->moneda = $resultado['moneda_base'];
             $stock->dolares = $resultado['precio_dolares'];
             $stock->bolivares = $resultado['precio_bolivares'];
             $stock->iva_dolares = $resultado['iva_dolares'];
             $stock->iva_bolivares = $resultado['iva_bolivares'];
             $stock->neto_dolares = $resultado['neto_dolares'];
-            $stock->neto_bolivares = $resultado['neto_bolivares'];
+            $stock->neto_bolivares = $resultado['neto_bolivares'];*/
 
             if ($stock->almacenes_id){
                 $existencias = Stock::where('empresas_id', $stock->empresas_id)
@@ -195,8 +213,12 @@ class StockController extends Controller
         $hoy = Carbon::now()->format('d-m-Y h:i:s a');
         $label = str_replace(':', '-', $hoy);
 
+        $empresa = Empresa::find($request->empresa_id);
+        if (!$empresa){
+            return redirect()->route('stock.index');
+        }
+
         $empresa_id = $request->empresa_id;
-        $empresa = Empresa::find($empresa_id);
 
         if ($reporte == "numero"){
             $ajustes = Ajuste::where('empresas_id', $empresa_id)->orderBy('codigo', 'asc')->get();
