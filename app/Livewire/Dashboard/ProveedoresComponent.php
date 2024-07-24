@@ -105,52 +105,57 @@ class ProveedoresComponent extends Component
     public function save()
     {
         $this->validate();
-
+        $imagen = null;
         if ($this->proveedores_id && !$this->new_proveedor){
             //editar
             $proveedor = Proveedor::find($this->proveedores_id);
-            $imagen = $proveedor->imagen;
+            if ($proveedor){
+                $imagen = $proveedor->imagen;
+            }
             $message = "Proveedor Actualizado.";
         }else{
             //nuevo
             $proveedor = new Proveedor();
-            $imagen = null;
             $message = "Proveedor Creado.";
         }
 
-        $proveedor->rif = $this->rif;
-        $proveedor->nombre = $this->nombre;
-        $proveedor->telefono = $this->telefono;
-        $proveedor->direccion = $this->direccion;
-        $proveedor->banco = $this->banco;
-        $proveedor->cuenta = $this->cuenta;
+        if ($proveedor){
+            $proveedor->rif = $this->rif;
+            $proveedor->nombre = $this->nombre;
+            $proveedor->telefono = $this->telefono;
+            $proveedor->direccion = $this->direccion;
+            $proveedor->banco = $this->banco;
+            $proveedor->cuenta = $this->cuenta;
 
-        if ($this->photo){
-            $ruta = $this->photo->store('public/proveedores');
-            $proveedor->imagen = str_replace('public/', 'storage/', $ruta);
-            //miniaturas
-            $nombre = explode('proveedores/', $proveedor->imagen);
-            $path_data = "storage/proveedores/size_".$nombre[1];
-            $miniatura = crearMiniaturas($proveedor->imagen, $path_data);
-            $proveedor->mini = $miniatura['mini'];
-            //borramos imagenes anteriones si existen
-            if ($this->img_borrar_principal){
-                borrarImagenes($imagen, 'proveedores');
+            if ($this->photo){
+                $ruta = $this->photo->store('public/proveedores');
+                $proveedor->imagen = str_replace('public/', 'storage/', $ruta);
+                //miniaturas
+                $nombre = explode('proveedores/', $proveedor->imagen);
+                $path_data = "storage/proveedores/size_".$nombre[1];
+                $miniatura = crearMiniaturas($proveedor->imagen, $path_data);
+                $proveedor->mini = $miniatura['mini'];
+                //borramos imagenes anteriones si existen
+                if ($this->img_borrar_principal){
+                    borrarImagenes($imagen, 'proveedores');
+                }
+            }else{
+                if ($this->img_borrar_principal){
+                    $proveedor->imagen = null;
+                    $proveedor->mini = null;
+                    $proveedor->detail = null;
+                    $proveedor->cart = null;
+                    $proveedor->banner = null;
+                    borrarImagenes($this->img_borrar_principal, 'proveedores');
+                }
             }
+
+            $proveedor->save();
+            $this->show($proveedor->id);
+            $this->alert('success', $message);
         }else{
-            if ($this->img_borrar_principal){
-                $proveedor->imagen = null;
-                $proveedor->mini = null;
-                $proveedor->detail = null;
-                $proveedor->cart = null;
-                $proveedor->banner = null;
-                borrarImagenes($this->img_borrar_principal, 'proveedores');
-            }
+            $this->limpiar();
         }
-
-        $proveedor->save();
-        $this->show($proveedor->id);
-        $this->alert('success', $message);
 
     }
 
@@ -159,22 +164,23 @@ class ProveedoresComponent extends Component
     {
         $this->limpiar();
         $proveedor = Proveedor::find($id);
-        $this->edit = true;
-        $this->view = "show";
-        $this->footer = true;
-        $this->proveedores_id = $proveedor->id;
-        $this->rif = $proveedor->rif;
-        $this->nombre = $proveedor->nombre;
-        $this->telefono = $proveedor->telefono;
-        $this->direccion = $proveedor->direccion;
-        $this->banco = $proveedor->banco;
-        $this->cuenta = $proveedor->cuenta;
-        $this->estatus = $proveedor->estatus;
-        $this->verImagen = $proveedor->mini;
-        $this->img_principal = $proveedor->imagen;
+        if ($proveedor){
+            $this->edit = true;
+            $this->view = "show";
+            $this->footer = true;
+            $this->proveedores_id = $proveedor->id;
+            $this->rif = $proveedor->rif;
+            $this->nombre = $proveedor->nombre;
+            $this->telefono = $proveedor->telefono;
+            $this->direccion = $proveedor->direccion;
+            $this->banco = $proveedor->banco;
+            $this->cuenta = $proveedor->cuenta;
+            $this->estatus = $proveedor->estatus;
+            $this->verImagen = $proveedor->mini;
+            $this->img_principal = $proveedor->imagen;
 
-        $this->btnVinculados = ArtProv::where('proveedores_id', $this->proveedores_id)->first();
-
+            $this->btnVinculados = ArtProv::where('proveedores_id', $this->proveedores_id)->first();
+        }
     }
 
     public function destroy()
@@ -194,7 +200,6 @@ class ProveedoresComponent extends Component
     public function confirmed()
     {
         $proveedor = Proveedor::find($this->proveedores_id);
-        $imagen = $proveedor->imagen;
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
@@ -215,12 +220,15 @@ class ProveedoresComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $proveedor->delete();
-            borrarImagenes($imagen, 'proveedores');
-            $this->edit = false;
-            $this->reset('proveedores_id');
+            if ($proveedor){
+                $imagen = $proveedor->imagen;
+                $proveedor->delete();
+                borrarImagenes($imagen, 'proveedores');
+                $this->edit = false;
+                $this->reset('proveedores_id');
+                $this->alert('success', 'Proveedor Eliminado.');
+            }
             $this->limpiar();
-            $this->alert('success', 'Proveedor Eliminado.');
         }
     }
 
@@ -258,25 +266,29 @@ class ProveedoresComponent extends Component
     public function btnActivoInactivo()
     {
         $proveedor = Proveedor::find($this->proveedores_id);
-        if ($this->estatus){
-            $proveedor->estatus = 0;
-            $this->estatus = 0;
-            $message = "Proveedor Inactivo.";
+        if ($proveedor){
+            if ($this->estatus){
+                $proveedor->estatus = 0;
+                $this->estatus = 0;
+                $message = "Proveedor Inactivo.";
+            }else{
+                $proveedor->estatus = 1;
+                $this->estatus = 1;
+                $message = "Proveedor Activo.";
+            }
+            $proveedor->update();
+
+            $articulos = ArtProv::where('proveedores_id', $proveedor->id)->get();
+            foreach ($articulos as $articulo){
+                $vinculado = ArtProv::find($articulo->id);
+                $vinculado->estatus = $this->estatus;
+                $vinculado->save();
+            }
+
+            $this->alert('success', $message);
         }else{
-            $proveedor->estatus = 1;
-            $this->estatus = 1;
-            $message = "Proveedor Activo.";
+            $this->limpiar();
         }
-        $proveedor->update();
-
-        $articulos = ArtProv::where('proveedores_id', $proveedor->id)->get();
-        foreach ($articulos as $articulo){
-            $vinculado = ArtProv::find($articulo->id);
-            $vinculado->estatus = $this->estatus;
-            $vinculado->save();
-        }
-
-        $this->alert('success', $message);
     }
 
     public function btnBorrarImagen()
@@ -310,10 +322,12 @@ class ProveedoresComponent extends Component
         $articulos = ArtProv::where('proveedores_id', $this->proveedores_id)->get();
         foreach ($articulos as $articulo){
             $vinculado = ArtProv::find($articulo->id);
-            $vinculado->delete();
-            $this->show($this->proveedores_id);
-            $this->dispatch('cerrarModal');
+            if ($vinculado){
+                $vinculado->delete();
+            }
         }
+        $this->show($this->proveedores_id);
+        $this->dispatch('cerrarModal');
     }
 
     #[On('cerrarModal')]
