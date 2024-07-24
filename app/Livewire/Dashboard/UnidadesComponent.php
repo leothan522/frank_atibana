@@ -77,25 +77,23 @@ class UnidadesComponent extends Component
             $unidad = Unidad::find($this->unidades_id);
             $message = "Unidad Actualizada.";
         }
-        $unidad->codigo = $this->codigo;
-        $unidad->nombre = $this->nombre;
-
-        $unidad->save();
+        if ($unidad){
+            $unidad->codigo = $this->codigo;
+            $unidad->nombre = $this->nombre;
+            $unidad->save();
+            $this->alert('success', $message);
+        }
         $this->limpiarUnidades();
-        $this->alert(
-            'success',
-            $message
-        );
-
-
     }
 
     public function edit($id)
     {
         $unidad = Unidad::find($id);
-        $this->unidades_id = $unidad->id;
-        $this->codigo = $unidad->codigo;
-        $this->nombre = $unidad->nombre;
+        if ($unidad){
+            $this->unidades_id = $unidad->id;
+            $this->codigo = $unidad->codigo;
+            $this->nombre = $unidad->nombre;
+        }
     }
 
     public function destroyUnidad($id)
@@ -119,7 +117,7 @@ class UnidadesComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $articulo = Articulo::where('unidades_id', $unidad->id)->first();
+        $articulo = Articulo::where('unidades_id', $this->unidades_id)->first();
         if ($articulo){
             $vinculado = true;
         }
@@ -137,13 +135,11 @@ class UnidadesComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $unidad->delete();
-            $this->alert(
-                'success',
-                'Unidad Eliminada.'
-            );
+            if ($unidad){
+                $unidad->delete();
+                $this->alert('success', 'Unidad Eliminada.');
+            }
         }
-
         $this->limpiarUnidades();
     }
 
