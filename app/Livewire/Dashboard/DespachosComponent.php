@@ -864,4 +864,10 @@ class DespachosComponent extends Component
         }
     }
 
+    public function actualizar()
+    {
+        $this->reset(['despachos_id', 'edit']);
+        $this->limpiar();
+    }
+
 }

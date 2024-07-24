@@ -31,10 +31,10 @@
 
                 <div class="row">
                     <div class="col-md-4">
-                        @include('dashboard.stock.segmentos.form')
+                        @include('dashboard.despachos.segmentos.form')
                     </div>
                     <div class="col-md-8">
-                        @include('dashboard.stock.segmentos.table')
+                        @include('dashboard.despachos.segmentos.table')
                     </div>
                 </div>
 

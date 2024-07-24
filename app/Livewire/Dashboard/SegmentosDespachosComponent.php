@@ -73,23 +73,24 @@ class SegmentosDespachosComponent extends Component
             $tipo = DespSegmento::find($this->segmentos_id);
             $message = "Segmento Actualizado.";
         }
-        $tipo->descripcion = ucfirst($this->nombre);
-        $tipo->save();
 
-        $this->edit($tipo->id);
+        if ($tipo){
+            $tipo->descripcion = ucfirst($this->nombre);
+            $tipo->save();
+            $this->alert('success', $message);
+        }
 
-        $this->alert(
-            'success',
-            $message
-        );
+        $this->limpiarSegmentos();
 
     }
 
     public function edit($id)
     {
         $segmentos = DespSegmento::find($id);
-        $this->segmentos_id = $segmentos->id;
-        $this->nombre = $segmentos->descripcion;
+        if ($segmentos){
+            $this->segmentos_id = $segmentos->id;
+            $this->nombre = $segmentos->descripcion;
+        }
     }
 
     public function destroy($id)
@@ -115,7 +116,7 @@ class SegmentosDespachosComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $detalles = Despacho::where('segmentos_id', $segmentos->id)->first();
+        $detalles = Despacho::where('segmentos_id', $this->segmentos_id)->first();
 
         if ($detalles){
             $vinculado = true;
@@ -133,11 +134,10 @@ class SegmentosDespachosComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $segmentos->delete();
-            $this->alert(
-                'success',
-                'Segmento Eliminado.'
-            );
+            if ($segmentos){
+                $segmentos->delete();
+                $this->alert('success', 'Segmento Eliminado.');
+            }
             $this->limpiarSegmentos();
         }
     }
