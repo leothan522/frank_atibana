@@ -76,26 +76,26 @@ class ProcedenciasComponent extends Component
             $procedencia = Procedencia::find($this->procedencias_id);
             $message = "Procedencia Actualizada.";
         }
-        $procedencia->codigo = $this->codigo;
-        $procedencia->nombre = $this->nombre;
 
-        $procedencia->save();
-        $this->dispatch('listarSelect', tabla: 'procedencias')->to(ArticulosComponent::class);
+        if ($procedencia){
+            $procedencia->codigo = $this->codigo;
+            $procedencia->nombre = $this->nombre;
+            $procedencia->save();
+            $this->dispatch('listarSelect', tabla: 'procedencias')->to(ArticulosComponent::class);
+            $this->alert('success', $message);
+        }
+
         $this->limpiarProcedencias();
-        $this->alert(
-            'success',
-            $message
-        );
-
-
     }
 
     public function edit($id)
     {
         $procedencia = Procedencia::find($id);
-        $this->procedencias_id = $procedencia->id;
-        $this->codigo = $procedencia->codigo;
-        $this->nombre = $procedencia->nombre;
+        if ($procedencia){
+            $this->procedencias_id = $procedencia->id;
+            $this->codigo = $procedencia->codigo;
+            $this->nombre = $procedencia->nombre;
+        }
     }
 
     public function destroy($id)
@@ -119,7 +119,7 @@ class ProcedenciasComponent extends Component
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $articulo = Articulo::where('procedencias_id', $procedencia->id)->first();
+        $articulo = Articulo::where('procedencias_id', $this->procedencias_id)->first();
         if ($articulo){
             $vinculado = true;
         }
@@ -135,12 +135,11 @@ class ProcedenciasComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $procedencia->delete();
-            $this->alert(
-                'success',
-                'Procedencia Eliminada.'
-            );
-            $this->dispatch('listarSelect', tabla: 'procedencias')->to(ArticulosComponent::class);
+            if ($procedencia){
+                $procedencia->delete();
+                $this->alert('success', 'Procedencia Eliminada.');
+                $this->dispatch('listarSelect', tabla: 'procedencias')->to(ArticulosComponent::class);
+            }
         }
 
         $this->limpiarProcedencias();
