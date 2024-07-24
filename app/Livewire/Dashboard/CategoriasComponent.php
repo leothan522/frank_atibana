@@ -87,67 +87,69 @@ class CategoriasComponent extends Component
 
         $this->validate($rules, $messages);
         $message = null;
+        $imagen = null;
         if (is_null($this->categorias_id)){
             //nuevo
             $categoria = new Categoria();
-            $imagen = null;
             $message = "Categoria Creada.";
         }else{
             //editar
             $categoria = Categoria::find($this->categorias_id);
-            $imagen = $categoria->imagen;
+            if ($categoria){
+                $imagen = $categoria->imagen;
+            }
             $message = "Categoria Actualizada.";
         }
-        $categoria->codigo = $this->codigo;
-        $categoria->nombre = $this->nombre;
 
-        if ($this->photo){
-            $ruta = $this->photo->store('public/categorias');
-            $categoria->imagen = str_replace('public/', 'storage/', $ruta);
-            //miniaturas
-            $nombre = explode('categorias/', $categoria->imagen);
-            $path_data = "storage/categorias/size_".$nombre[1];
-            $miniatura = crearMiniaturas($categoria->imagen, $path_data);
-            $categoria->mini = $miniatura['mini'];
-            $categoria->detail = $miniatura['detail'];
-            $categoria->cart = $miniatura['cart'];
-            $categoria->banner = $miniatura['banner'];
-            //borramos imagenes anteriones si existen
-            if ($this->borrarIMG){
-                borrarImagenes($imagen, 'categorias');
+        if ($categoria){
+            $categoria->codigo = $this->codigo;
+            $categoria->nombre = $this->nombre;
+
+            if ($this->photo){
+                $ruta = $this->photo->store('public/categorias');
+                $categoria->imagen = str_replace('public/', 'storage/', $ruta);
+                //miniaturas
+                $nombre = explode('categorias/', $categoria->imagen);
+                $path_data = "storage/categorias/size_".$nombre[1];
+                $miniatura = crearMiniaturas($categoria->imagen, $path_data);
+                $categoria->mini = $miniatura['mini'];
+                $categoria->detail = $miniatura['detail'];
+                $categoria->cart = $miniatura['cart'];
+                $categoria->banner = $miniatura['banner'];
+                //borramos imagenes anteriones si existen
+                if ($this->borrarIMG){
+                    borrarImagenes($imagen, 'categorias');
+                }
+            }else{
+                if ($this->borrarIMG){
+                    $categoria->imagen = null;
+                    $categoria->mini = null;
+                    $categoria->detail = null;
+                    $categoria->cart = null;
+                    $categoria->banner = null;
+                    borrarImagenes($this->borrarIMG, 'categorias');
+                }
             }
-        }else{
-            if ($this->borrarIMG){
-                $categoria->imagen = null;
-                $categoria->mini = null;
-                $categoria->detail = null;
-                $categoria->cart = null;
-                $categoria->banner = null;
-                borrarImagenes($this->borrarIMG, 'categorias');
-            }
+
+            $categoria->save();
+            $this->dispatch('listarSelect', tabla: 'categorias')->to(ArticulosComponent::class);
+            $this->alert('success', $message);
         }
-
-        $categoria->save();
-        $this->dispatch('listarSelect', tabla: 'categorias')->to(ArticulosComponent::class);
         $this->limpiarCategorias();
-        $this->alert(
-            'success',
-            $message
-        );
-
-
     }
 
     public function edit($id)
     {
-        $this->reset('photo');
         $categoria = Categoria::find($id);
-        $this->categorias_id = $categoria->id;
-        $this->codigo = $categoria->codigo;
-        $this->nombre = $categoria->nombre;
-        $this->imagen = $categoria->imagen;
-        $this->verMini = $categoria->mini;
-        //$this->selectFormArticulos();
+        if ($categoria){
+            $this->reset('photo');
+            $this->categorias_id = $categoria->id;
+            $this->codigo = $categoria->codigo;
+            $this->nombre = $categoria->nombre;
+            $this->imagen = $categoria->imagen;
+            $this->verMini = $categoria->mini;
+            //$this->selectFormArticulos();
+        }
     }
 
     public function destroy($id)
@@ -168,11 +170,10 @@ class CategoriasComponent extends Component
     public function confirmedCategorias()
     {
         $categoria = Categoria::find($this->categorias_id);
-        $imagen = $categoria->imagen;
 
         //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
         $vinculado = false;
-        $articulo = Articulo::where('categorias_id', $categoria->id)->first();
+        $articulo = Articulo::where('categorias_id', $this->categorias_id)->first();
         if ($articulo){
             $vinculado = true;
         }
@@ -188,18 +189,16 @@ class CategoriasComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $categoria->delete();
-            borrarImagenes($imagen, 'categorias');
-            $this->alert(
-                'success',
-                'Categoria Eliminada.'
-            );
-
-            $this->dispatch('listarSelect', tabla: 'categorias')->to(ArticulosComponent::class);
+            if ($categoria){
+                $imagen = $categoria->imagen;
+                $categoria->delete();
+                borrarImagenes($imagen, 'categorias');
+                $this->alert('success', 'Categoria Eliminada.');
+                $this->dispatch('listarSelect', tabla: 'categorias')->to(ArticulosComponent::class);
+            }
         }
 
         $this->limpiarCategorias();
-
     }
 
     public function buscar()
