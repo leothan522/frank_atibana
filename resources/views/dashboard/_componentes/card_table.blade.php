@@ -3,7 +3,8 @@
         <h3 class="card-title">
             @if($keyword)
                 Resultados de la Busqueda { <b class="text-danger">{{ $keyword }}</b> }
-                <button class="btn btn-tool text-danger" wire:click="limpiar"><i class="fas fa-times-circle"></i>
+                <button class="btn btn-tool text-danger" wire:click="limpiar">
+                    <i class="fas fa-times-circle"></i>
                 </button>
             @else
                 Fixed Header Table
@@ -11,6 +12,9 @@
         </h3>
 
         <div class="card-tools">
+            <button type="button" class="btn btn-tool" wire:click="limpiar">
+                <i class="fas fa-sync-alt"></i>
+            </button>
             <ul class="pagination pagination-sm float-right">
                 <li class="page-item"><a class="page-link" href="#">«</a></li>
                 <li class="page-item"><a class="page-link" href="#">1</a></li>

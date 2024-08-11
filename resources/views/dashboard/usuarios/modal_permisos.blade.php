@@ -1,5 +1,5 @@
 <div wire:ignore.self class="modal fade" id="modal-user-permisos" xmlns:wire="http://www.w3.org/1999/xhtml">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content fondo">
             <div class="modal-header">
                 <h4 class="modal-title">
@@ -14,8 +14,8 @@
                 <div class="row">
                     <div class="col-12">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" >{{ $edit_name }}</li>
-                            <li class="breadcrumb-item active" >{{ $edit_email }}</li>
+                            <li class="breadcrumb-item active d-inline-block text-truncate" style="max-width: 200px;">{{ $edit_name }}</li>
+                            <li class="breadcrumb-item active d-inline-block text-truncate" style="max-width: 200px;" >{{ $edit_email }}</li>
                             <li class="breadcrumb-item active" >{{ $rol_nombre }}</li>
                             <li class="breadcrumb-item active" >{!! $this->getEstatusUsuario($estatus, true) !!}</li>
                         </ol>
@@ -27,16 +27,18 @@
                 @endif
 
             </div>
-            <div class="modal-footer row col-12 justify-content-between">
-                <button type="button" class="btn btn-default btn-sm" wire:click="deletePermisos">
-                    <i class="fas fa-trash-alt"></i> Quitar Todos
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" wire:click="savePermisos" @if(!$cambios) disabled @endif>
-                    <i class="fa fa-save"></i> Actualizar Permisos
-                </button>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiar" id="button_permisos_modal_cerrar">
-                    {{ __('Close') }}
-                </button>
+            <div class="modal-footer">
+                <div class="row col-12 justify-content-between">
+                    <button type="button" class="btn btn-default btn-sm" wire:click="deletePermisos">
+                        <i class="fas fa-trash-alt"></i> Quitar <span class="d-none d-md-inline">Todos</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" wire:click="savePermisos" @if(!$cambios) disabled @endif>
+                        <i class="fa fa-save"></i> Actualizar <span class="d-none d-md-inline">Permisos</span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiar" id="button_permisos_modal_cerrar">
+                        {{ __('Close') }}
+                    </button>
+                </div>
             </div>
 
             <div class="overlay-wrapper" wire:loading wire:target="edit, savePermisos, deletePermisos">

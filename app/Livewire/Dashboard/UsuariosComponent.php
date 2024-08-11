@@ -125,6 +125,7 @@ class UsuariosComponent extends Component
             }
             $usuarios->save();
             $this->limpiar();
+            $this->dispatch('cerrarModal', selector: 'btn_modal_default_create');
             $this->alert('success', 'Usuario Creado.');
         } else {
             //editar
@@ -132,7 +133,7 @@ class UsuariosComponent extends Component
             if ($usuarios){
                 $usuarios->name = ucwords($this->edit_name);
                 $usuarios->email = strtolower($this->edit_email);
-                if ($this->edit_role > 1) {
+                if ($this->edit_role > 1 && $this->edit_role < 100) {
                     $usuarios->role = 2;
                     $usuarios->roles_id = $this->edit_role;
                     $role = Parametro::where('tabla_id', '-1')->where('id', $this->edit_role)->first();
@@ -147,7 +148,7 @@ class UsuariosComponent extends Component
                 $this->edit($this->usuarios_id);
                 $this->alert('success', 'Usuario Actualizado.');
             }else{
-                $this->dispatch('cerrarModal');
+                $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
             }
         }
     }
@@ -173,7 +174,7 @@ class UsuariosComponent extends Component
             $this->rol_nombre = verRole($usuario->role, $usuario->roles_id);
             $this->getPermisos = $usuario->permisos;
         }else{
-            $this->dispatch('cerrarModal');
+            $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
         }
     }
 
@@ -192,7 +193,7 @@ class UsuariosComponent extends Component
             $this->estatus = $usuario->estatus;
             $this->alert('success', $texto);
         }else{
-            $this->dispatch('cerrarModal');
+            $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
         }
     }
 
@@ -210,7 +211,7 @@ class UsuariosComponent extends Component
             $this->edit_password = $clave;
             $this->alert('success', 'Contraseña Restablecida');
         }else{
-            $this->dispatch('cerrarModal');
+            $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
         }
     }
 
@@ -249,14 +250,14 @@ class UsuariosComponent extends Component
             } else {
                 $usuario->delete();
                 $this->limpiar();
-                $this->dispatch('cerrarModal');
+                $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
                 $this->alert(
                     'success',
                     'Usuario Eliminado.'
                 );
             }
         }else{
-            $this->dispatch('cerrarModal');
+            $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
         }
     }
 
@@ -267,7 +268,7 @@ class UsuariosComponent extends Component
     }
 
     #[On('cerrarModal')]
-    public function cerrarModal()
+    public function cerrarModal($selector)
     {
         //JS
     }
@@ -321,6 +322,12 @@ class UsuariosComponent extends Component
             /*'2' => '<span class="text-success">Confirmado</span>'*/
         ];
         return $status[$i];
+    }
+
+    #[On('actualizar')]
+    public function actualizar()
+    {
+        //JS
     }
 
 }

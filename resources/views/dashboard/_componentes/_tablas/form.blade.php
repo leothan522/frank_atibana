@@ -20,36 +20,28 @@
 
     <div class="card-body">
 
-
-        <form wire:submit="save">
-
-            <div class="form-group">
-                <label for="name">Nombre</label>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                    </div>
-                    <input type="text" class="form-control" wire:model="nombre" placeholder="Nombre">
-                    @error('nombre')
-                    <span class="col-sm-12 text-sm text-bold text-danger">
-                        <i class="icon fas fa-exclamation-triangle"></i>
-                        {{ $message }}
-                    </span>
-                    @enderror
+        <div class="form-group">
+            <label for="name">Nombre</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
                 </div>
+                <input type="text" class="form-control" wire:model="nombre" placeholder="Nombre">
+                @error('nombre')
+                <span class="col-sm-12 text-sm text-bold text-danger">
+                    <i class="icon fas fa-exclamation-triangle"></i>
+                    {{ $message }}
+                </span>
+                @enderror
             </div>
+        </div>
 
-            <div class="form-group mt-3">
-                <button type="submit" class="btn btn-block @if(/*$tipos_id*/false) btn-primary @else btn-success @endif"
-                @if(!comprobarPermisos('tipos.create') || (/*$tipos_id &&*/ !comprobarPermisos('tipos.edit'))) disabled @endif >
-                    <i class="fas fa-save"></i> Guardar @if(/*$tipos_id*/false) Cambios @endif
-                </button>
-            </div>
-
-        </form>
-
-
-
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-block @if(/*$tipos_id*/false) btn-primary @else btn-success @endif"
+            @if(!comprobarPermisos('tipos.create') || (/*$tipos_id &&*/ !comprobarPermisos('tipos.edit'))) disabled @endif >
+                <i class="fas fa-save"></i> Guardar @if(/*$tipos_id*/false) Cambios @endif
+            </button>
+        </div>
 
     </div>
 

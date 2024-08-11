@@ -1,4 +1,4 @@
-<li class="nav-item">
+<li class="nav-item d-none d-md-block">
     <a class="nav-link" href="#" data-widget="control-sidebar"
         @if(!config('adminlte.right_sidebar_slide'))
             data-controlsidebar-slide="false"

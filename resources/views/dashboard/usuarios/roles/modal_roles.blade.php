@@ -1,15 +1,14 @@
 <div wire:ignore.self class="modal fade" id="modal-roles-usuarios" xmlns:wire="http://www.w3.org/1999/xhtml">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content fondo">
             <div class="modal-header">
-                <div class="row col-12">
-
-                    <div class="col-6">
+                <div class="row">
+                    <div class="col-md-6">
                         <h4 class="modal-title">
                             Rol de Usuario
                         </h4>
                     </div>
-                    <div class="col-md-5 justify-content-end">
+                    <div class="col-md-6 justify-content-end">
                         <form wire:submit="save">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="nombre" wire:model="nombre"
@@ -22,11 +21,10 @@
                             </div>
                         </form>
                     </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
-
+                <button type="button" class="float-right close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
 
             </div>
             <div class="modal-body">
@@ -45,19 +43,21 @@
                 @endif
 
             </div>
-            <div class="modal-footer row col-12 justify-content-between">
-                <button type="button" class="btn btn-danger btn-sm" wire:click="destroy({{ $roles_id }})">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <button type="button" class="btn btn-default btn-sm" wire:click="deletePermisos">
-                    <i class="fas fa-trash-alt"></i> Quitar Todos
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" wire:click="savePermisos" @if(!$cambios) disabled @endif>
-                    <i class="fa fa-save"></i> Actualizar Permisos
-                </button>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiarRoles" id="button_rol_modal_cerrar">
-                    {{ __('Close') }}
-                </button>
+            <div class="modal-footer">
+                <div class="row col-12 justify-content-between">
+                    <button type="button" class="btn btn-danger btn-sm" wire:click="destroy({{ $roles_id }})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" wire:click="deletePermisos">
+                        <i class="fas fa-trash-alt"></i> Quitar <span class="d-none d-md-inline">Todos</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" wire:click="savePermisos" @if(!$cambios) disabled @endif>
+                        <i class="fa fa-save"></i> Actualizar <span class="d-none d-md-inline">Permisos</span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiarRoles" id="button_rol_modal_cerrar">
+                        {{ __('Close') }}
+                    </button>
+                </div>
             </div>
 
             <div class="overlay-wrapper" wire:loading wire:target="save, destroy, savePermisos, deletePermisos">

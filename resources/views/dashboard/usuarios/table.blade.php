@@ -20,22 +20,31 @@
                     <i class="fas fa-file-excel"></i> <i class="fas fa-download"></i>
                 </a>
             @endif
-            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $rowsUsuarios) disabled @endif >
+            @if(comprobarPermisos('usuarios.create'))
+                <button class="btn btn-tool" data-toggle="modal" data-target="#modal-default" wire:click="limpiar">
+                    <i class="fas fa-file"></i> Nuevo
+                </button>
+            @else
+                <button class="btn btn-tool disabled">
+                    <i class="fas fa-file"></i> Nuevo
+                </button>
+            @endif
+            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows >= $rowsUsuarios) disabled @endif >
                 <i class="fas fa-sort-amount-down-alt"></i> Ver más
             </button>
         </div>
     </div>
 
-    <div class="card-body table-responsive p-0" @if($tableStyle) style="height: 72vh;" @endif >
+    <div class="card-body table-responsive p-0" @if($tableStyle) style="height: 68vh;" @endif >
         <table class="table table-sm table-head-fixed table-hover text-nowrap">
             <thead>
             <tr class="text-navy">
                 <th class="text-center"><i class="fas fa-cloud"></i></th>
                 <th>Nombre</th>
                 <th class="d-none d-lg-table-cell">Email</th>
-                <th class="text-center">Rol</th>
-                <th class="text-center">Estatus</th>
-                <th class="text-right d-none">Creado</th>
+                <th class="d-none d-lg-table-cell text-center">Rol</th>
+                <th class="text-center"><span class="d-none d-md-block">Estatus</span></th>
+                <th class="d-none d-lg-table-cell text-right">Creado</th>
                 <th style="width: 5%;">&nbsp;</th>
             </tr>
             </thead>
@@ -51,14 +60,16 @@
                                 <i class="fas fa-desktop"></i>
                             @endif
                         </td>
-                        <td>{{ ucwords($user->name) }}</td>
-                        <td class="d-none d-lg-table-cell">{{ strtolower($user->email) }}</td>
-                        <td class="text-center">{{ verRole($user->role, $user->roles_id) }}</td>
+                        <td class="text-truncate" style="max-width: 150px;">{{ ucwords($user->name) }}</td>
+                        <td class="d-none d-lg-table-cell text-lowercase text-truncate" style="max-width: 150px;">{{ $user->email }}</td>
+                        <td class="d-none d-lg-table-cell text-center">{{ verRole($user->role, $user->roles_id) }}</td>
                         <td class="text-center">
                             {!! $this->getEstatusUsuario($user->estatus, true) !!}
-                            {{--<span class="text-sm"> ID: {{ $user->id }}</span>--}}
+                            @if(auth()->user()->role == 100)
+                                <span class="d-none d-lg-inline text-sm"> ID: {{ $user->id }}</span>
+                            @endif
                         </td>
-                        <td class="text-right d-none">{{ haceCuanto($user->created_at)  }}</td>
+                        <td class="d-none d-lg-table-cell text-right">{{ haceCuanto($user->created_at)  }}</td>
                         <td class="justify-content-end">
                             <div class="btn-group">
                                 <button wire:click="edit({{ $user->id }})" class="btn btn-primary btn-sm"
@@ -94,7 +105,21 @@
     </div>
 
     <div class="card-footer">
-        <small>Mostrando {{ $listarUsers->count() }}</small>
+        <div class="row justify-content-between">
+            <small>Mostrando {{ $listarUsers->count() }}</small>
+            @if(comprobarPermisos())
+                <form class="d-md-none col-6 justify-content-end" id="sm_from_role_usuario">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Nuevo Rol" id="sm_input_role_nombre" required>
+                        <span class="input-group-append">
+                        <button type="submit" class="btn btn-success btn-flat">
+                            <i class="fas fa-save"></i>
+                        </button>
+                    </span>
+                    </div>
+                </form>
+            @endif
+        </div>
     </div>
 
     {!! verSpinner() !!}

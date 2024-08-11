@@ -24,7 +24,7 @@ class ParametrosComponent extends Component
     public function render()
     {
         $parametros = Parametro::buscar($this->keyword)
-            ->orderBy('updated_at', 'ASC')
+            ->orderBy('created_at', 'DESC')
             ->limit($this->rows)
             ->get();
 
@@ -68,8 +68,6 @@ class ParametrosComponent extends Component
 
     public function save()
     {
-        $type = 'success';
-        $message = 'Hola Mundo';
 
         $this->validate($this->rules($this->parametro_id));
 
@@ -93,9 +91,10 @@ class ParametrosComponent extends Component
             }
             $parametro->save();
 
-            $this->alert($type, $message);
+            $this->alert('success', $message);
         }
         $this->limpiar();
+        $this->dispatch('cerrarModal');
     }
 
     public function edit($id)
@@ -139,6 +138,12 @@ class ParametrosComponent extends Component
             $this->limpiar();
             $this->alert('success', 'Parametro Eliminado.');
         }
+    }
+
+    #[On('cerrarModal')]
+    public function cerrarModal()
+    {
+        //JV
     }
 
 }

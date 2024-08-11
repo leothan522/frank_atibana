@@ -14,19 +14,22 @@
             <button type="button" class="btn btn-tool" wire:click="limpiar">
                 <i class="fas fa-sync-alt"></i>
             </button>
-            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows > $rowsParametros) disabled @endif >
+            <button class="btn btn-tool" data-toggle="modal" data-target="#modal-default" wire:click="limpiar">
+                <i class="fas fa-file"></i> Nuevo
+            </button>
+            <button type="button" class="btn btn-tool" wire:click="setLimit" @if($rows >= $rowsParametros) disabled @endif >
                 <i class="fas fa-sort-amount-down-alt"></i> Ver más
             </button>
         </div>
     </div>
-    <div class="card-body table-responsive p-0" @if($tableStyle) style="height: 72vh;" @endif >
+    <div class="card-body table-responsive p-0" @if($tableStyle) style="height: 68vh;" @endif >
         <table class="table table-sm table-head-fixed table-hover text-nowrap">
             <thead>
             <tr class="text-navy">
                 <th>id</th>
                 <th>nombre</th>
-                <th>table_id</th>
-                <th>valor</th>
+                <th class="d-none d-md-table-cell">table_id</th>
+                <th class="d-none d-md-table-cell">valor</th>
                 <th style="width: 5%;">&nbsp;</th>
             </tr>
             </thead>
@@ -35,15 +38,15 @@
                 @foreach($parametros as $parametro)
                     <tr>
                         <td class="text-bold">{{ $parametro->id }}</td>
-                        <td>{{ $parametro->nombre }}</td>
-                        <td>
+                        <td class="d-table-cell text-truncate" style="max-width: 150px;">{{ $parametro->nombre }}</td>
+                        <td class="d-none d-md-table-cell">
                             @if(is_null($parametro->tabla_id))
                                 null
                             @else
                                 {{ $parametro->tabla_id }}
                             @endif
                         </td>
-                        <td>
+                        <td class="d-none d-md-table-cell text-truncate" style="max-width: 150px;">
                             @if(is_null($parametro->valor))
                                 null
                             @else
@@ -56,7 +59,7 @@
                         </td>
                         <td class="justify-content-end">
                             <div class="btn-group">
-                                <button wire:click="edit({{ $parametro->id }})" class="btn btn-primary btn-sm">
+                                <button wire:click="edit({{ $parametro->id }})" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-default">
                                     <i class="fas fa-edit"></i>
                                 </button>
 
