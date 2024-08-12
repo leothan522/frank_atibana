@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Models\Empresa;
 use App\Models\Parametro;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,7 @@ class UsuariosComponent extends Component
     public $name, $email, $password, $role, $usuarios_id;
     public $edit_name, $edit_email, $edit_password, $edit_role = 0, $edit_roles_id = 0, $created_at, $estatus = 1, $photo, $empresas_id;
     public $rol_nombre, $tabla = 'usuarios', $getPermisos, $cambios = false;
+    public $select_empresas, $ver_empresas; // acceso a empresas
 
     public function mount()
     {
@@ -106,6 +108,8 @@ class UsuariosComponent extends Component
     {
         $this->validate($this->rules($this->usuarios_id));
 
+        $this->accesoEmpresa($this->select_empresas); // acceso a empresas
+
         if (is_null($this->usuarios_id)) {
             //nuevo
             $usuarios = new User();
@@ -173,6 +177,25 @@ class UsuariosComponent extends Component
             /*$this->empresas_id = $usuario->empresas_id;*/
             $this->rol_nombre = verRole($usuario->role, $usuario->roles_id);
             $this->getPermisos = $usuario->permisos;
+
+            //acceso a empresas
+
+            $getEmpresas = Empresa::orderBy('nombre', 'ASC')->get();
+            $data = array();
+            $placeholder = '';
+            foreach ($getEmpresas as $empresa){
+                $option = [
+                    'id' => $empresa->id,
+                    'text' => $empresa->nombre
+                ];
+                if (leerJson($empresa->permisos, $this->usuarios_id)){
+                    $placeholder .= '['.$empresa->nombre.'] <br>';
+                }
+                array_push($data, $option);
+            }
+            $this->ver_empresas = $placeholder;
+            $this->dispatch('selectEmpresas', data: $data);
+
         }else{
             $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
         }
@@ -328,6 +351,39 @@ class UsuariosComponent extends Component
     public function actualizar()
     {
         //JS
+    }
+
+    //acceso a empresas **********************************************************************
+
+    public function accesoEmpresa($array)
+    {
+        //acceso a aempresas
+        if (!empty($array)){
+            foreach ($array as $id){
+                $empresa = Empresa::find($id);
+                $permisos = json_decode($empresa->permisos, true);
+                if (!leerJson($empresa->permisos, $this->usuarios_id)){
+                    $permisos[$this->usuarios_id] = true;
+                }else{
+                    unset($permisos[$this->usuarios_id]);
+                }
+                $permisos = json_encode($permisos);
+                $empresa->permisos = $permisos;
+                $empresa->update();
+            }
+        }
+    }
+
+    #[On('empresasSeleccionadas')]
+    public function empresasSeleccionadas($data)
+    {
+        $this->select_empresas = $data;
+    }
+
+    #[On('selectEmpresas')]
+    public function selectEmpresas($data)
+    {
+        //select acceso a empresas // JS
     }
 
 }
