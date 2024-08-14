@@ -5,10 +5,12 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserEstatus
 {
+    use LivewireAlert;
     /**
      * Handle an incoming request.
      *
@@ -19,8 +21,9 @@ class UserEstatus
         if (Auth::user()->estatus >= 1 || Auth::user()->role == 100){
             return $next($request);
         }else{
-            verSweetAlert2('Usuario Inactivo', 'toast', 'error');
-            return redirect()->route('cerrar');
+            Auth::guard('web')->logout();
+            $this->flash('info', 'Usuario Inactivo.', []);
+            return redirect()->route('web.index');
         }
     }
 }

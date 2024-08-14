@@ -5,10 +5,12 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserAdmin
 {
+    use LivewireAlert;
     /**
      * Handle an incoming request.
      *
@@ -19,7 +21,7 @@ class UserAdmin
         if (Auth::user()->role >= 1){
             return $next($request);
         }else{
-            verSweetAlert2('No tienes permisos suficientes', 'toast', 'error');
+            $this->flash('warning', 'No tienes permisos suficientes.', []);
             return redirect()->route('web.index');
         }
     }

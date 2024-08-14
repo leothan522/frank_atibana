@@ -43,69 +43,6 @@ function crearJson($array)
     return json_encode($json);
 }
 
-//Alertas de sweetAlert2
-function verSweetAlert2($mensaje, $alert = null, $type = 'success', $icono = '<i class="fa fa-trash-alt"></i>', $title = '¡Éxito!')
-{
-    switch ($alert){
-        default:
-            alert()->success('¡Éxito!',$mensaje)->persistent(true,false);
-            break;
-        case "iconHtml":
-            alert($title, $mensaje, $type)->iconHtml($icono)->persistent(true,false)->toHtml();
-            break;
-        case "toast":
-            toast($mensaje, $type)->width('400px');
-            break;
-    }
-    /*alert()->success('SuccessAlert','Lorem ipsum dolor sit amet.');
-        alert()->info('InfoAlert','Lorem ipsum dolor sit amet.');
-        alert()->warning('WarningAlert','Lorem ipsum dolor sit amet.');
-        alert()->error('ErrorAlert','Lorem ipsum dolor sit amet.');
-        alert()->question('QuestionAlert','Lorem ipsum dolor sit amet.');
-        toast('Success Toast','success');.
-        // example:
-        alert()->success('Post Created', '<strong>Successfully</strong>')->toHtml();
-        // example:
-        alert('Title','Lorem Lorem Lorem', 'success')->addImage('https://unsplash.it/400/200');
-        // example:
-        alert('Title','Lorem Lorem Lorem', 'success')->width('720px');
-        // example:
-        alert('Title','Lorem Lorem Lorem', 'success')->padding('50px');
-        */
-    // example:
-    //alert()->success('¡Éxito!',$mensaje)->persistent(true,false);
-    // example:
-    //alert()->success('SuccessAlert','Lorem ipsum dolor sit amet.')->showConfirmButton('Confirm', '#3085d6');
-    // example:
-    //alert()->question('Are you sure?','You won\'t be able to revert this!')->showCancelButton('Cancel', '#aaa');
-    // example:
-    //toast('Post Updated','success','top-right')->showCloseButton();
-    // example:
-    //toast('Post Updated','success','top-right')->hideCloseButton();
-    // example:
-    /*alert()->question('Are you sure?','You won\'t be able to revert this!')
-        ->showConfirmButton('Yes! Delete it', '#3085d6')
-        ->showCancelButton('Cancel', '#aaa')->reverseButtons();*/
-
-    // example:
-    // alert()->error('Oops...', 'Something went wrong!')->footer('<a href="#">Why do I have this issue?</a>');
-    // example:
-    //alert()->success('Post Created', 'Successfully')->toToast();
-    // example:
-    //alert('Title','Lorem Lorem Lorem', 'success')->background('#2acc56');
-    // example:
-    //()->success('Post Created', 'Successfully')->buttonsStyling(false);
-    // example:
-    //alert()->success('Post Created', 'Successfully')->iconHtml('<i class="far fa-thumbs-up"></i>');
-    // example:
-    //alert()->question('Are you sure?','You won\'t be able to revert this!')->showCancelButton()->showConfirmButton()->focusConfirm(true);
-    // example:
-    //alert()->question('Are you sure?','You won\'t be able to revert this!')->showCancelButton()->showConfirmButton()->focusCancel(true);
-    // example:
-    //toast('Signed in successfully','success')->timerProgressBar();
-
-}
-
 function verSpinner()
 {
     $spinner = '
@@ -159,15 +96,6 @@ function verUtf8($string){
     return mb_convert_encoding($string, 'UTF-8');
 }
 
-function iconoPlataforma($plataforma)
-{
-    if ($plataforma == 0) {
-        return '<i class="fas fa-desktop"></i>';
-    } else {
-        return '<i class="fas fa-mobile"></i>';
-    }
-}
-
 function verRole($role, $roles_id)
 {
     $roles = [
@@ -188,32 +116,15 @@ function verRole($role, $roles_id)
     }
 }
 
-function verEstatusUsuario($i, $icon = null)
-{
-    if (is_null($icon)){
-        $suspendido = "Suspendido";
-        $activado = "Activo";
-    }else{
-        $suspendido = '<i class="fa fa-user-slash"></i>';
-        $activado = '<i class="fa fa-user-check"></i>';
-    }
-    $status = [
-        '0' => '<span class="text-danger">'.$suspendido.'</span>',
-        '1' => '<span class="text-success">'.$activado.'</span>'/*,
-        '2' => '<span class="text-success">Confirmado</span>'*/
-    ];
-    return $status[$i];
+function verFecha($fecha, $format = null){
+    $carbon = new Carbon();
+    if ($format == null){ $format = "j/m/Y"; }
+    return $carbon->parse($fecha)->format($format);
 }
 
 function haceCuanto($fecha){
     $carbon = new Carbon();
     return $carbon->parse($fecha)->diffForHumans();
-}
-
-function verFecha($fecha, $format = null){
-    $carbon = new Carbon();
-    if ($format == null){ $format = "j/m/Y"; }
-    return $carbon->parse($fecha)->format($format);
 }
 
 function generarStringAleatorio($largo = 10, $espacio = false): string
@@ -266,7 +177,6 @@ function numSizeCodigo(){
     return $default;
 }
 
-//funcion formato millares
 function formatoMillares($cantidad, $decimal = 2)
 {
     return number_format($cantidad, $decimal, ',', '.');
@@ -370,6 +280,121 @@ Comprobaremos si la segunda hora que le pasamos es inferior a la primera, con lo
 Y al final devolveremos true o false dependiendo si el valor introducido se encuentra entre lo que le hemos pasado.*/
 }
 
+function dataSelect2($rows)
+{
+    $data = array();
+    foreach ($rows as $row){
+        $option = [
+            'id' => $row->id,
+            'text' => $row->codigo.'  '.$row->nombre
+        ];
+        array_push($data, $option);
+    }
+    return $data;
+}
+
+function array_sort_by($arrIni, $col, $order = SORT_ASC)
+{
+    $arrAux = array();
+    foreach ($arrIni as $key=> $row)
+    {
+        $arrAux[$key] = is_object($row) ? $arrAux[$key] = $row->$col : $row[$col];
+        $arrAux[$key] = strtolower($arrAux[$key]);
+    }
+    array_multisort($arrAux, $order, $arrIni);
+    return $arrIni;
+}
+
+function nextCodigo($parametros_nombre, $parametros_tabla_id, $nombre_formato = null){
+
+    $next = 1;
+    $codigo = null;
+
+    //buscamos algun formato para el codigo
+    if (!is_null($nombre_formato)){
+        $parametro = Parametro::where("nombre", $nombre_formato)->where('tabla_id', $parametros_tabla_id)->first();
+        if ($parametro) {
+            $codigo = $parametro->valor;
+        }else{
+            $codigo = "N".$parametros_tabla_id.'-';
+        }
+    }
+
+    //buscamos el proximo numero
+    $parametro = Parametro::where("nombre", $parametros_nombre)->where('tabla_id', $parametros_tabla_id)->first();
+    if ($parametro){
+        $next = $parametro->valor;
+        $parametro->valor = $next + 1;
+        $parametro->save();
+    }else{
+        $parametro = new Parametro();
+        $parametro->nombre = $parametros_nombre;
+        $parametro->tabla_id = $parametros_tabla_id;
+        $parametro->valor = 2;
+        $parametro->save();
+    }
+
+    if (!is_numeric($next)){ $next = 1; }
+
+    $size = cerosIzquierda($next, numSizeCodigo());
+
+    return $codigo . $size;
+
+}
+
+//Ceros a la izquierda
+function cerosIzquierda($cantidad, $cantCeros = 2)
+{
+    if ($cantidad == 0) {
+        return 0;
+    }
+    return str_pad($cantidad, $cantCeros, "0", STR_PAD_LEFT);
+}
+
+function cuantosDias($fecha_inicio, $fecha_final){
+
+    if ($fecha_inicio == null){
+        return 0;
+    }
+
+    $carbon = new Carbon();
+    $fechaEmision = $carbon->parse($fecha_inicio);
+    $fechaExpiracion = $carbon->parse($fecha_final);
+    $diasDiferencia = $fechaExpiracion->diffInDays($fechaEmision);
+    return $diasDiferencia;
+}
+
+//calculo de porcentaje
+function obtenerPorcentaje($cantidad, $total)
+{
+    if ($total != 0) {
+        $porcentaje = ((float)$cantidad * 100) / $total; // Regla de tres
+        $porcentaje = round($porcentaje, 2);  // Quitar los decimales
+        return $porcentaje;
+    }
+    return 0;
+}
+
+//***********************************************************************************
+
+function getSemana($fecha): array
+{
+    $key = '-W';
+    $carbon = CarbonImmutable::now();
+    $explode = explode($key, $fecha);
+    $year = $explode[0];
+    $semana = intval($explode[1]);
+    $date = Carbon::parse($carbon->week($semana)->format('d-m-Y'));
+    $lunes = $date->startOfWeek()->format('Y-m-d');
+    $martes = Carbon::parse($lunes)->addDay()->format('Y-m-d');
+    $miercoles = Carbon::parse($lunes)->addDay(2)->format('Y-m-d');
+    $jueves = Carbon::parse($lunes)->addDay(3)->format('Y-m-d');
+    $viernes = Carbon::parse($lunes)->addDay(4)->format('Y-m-d');
+    $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
+    $domingo = $date->endOfWeek()->format('Y-m-d');
+    return [$semana, $lunes, $martes, $miercoles, $jueves, $viernes, $sabado, $domingo, $year];
+}
+
 //Estado de Tienda Abierto o Cerrada
 function estatusTienda($id, $boton = false)
 {
@@ -416,29 +441,74 @@ function estatusTienda($id, $boton = false)
     return $estatus;
 }
 
-function dataSelect2($rows)
+//Calculo de precios en STOCK vista WEB
+function recorrerStock($stock)
 {
-    $data = array();
-    foreach ($rows as $row){
-        $option = [
-            'id' => $row->id,
-            'text' => $row->codigo.'  '.$row->nombre
-        ];
-        array_push($data, $option);
-    }
-    return $data;
+    $stock->each(function ($stock) {
+
+        $articulo = Articulo::find($stock->articulos_id);
+        $unidad = Unidad::find($stock->unidades_id);
+
+        $stock->nombre = $articulo->descripcion;
+        $stock->imagen = $articulo->mini;
+        $stock->unidad = $unidad->codigo;
+        $stock->mostrar = true;
+
+        $resultado = calcularPrecios($stock->empresas_id, $stock->articulos_id, $articulo->tributarios_id, $stock->unidades_id);
+        $stock->moneda = $resultado['moneda_base'];
+        $stock->dolares = $resultado['precio_dolares'];
+        $stock->bolivares = $resultado['precio_bolivares'];
+        $stock->iva_dolares = $resultado['iva_dolares'];
+        $stock->iva_bolivares = $resultado['iva_bolivares'];
+        $stock->neto_dolares = $resultado['neto_dolares'];
+        $stock->neto_bolivares = $resultado['neto_bolivares'];
+        $stock->oferta_dolares = $resultado['oferta_dolares'];
+        $stock->oferta_bolivares = $resultado['oferta_bolivares'];
+        $stock->porcentaje = $resultado['porcentaje'];
+
+        if ($stock->moneda == "Dolares" && !$stock->dolares){
+            $stock->mostrar = false;
+        }
+
+        if ($stock->moneda == "Bolivares" && !$stock->bolivares){
+            $stock->mostrar = false;
+        }
+
+    });
 }
 
-function array_sort_by($arrIni, $col, $order = SORT_ASC)
+//calculo de Articulos disponibles con stock por categoria Vista WEB
+function recorrerCategorias($categorias)
 {
-    $arrAux = array();
-    foreach ($arrIni as $key=> $row)
-    {
-        $arrAux[$key] = is_object($row) ? $arrAux[$key] = $row->$col : $row[$col];
-        $arrAux[$key] = strtolower($arrAux[$key]);
-    }
-    array_multisort($arrAux, $order, $arrIni);
-    return $arrIni;
+    $categorias->each(function ($categoria){
+        $listarStock = Stock::where('almacen_principal', 1)
+            ->where('estatus', 1)
+            ->whereRelation('articulo', 'estatus', 1)
+            ->whereRelation('articulo', 'categorias_id', $categoria->id)
+            ->get();
+        $contador = 0;
+        foreach ($listarStock as $stock){
+            $mostrar = true;
+            $resultado = calcularPrecios($stock->empresas_id, $stock->articulos_id, $stock->articulo->tributarios_id, $stock->unidades_id);
+            $stock->moneda = $resultado['moneda_base'];
+            $stock->dolares = $resultado['precio_dolares'];
+            $stock->bolivares = $resultado['precio_bolivares'];
+
+            if ($stock->moneda == "Dolares" && !$stock->dolares){
+                $mostrar = false;
+            }
+
+            if ($stock->moneda == "Bolivares" && !$stock->bolivares){
+                $mostrar = false;
+            }
+            if ($mostrar){
+                $contador++;
+            }
+        }
+
+        $categoria->stock = $contador;
+
+    });
 }
 
 function calcularPrecios($empresa_id, $articulo_id, $tributarios_id, $unidades_id)
@@ -562,176 +632,4 @@ function calcularPrecios($empresa_id, $articulo_id, $tributarios_id, $unidades_i
     //En caso de que quieras redondear a dos decimales, te recomiendo usar la función number_format
     //$resultado = number_format($resultado, 2, '.', false);
     return $resultado;
-}
-
-function nextCodigo($parametros_nombre, $parametros_tabla_id, $nombre_formato = null){
-
-    $next = 1;
-    $codigo = null;
-
-    //buscamos algun formato para el codigo
-    if (!is_null($nombre_formato)){
-        $parametro = Parametro::where("nombre", $nombre_formato)->where('tabla_id', $parametros_tabla_id)->first();
-        if ($parametro) {
-            $codigo = $parametro->valor;
-        }else{
-            $codigo = "N".$parametros_tabla_id.'-';
-        }
-    }
-
-    //buscamos el proximo numero
-    $parametro = Parametro::where("nombre", $parametros_nombre)->where('tabla_id', $parametros_tabla_id)->first();
-    if ($parametro){
-        $next = $parametro->valor;
-        $parametro->valor = $next + 1;
-        $parametro->save();
-    }else{
-        $parametro = new Parametro();
-        $parametro->nombre = $parametros_nombre;
-        $parametro->tabla_id = $parametros_tabla_id;
-        $parametro->valor = 2;
-        $parametro->save();
-    }
-
-    if (!is_numeric($next)){ $next = 1; }
-
-    $size = cerosIzquierda($next, numSizeCodigo());
-
-    return $codigo . $size;
-
-}
-
-//Ceros a la izquierda
-function cerosIzquierda($cantidad, $cantCeros = 2)
-{
-    if ($cantidad == 0) {
-        return 0;
-    }
-    return str_pad($cantidad, $cantCeros, "0", STR_PAD_LEFT);
-}
-
-function telefonoSoporte()
-{
-    $parametro = Parametro::where('nombre', 'telefono_soporte')->first();
-    if ($parametro){
-        $telefono = strtoupper($parametro->valor);
-    }else{
-        $telefono = "0212.999.99.99";
-    }
-    return $telefono;
-}
-
-//Calculo de precios en STOCK vista WEB
-function recorrerStock($stock)
-{
-    $stock->each(function ($stock) {
-
-        $articulo = Articulo::find($stock->articulos_id);
-        $unidad = Unidad::find($stock->unidades_id);
-
-        $stock->nombre = $articulo->descripcion;
-        $stock->imagen = $articulo->mini;
-        $stock->unidad = $unidad->codigo;
-        $stock->mostrar = true;
-
-        $resultado = calcularPrecios($stock->empresas_id, $stock->articulos_id, $articulo->tributarios_id, $stock->unidades_id);
-        $stock->moneda = $resultado['moneda_base'];
-        $stock->dolares = $resultado['precio_dolares'];
-        $stock->bolivares = $resultado['precio_bolivares'];
-        $stock->iva_dolares = $resultado['iva_dolares'];
-        $stock->iva_bolivares = $resultado['iva_bolivares'];
-        $stock->neto_dolares = $resultado['neto_dolares'];
-        $stock->neto_bolivares = $resultado['neto_bolivares'];
-        $stock->oferta_dolares = $resultado['oferta_dolares'];
-        $stock->oferta_bolivares = $resultado['oferta_bolivares'];
-        $stock->porcentaje = $resultado['porcentaje'];
-
-        if ($stock->moneda == "Dolares" && !$stock->dolares){
-            $stock->mostrar = false;
-        }
-
-        if ($stock->moneda == "Bolivares" && !$stock->bolivares){
-            $stock->mostrar = false;
-        }
-
-    });
-}
-
-//calculo de Articulos disponibles con stock por categoria Vista WEB
-function recorrerCategorias($categorias)
-{
-    $categorias->each(function ($categoria){
-        $listarStock = Stock::where('almacen_principal', 1)
-            ->where('estatus', 1)
-            ->whereRelation('articulo', 'estatus', 1)
-            ->whereRelation('articulo', 'categorias_id', $categoria->id)
-            ->get();
-        $contador = 0;
-        foreach ($listarStock as $stock){
-            $mostrar = true;
-            $resultado = calcularPrecios($stock->empresas_id, $stock->articulos_id, $stock->articulo->tributarios_id, $stock->unidades_id);
-            $stock->moneda = $resultado['moneda_base'];
-            $stock->dolares = $resultado['precio_dolares'];
-            $stock->bolivares = $resultado['precio_bolivares'];
-
-            if ($stock->moneda == "Dolares" && !$stock->dolares){
-                $mostrar = false;
-            }
-
-            if ($stock->moneda == "Bolivares" && !$stock->bolivares){
-                $mostrar = false;
-            }
-            if ($mostrar){
-                $contador++;
-            }
-        }
-
-        $categoria->stock = $contador;
-
-    });
-}
-
-function getSemana($fecha): array
-{
-    $key = '-W';
-    $carbon = CarbonImmutable::now();
-    $explode = explode($key, $fecha);
-    $year = $explode[0];
-    $semana = intval($explode[1]);
-    $date = Carbon::parse($carbon->week($semana)->format('d-m-Y'));
-    $lunes = $date->startOfWeek()->format('Y-m-d');
-    $martes = Carbon::parse($lunes)->addDay()->format('Y-m-d');
-    $miercoles = Carbon::parse($lunes)->addDay(2)->format('Y-m-d');
-    $jueves = Carbon::parse($lunes)->addDay(3)->format('Y-m-d');
-    $viernes = Carbon::parse($lunes)->addDay(4)->format('Y-m-d');
-    $sabado = Carbon::parse($lunes)->addDay(5)->format('Y-m-d');
-    $domingo = $date->endOfWeek()->format('Y-m-d');
-    return [$semana, $lunes, $martes, $miercoles, $jueves, $viernes, $sabado, $domingo, $year];
-}
-
-//***********************************************************************************
-
-
-function cuantosDias($fecha_inicio, $fecha_final){
-
-    if ($fecha_inicio == null){
-        return 0;
-    }
-
-    $carbon = new Carbon();
-    $fechaEmision = $carbon->parse($fecha_inicio);
-    $fechaExpiracion = $carbon->parse($fecha_final);
-    $diasDiferencia = $fechaExpiracion->diffInDays($fechaEmision);
-    return $diasDiferencia;
-}
-
-//calculo de porcentaje
-function obtenerPorcentaje($cantidad, $total)
-{
-    if ($total != 0) {
-        $porcentaje = ((float)$cantidad * 100) / $total; // Regla de tres
-        $porcentaje = round($porcentaje, 2);  // Quitar los decimales
-        return $porcentaje;
-    }
-    return 0;
 }

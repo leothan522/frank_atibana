@@ -17,7 +17,6 @@ use App\Http\Controllers\Web\WebController;
 
 Route::get('/', function () {
     return view('welcome');
-    //return redirect()->route('dashboard');
 })->name('web.index');
 
 Route::get('/perfil', function (){
@@ -36,9 +35,5 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/cerrar', function () {
-    Auth::logout();
-    return redirect()->route('web.index');
-})->name('cerrar');
 
 

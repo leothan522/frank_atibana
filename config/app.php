@@ -186,7 +186,6 @@ return [
          * Package Service Providers...
          */
 
-        \RealRashid\SweetAlert\SweetAlertServiceProvider::class,
         \Intervention\Image\ImageServiceProvider::class,
 
         /*

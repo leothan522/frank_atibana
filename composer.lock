@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d520c0b52b9f1d1273a7a7c9477a173",
+    "content-hash": "8292805b09a59c60ae9789580fd5db5e",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -6330,96 +6330,6 @@
             "time": "2024-04-27T21:32:50+00:00"
         },
         {
-            "name": "realrashid/sweet-alert",
-            "version": "v7.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/realrashid/sweet-alert.git",
-                "reference": "7890f3d3a0f45ea65b90300a823681a99a1d2dd6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/realrashid/sweet-alert/zipball/7890f3d3a0f45ea65b90300a823681a99a1d2dd6",
-                "reference": "7890f3d3a0f45ea65b90300a823681a99a1d2dd6",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^5.6|^6.0|^7.0|^8.0|^9.0|^9.11|9.14.*|^10.0|^11.0",
-                "php": "^7.2|^8.0|^8.1|^8.2|^8.3"
-            },
-            "require-dev": {
-                "symfony/thanks": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "RealRashid\\SweetAlert\\SweetAlertServiceProvider"
-                    ],
-                    "aliases": {
-                        "Alert": "RealRashid\\SweetAlert\\Facades\\Alert"
-                    }
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/functions.php"
-                ],
-                "psr-4": {
-                    "RealRashid\\SweetAlert\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rashid Ali",
-                    "email": "realrashid05@gmail.com",
-                    "homepage": "https://realrashid.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Laravel Sweet Alert Is A Package For Laravel Provides An Easy Way To Display Alert Messages Using The SweetAlert2 Library.",
-            "homepage": "https://github.com/realrashid/sweet-alert",
-            "keywords": [
-                "alert",
-                "laravel",
-                "laravel-package",
-                "notifier",
-                "noty",
-                "sweet-alert",
-                "sweet-alert2",
-                "toast"
-            ],
-            "support": {
-                "docs": "https://realrashid.github.io/sweet-alert/",
-                "email": "realrashid05@gmail.com",
-                "issues": "https://github.com/realrashid/sweet-alert/issues",
-                "source": "https://github.com/realrashid/sweet-alert"
-            },
-            "funding": [
-                {
-                    "url": "https://ko-fi.com/realrashid",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://www.buymeacoffee.com/realrashid",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://issuehunt.io/r/realrashid",
-                    "type": "issuehunt"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/realrashid/sweet-alert",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2024-06-15T16:17:23+00:00"
-        },
-        {
             "name": "rize/uri-template",
             "version": "0.3.6",
             "source": {
@@ -10116,16 +10026,16 @@
         },
         {
             "name": "laravel-lang/http-statuses",
-            "version": "3.8.3",
+            "version": "3.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/http-statuses.git",
-                "reference": "2f19b67fcdb2134804b0b8ee399f5abab4720d9a"
+                "reference": "0e8b1af2835f951f5587f6c635ea6b929f275415"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/http-statuses/zipball/2f19b67fcdb2134804b0b8ee399f5abab4720d9a",
-                "reference": "2f19b67fcdb2134804b0b8ee399f5abab4720d9a",
+                "url": "https://api.github.com/repos/Laravel-Lang/http-statuses/zipball/0e8b1af2835f951f5587f6c635ea6b929f275415",
+                "reference": "0e8b1af2835f951f5587f6c635ea6b929f275415",
                 "shasum": ""
             },
             "require": {
@@ -10177,9 +10087,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/http-statuses/issues",
-                "source": "https://github.com/Laravel-Lang/http-statuses/tree/3.8.3"
+                "source": "https://github.com/Laravel-Lang/http-statuses/tree/3.8.4"
             },
-            "time": "2024-04-22T14:47:25+00:00"
+            "time": "2024-07-20T18:15:58+00:00"
         },
         {
             "name": "laravel-lang/lang",
@@ -11164,16 +11074,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.29",
+            "version": "10.5.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8e9e80872b4e8064401788ee8a32d40b4455318f"
+                "reference": "b15524febac0153876b4ba9aab3326c2ee94c897"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8e9e80872b4e8064401788ee8a32d40b4455318f",
-                "reference": "8e9e80872b4e8064401788ee8a32d40b4455318f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b15524febac0153876b4ba9aab3326c2ee94c897",
+                "reference": "b15524febac0153876b4ba9aab3326c2ee94c897",
                 "shasum": ""
             },
             "require": {
@@ -11194,7 +11104,7 @@
                 "phpunit/php-timer": "^6.0.0",
                 "sebastian/cli-parser": "^2.0.1",
                 "sebastian/code-unit": "^2.0.0",
-                "sebastian/comparator": "^5.0.1",
+                "sebastian/comparator": "^5.0.2",
                 "sebastian/diff": "^5.1.1",
                 "sebastian/environment": "^6.1.0",
                 "sebastian/exporter": "^5.1.2",
@@ -11245,7 +11155,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.29"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.30"
             },
             "funding": [
                 {
@@ -11261,7 +11171,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-30T11:08:00+00:00"
+            "time": "2024-08-13T06:09:37+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -11433,16 +11343,16 @@
         },
         {
             "name": "sebastian/comparator",
-            "version": "5.0.1",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "2db5010a484d53ebf536087a70b4a5423c102372"
+                "reference": "2d3e04c3b4c1e84a5e7382221ad8883c8fbc4f53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/2db5010a484d53ebf536087a70b4a5423c102372",
-                "reference": "2db5010a484d53ebf536087a70b4a5423c102372",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/2d3e04c3b4c1e84a5e7382221ad8883c8fbc4f53",
+                "reference": "2d3e04c3b4c1e84a5e7382221ad8883c8fbc4f53",
                 "shasum": ""
             },
             "require": {
@@ -11453,7 +11363,7 @@
                 "sebastian/exporter": "^5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^10.3"
+                "phpunit/phpunit": "^10.4"
             },
             "type": "library",
             "extra": {
@@ -11498,7 +11408,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/comparator/issues",
                 "security": "https://github.com/sebastianbergmann/comparator/security/policy",
-                "source": "https://github.com/sebastianbergmann/comparator/tree/5.0.1"
+                "source": "https://github.com/sebastianbergmann/comparator/tree/5.0.2"
             },
             "funding": [
                 {
@@ -11506,7 +11416,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-08-14T13:18:12+00:00"
+            "time": "2024-08-12T06:03:08+00:00"
         },
         {
             "name": "sebastian/complexity",
