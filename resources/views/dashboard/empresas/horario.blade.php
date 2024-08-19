@@ -146,8 +146,8 @@
                         </div>
                     </div>
 
-                        <div class="col-md-12">
-                            <div class="col-md-6 float-right">
+                        <div class="col-12">
+                            <div class="float-right">
                                 <button type="submit" class="btn btn-block btn-success">
                                     <i class="fas fa-save"></i> Guardar Horas
                                 </button>

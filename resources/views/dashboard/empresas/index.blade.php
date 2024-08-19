@@ -1,6 +1,8 @@
 @extends('adminlte::page')
 
-@section('title', 'Tiendas')
+@section('plugins.Lightbox', true)
+
+@section('title', 'Empresas')
 
 @section('content_header')
     <div class="container-fluid">
@@ -46,6 +48,20 @@
         {
             $('#customFileLang').click();
         }
+
+        Livewire.on('cerrarModal', () => {
+            $('#btn_modal_default').click();
+        });
+
+        /* Ekko Lightbox */
+        $(function () {
+            $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+                event.preventDefault();
+                $(this).ekkoLightbox({
+                    alwaysShowClose: true
+                });
+            });
+        })
 
         console.log('Hi!');
     </script>

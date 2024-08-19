@@ -19,7 +19,7 @@ class EmpresasComponent extends Component
 
     public $rows = 0, $numero = 14, $empresas_id, $tableStyle = false;
     public $view = "show", $keyword, $title = "Datos de la Empresa", $btn_cancelar = false, $footer = true, $nuevo = true;
-    public $empresa_default, $verDefault, $verImagen, $img_borrar_principal, $img_principal;
+    public $empresa_default, $verDefault, $verImagen, $img_borrar_principal, $img_principal, $verMini;
     public $rif, $nombre, $jefe, $moneda, $telefonos, $email, $direccion, $photo, $default = 0, $permisos;
     public $horario, $horario_id, $lunes, $martes, $miercoles, $jueves, $viernes, $sabado, $domingo, $apertura, $cierre;
 
@@ -66,7 +66,8 @@ class EmpresasComponent extends Component
     {
         $this->reset([
             'view', 'title', 'btn_cancelar', 'footer', 'empresas_id', 'verDefault', 'verImagen', 'keyword', 'nuevo',
-            'rif', 'nombre', 'jefe', 'moneda', 'telefonos', 'email', 'direccion', 'photo', 'permisos', 'img_borrar_principal'
+            'rif', 'nombre', 'jefe', 'moneda', 'telefonos', 'email', 'direccion', 'photo', 'permisos', 'img_borrar_principal',
+            'verMini'
         ]);
     }
 
@@ -107,10 +108,6 @@ class EmpresasComponent extends Component
 
     public function save()
     {
-        $tipo = 'success';
-        $message = null;
-        $almacen = false;
-
         $this->validate();
 
         if ($this->empresas_id){
@@ -130,82 +127,78 @@ class EmpresasComponent extends Component
             $permisos[Auth::id()] = true;
             $permisos = json_encode($permisos);
             $empresa->permisos = $permisos;
-            $almacen = true;
         }
 
-        $empresa->rif = $this->rif;
-        $empresa->nombre = $this->nombre;
-        $empresa->supervisor = $this->jefe;
-        $empresa->moneda = $this->moneda;
-        $empresa->telefono = $this->telefonos;
-        $empresa->email = $this->email;
-        $empresa->direccion = $this->direccion;
+        if ($empresa){
 
+            $empresa->rif = $this->rif;
+            $empresa->nombre = $this->nombre;
+            $empresa->supervisor = $this->jefe;
+            $empresa->moneda = $this->moneda;
+            $empresa->telefono = $this->telefonos;
+            $empresa->email = $this->email;
+            $empresa->direccion = $this->direccion;
 
-
-        if ($this->photo){
-            $ruta = $this->photo->store('public/empresas');
-            $empresa->imagen = str_replace('public/', 'storage/', $ruta);
-            //miniaturas
-            $nombre = explode('empresas/', $empresa->imagen);
-            $path_data = "storage/empresas/size_".$nombre[1];
-            $miniatura = crearMiniaturas($empresa->imagen, $path_data);
-            $empresa->mini = $miniatura['mini'];
-            /*$empresa->detail = $miniatura['detail'];
-            $empresa->cart = $miniatura['cart'];
-            $empresa->banner = $miniatura['banner'];*/
-            //borramos imagenes anteriones si existen
-            if ($this->img_borrar_principal){
-                borrarImagenes($imagen, 'empresas');
+            if ($this->photo){
+                $ruta = $this->photo->store('public/empresas');
+                $empresa->imagen = str_replace('public/', 'storage/', $ruta);
+                //miniaturas
+                $nombre = explode('empresas/', $empresa->imagen);
+                $path_data = "storage/empresas/size_".$nombre[1];
+                $miniatura = crearMiniaturas($empresa->imagen, $path_data);
+                $empresa->mini = $miniatura['mini'];
+                /*$empresa->detail = $miniatura['detail'];
+                $empresa->cart = $miniatura['cart'];
+                $empresa->banner = $miniatura['banner'];*/
+                //borramos imagenes anteriones si existen
+                if ($this->img_borrar_principal){
+                    borrarImagenes($imagen, 'empresas');
+                }
+            }else{
+                if ($this->img_borrar_principal){
+                    $empresa->imagen = null;
+                    $empresa->mini = null;
+                    $empresa->detail = null;
+                    $empresa->cart = null;
+                    $empresa->banner = null;
+                    borrarImagenes($this->img_borrar_principal, 'empresas');
+                }
             }
+
+            $empresa->save();
+
+            $this->show($empresa->id);
+
+            $this->alert('success', $message);
+
         }else{
-            if ($this->img_borrar_principal){
-                $empresa->imagen = null;
-                $empresa->mini = null;
-                $empresa->detail = null;
-                $empresa->cart = null;
-                $empresa->banner = null;
-                borrarImagenes($this->img_borrar_principal, 'empresas');
-            }
+            $this->show($this->empresa_default);
+            $this->dispatch('cerrarModal');
         }
-
-        $empresa->save();
-
-        if ($almacen){
-            $almacen = new Almacen();
-            $almacen->empresas_id = $empresa->id;
-            $almacen->codigo = "ALMP";
-            $almacen->nombre = "Almacen Principal";
-            $almacen->tipo = 1;
-            $almacen->save();
-        }
-
-        $this->show($empresa->id);
-
-        $this->alert(
-            $tipo,
-            $message
-        );
-
     }
 
     public function show($id)
     {
         $this->limpiar();
-        $this->empresas_id = $id;
-        $empresa = Empresa::find($this->empresas_id);
-        $this->nombre = $empresa->nombre;
-        $this->rif = $empresa->rif;
-        $this->jefe = $empresa->supervisor;
-        $this->moneda = $empresa->moneda;
-        $this->telefonos = $empresa->telefono;
-        $this->email = $empresa->email;
-        $this->direccion = $empresa->direccion;
-        $this->permisos = $empresa->permisos;
-        $this->verDefault = $empresa->default;
-        $this->verImagen = $empresa->mini;
-        $this->img_principal = $empresa->imagen;
-        $this->view = "show";
+        $empresa = Empresa::find($id);
+        if ($empresa){
+            $this->empresas_id = $empresa->id;
+            $this->nombre = $empresa->nombre;
+            $this->rif = $empresa->rif;
+            $this->jefe = $empresa->supervisor;
+            $this->moneda = $empresa->moneda;
+            $this->telefonos = $empresa->telefono;
+            $this->email = $empresa->email;
+            $this->direccion = $empresa->direccion;
+            $this->permisos = $empresa->permisos;
+            $this->verDefault = $empresa->default;
+            $this->verImagen = $empresa->imagen;
+            $this->verMini = $empresa->mini;
+            $this->img_principal = $empresa->imagen;
+            $this->view = "show";
+        }else{
+            $this->dispatch('cerrarModal');
+        }
     }
 
     public function edit()
@@ -217,23 +210,23 @@ class EmpresasComponent extends Component
 
     public function convertirDefault($id)
     {
-        $buscar = Empresa::where('default', 1)->first();
-        if ($buscar){
-            $buscar->default = 0;
-            $buscar->update();
-        }
-
         $empresa = Empresa::find($id);
-        $empresa->default = 1;
-        $empresa->update();
+        if ($empresa){
 
-        $this->empresa_default = $empresa->id;
-        $this->verDefault = $empresa->default;
+            $buscar = Empresa::where('default', 1)->first();
+            if ($buscar){
+                $buscar->default = 0;
+                $buscar->update();
+            }
 
-        /*$this->alert(
-            'success',
-            'Datos Guardados.'
-        );*/
+            $empresa->default = 1;
+            $empresa->update();
+            $this->empresa_default = $empresa->id;
+            $this->verDefault = $empresa->default;
+        }else{
+            $this->show($this->empresa_default);
+            $this->dispatch('cerrarModal');
+        }
     }
 
     public function destroy($id)
@@ -270,13 +263,13 @@ class EmpresasComponent extends Component
                 'confirmButtonText' => 'OK',
             ]);
         } else {
-            $empresa->delete();
-            borrarImagenes($imagen, 'empresas');
-            $this->alert(
-                'success',
-                'Empresa Eliminada.'
-            );
+            if ($empresa){
+                $empresa->delete();
+                borrarImagenes($imagen, 'empresas');
+                $this->alert('success', 'Empresa Eliminada.');
+            }
             $this->show($this->empresa_default);
+            $this->dispatch('cerrarModal');
         }
     }
 
@@ -335,20 +328,23 @@ class EmpresasComponent extends Component
 
     public function botonHorario($id)
     {
-        $tipo = 'success';
-        $message = null;
         if ($id){
             $parametro = Parametro::find($id);
-            if ($parametro->valor == 1){
-                $parametro->valor = 0;
-                $tipo = 'info';
-                $message = 'Horario Apagado.';
+            if ($parametro){
+                if ($parametro->valor == 1){
+                    $parametro->valor = 0;
+                }else{
+                    $parametro->valor = 1;
+                }
+                $parametro->update();
             }else{
+                $parametro = new Parametro();
+                $parametro->nombre = "horario";
+                $parametro->tabla_id = $this->empresas_id;
                 $parametro->valor = 1;
-                $tipo = 'success';
-                $message = 'Horario Activo.';
+                $parametro->save();
+                $this->horario_id = $parametro->id;
             }
-            $parametro->update();
         }else{
             $parametro = new Parametro();
             $parametro->nombre = "horario";
@@ -356,35 +352,21 @@ class EmpresasComponent extends Component
             $parametro->valor = 1;
             $parametro->save();
             $this->horario_id = $parametro->id;
-            $tipo = "success";
-            $message = 'Horario Activo.';
         }
 
-        /*$this->alert(
-            $tipo,
-            $message
-        );*/
-
         $this->horario = $parametro->valor;
-
     }
 
     public function diasActivos($dia, $valor)
     {
-        $tipo = 'success';
-        $message = null;
         $id = $this->dias($dia, true);
         if ($id){
 
             $parametro = Parametro::find($id);
             if ($valor == 0){
                 $parametro->valor = 1;
-                $tipo = "success";
-                $message = 'Dia Abierto.';
             }else{
                 $parametro->valor = 0;
-                $tipo = "info";
-                $message = 'Dia Cerrado.';
             }
             $parametro->update();
 
@@ -395,9 +377,6 @@ class EmpresasComponent extends Component
             $parametro->tabla_id = $this->empresas_id;
             $parametro->valor = 1;
             $parametro->save();
-            $tipo = "success";
-            $message = 'Dia Abierto.';
-
         }
 
         $this->lunes = $this->dias('Mon');
@@ -407,17 +386,12 @@ class EmpresasComponent extends Component
         $this->viernes = $this->dias('Fri');
         $this->sabado = $this->dias('Sat');
         $this->domingo = $this->dias('Sun');
-
-        /*$this->alert(
-            $tipo,
-            $message
-        );*/
     }
 
     public function storeHoras()
     {
         $rules = [
-            'apertura'  =>  'required',
+            'apertura'  =>  'required_with:cierre',
             'cierre'    => 'required_with:apertura|after:apertura'
         ];
         $message = [
@@ -450,30 +424,18 @@ class EmpresasComponent extends Component
             $parametro->save();
         }
 
-        $this->alert(
-            'success',
-            'Horas Guardadas.'
-        );
-
+        $this->alert('success', 'Horas Guardadas.');
     }
 
     public function estatusTienda($id)
     {
-
-        $tipo = 'success';
-        $message = null;
-
         $estatus_tienda = Parametro::where('nombre', 'estatus_tienda')->where('tabla_id', $id)->first();
         if ($estatus_tienda){
             $parametro = Parametro::find($estatus_tienda->id);
             if ($parametro->valor == 1){
                 $parametro->valor = 0;
-                $tipo = 'info';
-                $message = 'Empresa Cerrada.';
             }else{
                 $parametro->valor = 1;
-                $tipo = 'success';
-                $message = 'Empresa Abierta.';
             }
             $parametro->update();
         }else{
@@ -482,15 +444,7 @@ class EmpresasComponent extends Component
             $parametro->tabla_id = $id;
             $parametro->valor = 1;
             $parametro->save();
-            $tipo = 'success';
-            $message = 'Empresa Abierta.';
         }
-
-        /*$this->alert(
-            $tipo,
-            $message
-        );*/
-
     }
 
     #[On('buscar')]
@@ -506,6 +460,15 @@ class EmpresasComponent extends Component
         $this->img_borrar_principal = $this->img_principal;
     }
 
+    public function actualizar()
+    {
+        //
+    }
 
+    #[On('cerrarModal')]
+    public function cerrarModal()
+    {
+        //JS
+    }
 
 }
