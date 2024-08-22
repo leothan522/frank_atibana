@@ -8,33 +8,33 @@
                 <h1 class="profile-username text-center text-bold text-uppercase">
                     {{ $nombre }}
                 </h1>
-                <ul class="list-group list-group-unbordered mt-3">
-                    <li class="list-group-item">
-                        <b>RIF</b> <a class="float-right text-uppercase">{{ $rif }}</a>
+                <ul class="list-group {{--list-group-unbordered--}} mt-3">
+                    <li class="list-group-item list-group-item-dark">
+                        <span>RIF</span> <span class="text-bold float-right text-uppercase">{{ $rif }}</span>
                     </li>
-                    <li class="list-group-item">
-                        <b>Jefe</b> <a class="float-right text-uppercase">{{ $jefe }}</a>
+                    <li class="list-group-item list-group-item-dark">
+                        <span>Jefe</span> <span class="text-bold float-right text-uppercase">{{ $jefe }}</span>
                     </li>
-                    <li class="list-group-item">
-                        <b>Moneda Base</b> <a class="float-right text-uppercase">{{ $moneda }}</a>
+                    <li class="list-group-item list-group-item-dark">
+                        <span>Moneda Base</span> <span class="text-bold float-right text-uppercase">{{ $moneda }}</span>
                     </li>
-                    <li class="list-group-item">
-                        <b>Teléfonos</b> <a class="float-right text-uppercase">{{ $telefonos }}</a>
+                    <li class="list-group-item list-group-item-dark">
+                        <span>Teléfonos</span> <span class="text-bold float-right text-uppercase">{{ $telefonos }}</span>
                     </li>
-                    <li class="list-group-item">
-                        <b>Email</b> <a class="float-right text-lowercase">{{ $email }}</a>
+                    <li class="list-group-item list-group-item-dark">
+                        <span>Email</span> <span class="text-bold float-right text-lowercase">{{ $email }}</span>
                     </li>
-                    <li class="list-group-item">
-                        <b>Dirección</b> <a class="float-right text-uppercase">{{ $direccion }}</a>
+                    <li class="list-group-item list-group-item-dark">
+                        <span>Dirección</span> <span class="text-bold float-right text-uppercase">{{ $direccion }}</span>
                     </li>
                     @if(auth()->user()->role == 100)
-                        <li class="list-group-item">
-                            <b>empresas_id</b> <a class="float-right">{{ $empresas_id }}</a>
+                        <li class="list-group-item list-group-item-dark">
+                            <span>empresas_id</span> <span class="text-bold float-right">{{ $empresas_id }}</span>
                         </li>
                     @endif
                     @if($verDefault)
-                        <li class="list-group-item text-muted text-center">
-                            <i class="fas fa-certificate text-muted text-xs"></i>
+                        <li class="list-group-item list-group-item-dark text-center text-bold">
+                            <i class="fas fa-certificate text-xs"></i>
                             Tienda Default
                         </li>
                     @endif
@@ -90,15 +90,6 @@
                                 Hora actual: <strong>{{ date('h:i a') }}</strong>. Estatus: <strong> CLOSED </strong>
                             </div>
                         @endif
-                        {{--@if($verDefault)
-                            <ul class="list-group text-sm">
-                                <li class="list-group-item bg-warning text-bold">
-                                    Tienda Default
-                                    <span class="float-right text-bold"><i
-                                                class="fas fa-certificate text-muted text-xs"></i></span>
-                                </li>
-                            </ul>
-                        @endif--}}
                     </div>
                 </div>
             </div>
