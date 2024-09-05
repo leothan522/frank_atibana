@@ -20,8 +20,8 @@
                     @if($smListarRoles->isNotEmpty())
                         @foreach($smListarRoles as $rol)
                             <li class="breadcrumb-item d-md-none" data-toggle="modal" data-target="#modal-roles-usuarios"
-                                onclick="showRol({{ $rol->id }})" id="header_button_role_id_{{ $rol->id }}">
-                                <span class="btn-link" id="li_text_rol_{{ $rol->id }}">{{ ucfirst($rol->nombre) }}</span>
+                                onclick="showRol('{{ $rol->rowquid }}')" id="header_button_role_id_{{ $rol->rowquid }}">
+                                <span class="btn-link" id="li_text_rol_{{ $rol->rowquid }}">{{ ucfirst($rol->nombre) }}</span>
                             </li>
                         @endforeach
                     @endif
@@ -41,7 +41,7 @@
 @endsection
 
 @section('css')
-    {{--<link rel="stylesheet" href="/css/admin_custom.css">--}}
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 @stop
 
 @section('js')
@@ -92,7 +92,7 @@
 
         function showRol(id){
             $('#div_ver_spinner_roles').removeClass('d-none');
-            Livewire.dispatch('edit', { id: id } );
+            Livewire.dispatch('edit', { rowquid: id } );
         }
 
         Livewire.on('setRolList', ({ id, nombre }) => {
@@ -146,18 +146,6 @@
             // te muestra un array de todos los seleccionados
             //console.log(val);
         });
-
-
-        function search(){
-            let input = $("#navbarSearch");
-            let keyword  = input.val();
-            if (keyword.length > 0){
-                input.blur();
-                //alert('Falta vincular con el componente Livewire');
-                Livewire.dispatch('buscar', { keyword:keyword });
-            }
-            return false;
-        }
 
         console.log('Hi!');
     </script>

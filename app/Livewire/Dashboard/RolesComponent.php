@@ -12,7 +12,10 @@ class RolesComponent extends Component
 {
     use LivewireAlert;
 
-    public $roles_id, $nombre, $tabla = 'roles', $getPermisos, $cambios = false;
+    public $nombre, $tabla = 'roles', $getPermisos, $cambios = false;
+
+    #[Locked]
+    public $roles_id, $rowquid;
 
     public function render()
     {
@@ -22,7 +25,7 @@ class RolesComponent extends Component
     public function limpiarRoles()
     {
         $this->reset([
-            'roles_id', 'nombre', 'getPermisos', 'cambios'
+            'roles_id', 'nombre', 'getPermisos', 'cambios', 'rowquid'
         ]);
     }
 
@@ -30,6 +33,8 @@ class RolesComponent extends Component
     public function save($nombre = null)
     {
         if (!is_null($nombre)){
+
+            $this->reset(['roles_id']);
 
             $nombre = mb_strtolower($nombre);
 
@@ -48,8 +53,8 @@ class RolesComponent extends Component
             return [];
         }
 
-        if (strlen($nombre) >= 15) {
-            $this->alert('warning', 'el campo nombre solo puede tener 15 caracteres.');
+        if (strlen($nombre) >= 20) {
+            $this->alert('warning', 'el campo nombre solo puede tener 20 caracteres.');
             return [];
         }
 
@@ -62,47 +67,64 @@ class RolesComponent extends Component
         if ($this->roles_id){
             //editar
             $parametro = Parametro::find($this->roles_id);
+            if ($parametro->rowquid){
+                $rowquid = $parametro->rowquid;
+            }else{
+                $rowquid = generarStringAleatorio(16);
+            }
         }else{
             //nuevo
             $parametro = new Parametro();
+            $rowquid = generarStringAleatorio(16);
         }
 
         if ($parametro){
+
             $parametro->nombre = $nombre;
             $parametro->tabla_id = -1;
+            $parametro->rowquid = $rowquid;
             $parametro->save();
 
             if ($this->roles_id){
-                $this->dispatch('setRolList', id:$parametro->id, nombre:ucwords($parametro->nombre));
-                $this->edit($parametro->id);
+                $this->dispatch('setRolList', id:$parametro->rowquid, nombre:ucwords($parametro->nombre));
+                $this->edit($parametro->rowquid);
                 $this->alert('success', 'Rol Actualizado.');
             }else{
-                $this->dispatch('addRoleList', id:$parametro->id, nombre:ucwords($parametro->nombre), rows:$count + 1);
+                $this->dispatch('addRoleList', id:$parametro->rowquid, nombre:ucwords($parametro->nombre), rows:$count + 1);
                 $this->limpiarRoles();
                 $this->alert('success', 'Rol Creado.');
             }
+
         }else{
-            $this->dispatch('removeRolList', id: $this->roles_id);
+            $parametros = Parametro::where('tabla_id', -1)->count();
+            $this->dispatch('removeRolList', id: $this->roles_id, rows: $parametros - 1);
         }
     }
 
     #[On('edit')]
-    public function edit($id)
+    public function edit($rowquid)
     {
-        $rol = Parametro::find($id);
+        $this->limpiarRoles();
+        $rol = $this->getRol($rowquid);
         if ($rol){
             $this->roles_id = $rol->id;
             $this->nombre = $rol->nombre;
-            $this->getPermisos = $rol->valor;
+            if (json_decode($rol->valor) || empty($rol->valor)){
+                $this->getPermisos = $rol->valor;
+            }else{
+                $this->getPermisos = null;
+            }
+            $this->rowquid = $rol->rowquid;
             $this->reset('cambios');
         }else{
-            $this->dispatch('removeRolList', id: $id);
+            $parametros = Parametro::where('tabla_id', -1)->count();
+            $this->dispatch('removeRolList', id: $rowquid, rows: $parametros - 1);
         }
     }
 
-    public function destroy($id)
+    public function destroy($rowquid)
     {
-        $this->roles_id = $id;
+        $this->rowquid = $rowquid;
         $this->confirm('¿Estas seguro?', [
             'toast' => false,
             'position' => 'center',
@@ -117,7 +139,8 @@ class RolesComponent extends Component
     #[On('confirmedRol')]
     public function confirmedRol()
     {
-        $row = Parametro::find($this->roles_id);
+        $parametros = Parametro::where('tabla_id', -1)->count();
+        $row = $this->getRol($this->rowquid);
         if ($row){
             $id = $row->id;
 
@@ -140,16 +163,13 @@ class RolesComponent extends Component
                 ]);
             } else {
                 $row->delete();
+                $this->dispatch('removeRolList', id: $this->rowquid, rows: $parametros - 1);
                 $this->limpiarRoles();
-                $this->dispatch('removeRolList', id: $id);
-                $this->alert(
-                    'success',
-                    'Rol Eliminado.'
-                );
+                $this->alert('success', 'Rol Eliminado.');
 
             }
         }else{
-            $this->dispatch('removeRolList', id: $this->roles_id);
+            $this->dispatch('removeRolList', id: $this->rowquid , rows: $parametros - 1);
         }
     }
 
@@ -166,7 +186,7 @@ class RolesComponent extends Component
     }
 
     #[On('removeRolList')]
-    public function removeRolList($id)
+    public function removeRolList($id, $rows)
     {
         //elimino a un rol del right-sidebar
     }
@@ -201,7 +221,8 @@ class RolesComponent extends Component
             $this->reset('cambios');
             $this->alert('success', 'Permisos Guardados.');
         }else{
-            $this->dispatch('removeRolList', id: $this->roles_id);
+            $parametros = Parametro::where('tabla_id', -1)->count();
+            $this->dispatch('removeRolList', id: $this->rowquid, rows: $parametros - 1);
         }
     }
 
@@ -209,6 +230,11 @@ class RolesComponent extends Component
     {
         $this->reset('getPermisos');
         $this->cambios = true;
+    }
+
+    protected function getRol($rowquid): ?Parametro
+    {
+        return Parametro::where('rowquid', $rowquid)->first();
     }
 
 }

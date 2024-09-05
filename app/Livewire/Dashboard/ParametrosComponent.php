@@ -14,7 +14,10 @@ class ParametrosComponent extends Component
 
     public $rows = 0, $numero = 14, $tableStyle = false;
     public $view = "create", $keyword;
-    public $parametro_id, $nombre, $tabla_id, $valor;
+    public $nombre, $tabla_id, $valor;
+
+    #[Locked]
+    public $parametros_id, $rowquid;
 
     public function mount()
     {
@@ -28,6 +31,8 @@ class ParametrosComponent extends Component
             ->limit($this->rows)
             ->get();
 
+        $total = Parametro::buscar($this->keyword)->count();
+
         $rows = Parametro::count();
 
         if ($rows > $this->numero) {
@@ -36,7 +41,8 @@ class ParametrosComponent extends Component
 
         return view('livewire.dashboard.parametros-component')
             ->with('parametros', $parametros)
-            ->with('rowsParametros', $rows);
+            ->with('rowsParametros', $rows)
+            ->with('totalBusqueda', $total);
     }
 
     public function setLimit()
@@ -52,12 +58,12 @@ class ParametrosComponent extends Component
     public function limpiar()
     {
         $this->reset([
-            'parametro_id', 'nombre', 'tabla_id', 'valor', 'view', 'keyword'
+            'parametros_id', 'nombre', 'tabla_id', 'valor', 'view', 'rowquid'
         ]);
         $this->resetErrorBag();
     }
 
-    protected function rules($id = null)
+    protected function rules($id = null): array
     {
         $rules = [
             'nombre' => ['required', 'min:3', 'alpha_dash', Rule::unique('parametros', 'nombre')->ignore($id)],
@@ -69,16 +75,22 @@ class ParametrosComponent extends Component
     public function save()
     {
 
-        $this->validate($this->rules($this->parametro_id));
+        $this->validate($this->rules($this->parametros_id));
 
-        if (is_null($this->parametro_id)){
+        if (is_null($this->parametros_id)){
             //nuevo
             $parametro = new Parametro();
-            $message = "Parametro Creado";
+            $message = "Parametro Creado.";
+            $rowquid = generarStringAleatorio(16);
         }else{
             //editar
-            $parametro = Parametro::find($this->parametro_id);
-            $message = "Parametro Actualizado";
+            $parametro = Parametro::find($this->parametros_id);
+            $message = "Parametro Actualizado.";
+            if ($parametro->rowquid){
+                $rowquid = $parametro->rowquid;
+            }else{
+                $rowquid = generarStringAleatorio(16);
+            }
         }
 
         if ($parametro){
@@ -86,25 +98,29 @@ class ParametrosComponent extends Component
             if (!empty($this->tabla_id)){
                 $parametro->tabla_id = $this->tabla_id;
             }
-            if (!empty($this->valor)){
-                $parametro->valor = $this->valor;
-            }
+            $parametro->valor = $this->valor;
+            $parametro->rowquid = $rowquid;
             $parametro->save();
 
+            if ($message == "Parametro Creado."){
+                $this->reset('keyword');
+            }
             $this->alert('success', $message);
         }
         $this->limpiar();
         $this->dispatch('cerrarModal');
     }
 
-    public function edit($id)
+    public function edit($rowquid)
     {
-        $parametro = Parametro::find($id);
+        $this->limpiar();
+        $parametro = $this->getParametro($rowquid);
         if ($parametro){
-            $this->parametro_id = $parametro->id;
+            $this->parametros_id = $parametro->id;
             $this->nombre = $parametro->nombre;
             $this->tabla_id = $parametro->tabla_id;
             $this->valor = $parametro->valor;
+            $this->rowquid = $parametro->rowquid;
             $this->view = "edit";
         }
     }
@@ -115,9 +131,9 @@ class ParametrosComponent extends Component
         $this->keyword = $keyword;
     }
 
-    public function destroy($id)
+    public function destroy($rowquid)
     {
-        $this->parametro_id = $id;
+        $this->rowquid = $rowquid;
         $this->confirm('¿Estas seguro?', [
             'toast' => false,
             'position' => 'center',
@@ -132,7 +148,7 @@ class ParametrosComponent extends Component
     #[On('confirmed')]
     public function confirmed()
     {
-        $parametro = Parametro::find($this->parametro_id);
+        $parametro = $this->getParametro($this->rowquid);
         if ($parametro){
             $parametro->delete();
             $this->limpiar();
@@ -144,6 +160,17 @@ class ParametrosComponent extends Component
     public function cerrarModal()
     {
         //JV
+    }
+
+    public function cerrarBusqueda()
+    {
+        $this->reset('keyword');
+        $this->limpiar();
+    }
+
+    protected function getParametro($rowquid): ?Parametro
+    {
+        return Parametro::where('rowquid', $rowquid)->first();
     }
 
 }

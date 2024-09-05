@@ -36,7 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'roles_id',
         'permisos',
         'token_recuperacion',
-        'times_recuperacion'
+        'times_recuperacion',
+        'rowquid'
     ];
 
     /**

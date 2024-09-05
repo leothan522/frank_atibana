@@ -1,18 +1,18 @@
-<div class="card card-outline card-navy" xmlns:wire="http://www.w3.org/1999/xhtml">
+<div class="card card-navy" xmlns:wire="http://www.w3.org/1999/xhtml">
     <div class="card-header">
         <h3 class="card-title">
             @if($keyword)
-                Busqueda { <b class="text-danger">{{ $keyword }}</b> }
-                <button class="btn btn-tool text-danger" wire:click="limpiar">
+                Busqueda { <b class="text-warning">{{ $keyword }}</b> } [ <b class="text-warning">{{ $totalBusqueda }}</b> ]
+                <button class="btn btn-tool text-warning" wire:click="cerrarBusqueda">
                     <i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Usuarios [ <b class="text-navy">{{ $rowsUsuarios }}</b> ]
+                Usuarios [ <b class="text-warning">{{ $rowsUsuarios }}</b> ]
             @endif
         </h3>
 
         <div class="card-tools">
-            <button type="button" class="btn btn-tool" wire:click="limpiar">
+            <button type="button" class="btn btn-tool" wire:click="actualizar">
                 <i class="fas fa-sync-alt"></i>
             </button>
             @if(comprobarPermisos('usuarios.excel'))
@@ -72,12 +72,12 @@
                         <td class="d-none d-lg-table-cell text-right">{{ haceCuanto($user->created_at)  }}</td>
                         <td class="justify-content-end">
                             <div class="btn-group">
-                                <button wire:click="edit({{ $user->id }})" class="btn btn-primary btn-sm"
+                                <button wire:click="edit('{{ $user->rowquid }}')" class="btn btn-primary btn-sm"
                                         data-toggle="modal" data-target="#modal-user-edit"
                                         @if(!comprobarPermisos('usuarios.edit') || !($user->role != 1 || ($user->role ==1 && comprobarPermisos())) || ($user->id == auth()->id() && auth()->user()->role != 100)) disabled @endif>
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button wire:click="edit({{ $user->id }})" class="btn btn-primary btn-sm"
+                                <button wire:click="edit('{{ $user->rowquid }}')" class="btn btn-primary btn-sm"
                                         data-toggle="modal" data-target="#modal-user-permisos" @if(!comprobarPermisos() || ($user->role == 1 && auth()->user()->role != 100)) disabled @endif>
                                     <i class="fas fa-user-cog"></i>
                                 </button>

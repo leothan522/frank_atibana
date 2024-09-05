@@ -9,7 +9,7 @@ class Parametro extends Model
 {
     use HasFactory;
     protected $table = "parametros";
-    protected $fillable = ['nombre', 'tabla_id', 'valor'];
+    protected $fillable = ['nombre', 'tabla_id', 'valor', 'rowquid'];
 
     public function scopeBuscar($query, $keyword)
     {

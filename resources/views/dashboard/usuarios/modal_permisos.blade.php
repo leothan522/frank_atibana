@@ -1,12 +1,12 @@
 <div wire:ignore.self class="modal fade" id="modal-user-permisos" xmlns:wire="http://www.w3.org/1999/xhtml">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content fondo">
-            <div class="modal-header">
+            <div class="modal-header bg-navy">
                 <h4 class="modal-title">
                     Permisos de Usuario
                 </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span class="text-white" aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                @if($usuarios_id)
+                @if($users_id)
                     @include('dashboard.usuarios.show_permisos')
                 @endif
 

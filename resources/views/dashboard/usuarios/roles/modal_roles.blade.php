@@ -2,17 +2,19 @@
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content fondo">
             <div class="modal-header">
-                <div class="row">
+
+                <div class="row col-md-10">
+
                     <div class="col-md-6">
                         <h4 class="modal-title">
                             Rol de Usuario
                         </h4>
                     </div>
+
                     <div class="col-md-6 justify-content-end">
                         <form wire:submit="save">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="nombre" wire:model="nombre"
-                                       required>
+                            <div class="input-group close">
+                                <input type="text" class="form-control" placeholder="nombre" wire:model="nombre" equired>
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fa fa-save"></i>
@@ -21,8 +23,10 @@
                             </div>
                         </form>
                     </div>
+
                 </div>
-                <button type="button" class="float-right close" data-dismiss="modal" aria-label="Close">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
 
@@ -45,7 +49,7 @@
             </div>
             <div class="modal-footer">
                 <div class="row col-12 justify-content-between">
-                    <button type="button" class="btn btn-danger btn-sm" wire:click="destroy({{ $roles_id }})">
+                    <button type="button" class="btn btn-danger btn-sm" wire:click="destroy('{{ $rowquid }}')">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                     <button type="button" class="btn btn-default btn-sm" wire:click="deletePermisos">

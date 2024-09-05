@@ -18,10 +18,13 @@ class UsuariosComponent extends Component
 
     public $rows = 0, $numero = 14, $tableStyle = false;
     public $view = "create", $keyword;
-    public $name, $email, $password, $role, $usuarios_id;
-    public $edit_name, $edit_email, $edit_password, $edit_role = 0, $edit_roles_id = 0, $created_at, $estatus = 1, $photo, $empresas_id;
+    public $name, $email, $password, $role;
+    public $edit_name, $edit_email, $edit_password, $edit_role = 0, $edit_roles_id = 0, $created_at, $estatus = 1, $photo;
     public $rol_nombre, $tabla = 'usuarios', $getPermisos, $cambios = false;
     public $select_empresas, $ver_empresas; // acceso a empresas
+
+    #[Locked]
+    public $users_id, $rowquid;
 
     public function mount()
     {
@@ -33,11 +36,11 @@ class UsuariosComponent extends Component
         $roles = Parametro::where('tabla_id', '-1')->get();
 
         $users = User::buscar($this->keyword)
-            ->orderBy('role', 'DESC')
-            ->orderBy('roles_id', 'DESC')
             ->orderBy('created_at', 'DESC')
             ->limit($this->rows)
             ->get();
+
+        $total = User::buscar($this->keyword)->count();
 
         $rows = User::count();
 
@@ -48,7 +51,8 @@ class UsuariosComponent extends Component
         return view('livewire.dashboard.usuarios-component')
             ->with('listarRoles', $roles)
             ->with('listarUsers', $users)
-            ->with('rowsUsuarios', $rows);
+            ->with('rowsUsuarios', $rows)
+            ->with('totalBusqueda', $total);
     }
 
     public function setLimit()
@@ -65,9 +69,9 @@ class UsuariosComponent extends Component
     public function limpiar()
     {
         $this->reset([
-            'view', 'keyword', 'name', 'email', 'password', 'role', 'usuarios_id',
+            'view', 'name', 'email', 'password', 'role', 'users_id', 'rowquid',
             'edit_name', 'edit_email', 'edit_password', 'edit_role', 'edit_roles_id', 'created_at', 'estatus',
-            'photo', 'empresas_id', 'rol_nombre', 'getPermisos', 'cambios'
+            'photo', 'rol_nombre', 'getPermisos', 'cambios'
         ]);
         $this->resetErrorBag();
     }
@@ -77,7 +81,7 @@ class UsuariosComponent extends Component
         $this->password = Str::password(8);
     }
 
-    protected function rules($id = null)
+    protected function rules($id = null): array
     {
         if ($id) {
             $rules = [
@@ -106,11 +110,11 @@ class UsuariosComponent extends Component
 
     public function save()
     {
-        $this->validate($this->rules($this->usuarios_id));
+        $this->validate($this->rules($this->users_id));
 
         $this->accesoEmpresa($this->select_empresas); // acceso a empresas
 
-        if (is_null($this->usuarios_id)) {
+        if (is_null($this->users_id)) {
             //nuevo
             $usuarios = new User();
             $usuarios->name = ucwords($this->name);
@@ -127,13 +131,15 @@ class UsuariosComponent extends Component
                 $usuarios->role = $this->role;
                 $usuarios->roles_id = null;
             }
+            $usuarios->rowquid = generarStringAleatorio(16);
             $usuarios->save();
+            $this->reset('keyword');
             $this->limpiar();
             $this->dispatch('cerrarModal', selector: 'btn_modal_default_create');
             $this->alert('success', 'Usuario Creado.');
         } else {
             //editar
-            $usuarios = User::find($this->usuarios_id);
+            $usuarios = User::find($this->users_id);
             if ($usuarios){
                 $usuarios->name = ucwords($this->edit_name);
                 $usuarios->email = strtolower($this->edit_email);
@@ -148,8 +154,11 @@ class UsuariosComponent extends Component
                     $usuarios->role = $this->edit_role;
                     $usuarios->roles_id = null;
                 }
+                if (is_null($usuarios->rowquid)){
+                    $usuarios->rowquid = generarStringAleatorio(16);
+                }
                 $usuarios->save();
-                $this->edit($this->usuarios_id);
+                $this->edit($usuarios->rowquid);
                 $this->alert('success', 'Usuario Actualizado.');
             }else{
                 $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
@@ -157,12 +166,12 @@ class UsuariosComponent extends Component
         }
     }
 
-    public function edit($id)
+    public function edit($rowquid)
     {
         $this->limpiar();
-        $usuario = User::find($id);
+        $usuario = $this->getUser($rowquid);
         if ($usuario){
-            $this->usuarios_id = $usuario->id;
+            $this->users_id = $usuario->id;
             $this->edit_name = $usuario->name;
             $this->edit_email = $usuario->email;
             if ($usuario->roles_id) {
@@ -174,9 +183,9 @@ class UsuariosComponent extends Component
             $this->estatus = $usuario->estatus;
             $this->created_at = $usuario->created_at;
             $this->photo = $usuario->profile_photo_path;
-            /*$this->empresas_id = $usuario->empresas_id;*/
             $this->rol_nombre = verRole($usuario->role, $usuario->roles_id);
             $this->getPermisos = $usuario->permisos;
+            $this->rowquid = $rowquid;
 
             //acceso a empresas
 
@@ -188,7 +197,7 @@ class UsuariosComponent extends Component
                     'id' => $empresa->id,
                     'text' => $empresa->nombre
                 ];
-                if (leerJson($empresa->permisos, $this->usuarios_id)){
+                if (leerJson($empresa->permisos, $this->users_id)){
                     $placeholder .= '['.$empresa->nombre.'] <br>';
                 }
                 array_push($data, $option);
@@ -201,9 +210,9 @@ class UsuariosComponent extends Component
         }
     }
 
-    public function cambiarEstatus($id)
+    public function cambiarEstatus($rowquid)
     {
-        $usuario = User::find($id);
+        $usuario = $this->getUser($rowquid);
         if ($usuario){
             if ($usuario->estatus) {
                 $usuario->estatus = 0;
@@ -220,9 +229,9 @@ class UsuariosComponent extends Component
         }
     }
 
-    public function restablecerClave($id)
+    public function restablecerClave($rowquid)
     {
-        $usuario = User::find($id);
+        $usuario = $this->getUser($rowquid);
         if ($usuario){
             if (!$this->edit_password) {
                 $clave = Str::password(8);
@@ -238,9 +247,9 @@ class UsuariosComponent extends Component
         }
     }
 
-    public function destroy($id)
+    public function destroy($rowquid)
     {
-        $this->usuario_id = $id;
+        $this->rowquid = $rowquid;
         $this->confirm('¿Estas seguro?', [
             'toast' => false,
             'position' => 'center',
@@ -255,7 +264,7 @@ class UsuariosComponent extends Component
     #[On('confirmedUser')]
     public function confirmedUser()
     {
-        $usuario = User::find($this->usuarios_id);
+        $usuario = $this->getUser($this->rowquid);
         if ($usuario){
             //codigo para verificar si realmente se puede borrar, dejar false si no se requiere validacion
             $vinculado = false;
@@ -274,10 +283,7 @@ class UsuariosComponent extends Component
                 $usuario->delete();
                 $this->limpiar();
                 $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
-                $this->alert(
-                    'success',
-                    'Usuario Eliminado.'
-                );
+                $this->alert('success', 'Usuario Eliminado.');
             }
         }else{
             $this->dispatch('cerrarModal', selector: 'button_edit_modal_cerrar');
@@ -303,19 +309,17 @@ class UsuariosComponent extends Component
             $permisos = json_decode($this->getPermisos, true);
             $permisos[$permiso] = true;
             $permisos = json_encode($permisos);
-            $message = "Permiso Agregado.";
         }else{
             $permisos = json_decode($this->getPermisos, true);
             unset($permisos[$permiso]);
             $permisos = json_encode($permisos);
-            $message = "Permiso Eliminado.";
         }
         $this->getPermisos = $permisos;
         $this->cambios = true;
     }
 
     public function savePermisos(){
-        $usuario = User::find($this->usuarios_id);
+        $usuario = User::find($this->users_id);
         if ($usuario){
             $usuario->permisos = $this->getPermisos;
             $usuario->save();
@@ -330,7 +334,7 @@ class UsuariosComponent extends Component
         $this->cambios = true;
     }
 
-    public function getEstatusUsuario($i, $icon = null)
+    public function getEstatusUsuario($i, $icon = null): string
     {
         if (is_null($icon)){
             $suspendido = "Suspendido";
@@ -353,6 +357,17 @@ class UsuariosComponent extends Component
         //JS
     }
 
+    public function cerrarBusqueda()
+    {
+        $this->reset(['keyword']);
+        $this->limpiar();
+    }
+
+    protected function getUser($rowquid): ?User
+    {
+        return User::where('rowquid', $rowquid)->first();
+    }
+
     //acceso a empresas **********************************************************************
 
     public function accesoEmpresa($array)
@@ -362,10 +377,10 @@ class UsuariosComponent extends Component
             foreach ($array as $id){
                 $empresa = Empresa::find($id);
                 $permisos = json_decode($empresa->permisos, true);
-                if (!leerJson($empresa->permisos, $this->usuarios_id)){
-                    $permisos[$this->usuarios_id] = true;
+                if (!leerJson($empresa->permisos, $this->users_id)){
+                    $permisos[$this->users_id] = true;
                 }else{
-                    unset($permisos[$this->usuarios_id]);
+                    unset($permisos[$this->users_id]);
                 }
                 $permisos = json_encode($permisos);
                 $empresa->permisos = $permisos;

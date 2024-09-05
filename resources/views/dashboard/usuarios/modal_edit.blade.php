@@ -2,10 +2,10 @@
     <div wire:ignore.self class="modal fade" id="modal-user-edit">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content fondo">
-                <div class="modal-header">
+                <div class="modal-header bg-navy">
                     <h4 class="modal-title">Detalles del Usuario</h4>
                     <button type="button" wire:click="limpiar" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span class="text-white" aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -17,7 +17,7 @@
                                 <div class="card card-navy card-outline">
                                     <div class="card-body box-profile">
                                         <div class="text-center">
-                                            <img class="profile-user-img img-fluid img-circle" src="{{ verImagen($photo, true) }}" alt="User profile picture">
+                                            <img class="profile-user-img img-fluid img-circle img_circular" src="{{ verImagen($photo, true) }}" alt="User profile picture">
                                         </div>
 
                                         <h3 class="profile-username text-center">{{ ucwords($edit_name) }}</h3>
@@ -65,13 +65,13 @@
                                                         @php($clase = "btn-success")
                                                         @php($texto = "Reactivar <br> Usuario")
                                                     @endif
-                                                    <button type="button" wire:click="cambiarEstatus({{ $usuarios_id }})" class="btn {{ $clase }} btn-block"
+                                                    <button type="button" wire:click="cambiarEstatus('{{ $rowquid }}')" class="btn {{ $clase }} btn-block"
                                                             @if(!comprobarPermisos('usuarios.estatus')) disabled @endif>
                                                         <b>{!! $texto !!}</b>
                                                     </button>
                                                 </div>
                                                 <div class="col-6">
-                                                    <button type="button" wire:click="restablecerClave({{ $usuarios_id }})" class="btn btn-block btn-secondary"
+                                                    <button type="button" wire:click="restablecerClave('{{ $rowquid }}')" class="btn btn-block btn-secondary"
                                                             @if(!comprobarPermisos('usuarios.password')) disabled @endif>
                                                         <b>Restablecer <br> Contraseña</b>
                                                     </button>
@@ -90,8 +90,8 @@
                                     <div class="card-header">
                                         <h3 class="card-title">Editar Usuario</h3>
                                         <div class="card-tools">
-                                            <button type="button" class="btn btn-tool text-bold" wire:click="edit({{ $usuarios_id }})">
-                                                <i class="fas fa-redo"></i> Reset
+                                            <button type="button" class="btn btn-tool text-bold" wire:click="edit('{{ $rowquid }}')">
+                                                <i class="fas fa-sync-alt"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -193,8 +193,8 @@
                 {!! verSpinner() !!}
 
                 <div class="modal-footer {{--row col-12--}} justify-content-between">
-                    <button type="button" class="btn btn-danger btn-sm" wire:click="destroy({{ $usuarios_id }})"
-                            @if(!comprobarPermisos('usuarios.destroy') || !($edit_role != 1 || ($edit_role == 1 && comprobarPermisos())) || ($usuarios_id == auth()->id())) disabled @endif >
+                    <button type="button" class="btn btn-danger btn-sm" wire:click="destroy('{{ $rowquid }}')"
+                            @if(!comprobarPermisos('usuarios.destroy') || !($edit_role != 1 || ($edit_role == 1 && comprobarPermisos())) || ($users_id == auth()->id())) disabled @endif >
                         <i class="fas fa-trash-alt"></i>
                     </button>
                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiar" id="button_edit_modal_cerrar">
