@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chats_messages', function (Blueprint $table) {
+        Schema::create('fcm_tokens', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('chats_id')->unsigned();
-            $table->bigInteger('users_id')->unsigned();
-            $table->text('message');
-            $table->foreign('chats_id')->references('id')->on('chats')->cascadeOnDelete();
+            $table->bigInteger('users_id')->unsigned()->nullable();
+            $table->text('token');
+            $table->text('rowquid')->nullable();
             $table->foreign('users_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chatmessages');
+        Schema::dropIfExists('fcm_tokens');
     }
 };

@@ -385,6 +385,33 @@ return [
                 ]
             ],
         ],
+        [
+            'text'      => 'View Android',
+            'icon'      => 'fas fa-fw fa-mobile-alt',
+            'can'       => ['fcm'],
+            'submenu' => [
+                [
+                    'text' => 'Cloud Messaging (FCM)',
+                    'icon' => 'fas fa-fw fa-bell',
+                    'route' => 'fcm.index',
+                    'can' => 'fcm',
+                ],
+                [
+                    'text' => 'Chat Directo',
+                    'icon' => 'fas fa-fw fa-comments',
+                    'route'  => 'chat.directo',
+                    'can'  => 'parametros',
+                    'target' => '_blank',
+                ],
+                [
+                    'text' => 'API Android',
+                    'icon' => 'fas fa-fw fa-mobile-alt',
+                    'url' => env('APP_URL_ANDROID', '/android'),
+                    'can'  => 'parametros',
+                    'target' => '_blank',
+                ],
+            ],
+        ],
     ],
 
     /*'menu' => [

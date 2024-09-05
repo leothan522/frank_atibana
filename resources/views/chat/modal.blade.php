@@ -31,7 +31,7 @@
                             </li>
                             <li class="nav-item">
                                 <span class="nav-link">
-                                    Mesnajes Enviados <span class="float-right badge bg-warning">{{ $modal_mensajes }}</span>
+                                    Mensajes Enviados <span class="float-right badge bg-warning">{{ $modal_mensajes }}</span>
                                 </span>
                             </li>
                             <li class="nav-item">
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="col-12 text-right">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" id="btn_cerrar_modal_info_user">Cerrar</button>
                 </div>
 
 

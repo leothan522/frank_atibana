@@ -2,7 +2,7 @@
 
 @section('plugins.Select2', true)
 
-@section('title', 'Cloud Messaging (FCM)')
+@section('title', 'Cloud Messaging')
 
 @section('content_header')
     <h1><i class="fas fa-bell"></i> Firebase Cloud Messaging</h1>
@@ -20,34 +20,34 @@
     @include('dashboard.footer')
 @endsection
 
-@section('css')
-    {{--<link rel="stylesheet" href="/css/admin_custom.css">--}}
-@stop
-
 @section('js')
     <script src="{{ asset("js/app.js") }}"></script>
     <script>
 
-        function buscar(){
-            let input = $("#navbarSearch");
-            let keyword  = input.val();
-            if (keyword.length > 0){
-                input.blur();
-                alert('Falta vincular con el componente Livewire');
-                //Livewire.emit('increment', keyword);
-            }
-            return false;
-        }
+        $(document).ready(function () {
+            $('#navbar_search_id').addClass('d-none');
+        });
 
-        $('#fcm_token_users').select2({
+        $('#dispositivos_users').select2({
             theme: 'bootstrap4',
             language: "es"
-        })
+        });
 
-        $('#fcm_token_users').on('change', function () {
+        $('#dispositivos_users').on('change', function () {
             let token = $(this).val();
             Livewire.dispatch('tokenSeleccionado', { token:token });
         });
+
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+
+        function cancelar() {
+            $('#dispositivos_users').val('todos').trigger('change');
+            $('#customCheckbox1')
+                .removeClass('checked')
+                .prop('checked', false);
+        }
 
         console.log('Hi!');
     </script>

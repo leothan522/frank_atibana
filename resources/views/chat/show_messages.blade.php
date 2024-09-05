@@ -1,20 +1,19 @@
 @foreach($listarMessages as $mensaje)
 
     <!-- Message -->
-    <div class="direct-chat-msg @if($mensaje->users_id == Auth::id()) right @endif" id="page-bottom_{{ $mensaje->id }}"
-         xmlns:wire="http://www.w3.org/1999/xhtml">
+    <div class="direct-chat-msg @if($mensaje->users_id == auth()->id()) right @endif" id="page-bottom_{{ $mensaje->id }}">
 
         <div class="direct-chat-infos clearfix">
-            <span class="direct-chat-name @if($mensaje->users_id == Auth::id()) float-right @endif">
+            <span class="direct-chat-name @if($mensaje->users_id == auth()->id()) float-right @endif">
                 {{ ucwords($mensaje->user->name) }}
             </span>
             <span
-                class="direct-chat-timestamp @if($mensaje->users_id == Auth::id()) float-left @else float-right @endif">
+                class="direct-chat-timestamp @if($mensaje->users_id == auth()->id()) float-left @else float-right @endif">
                 {{ haceCuanto($mensaje->created_at) }}
             </span>
         </div>
 
-        <img class="direct-chat-img" wire:click="showModal({{ $mensaje->users_id }})"
+        <img class="direct-chat-img" wire:click="showModal('{{ $mensaje->rowquid }}')"
              src="{{ verImagen($mensaje->user->profile_photo_path, true) }}"
              data-toggle="modal" data-target="#exampleModal" alt="Message User Image" style="cursor: pointer;">
 

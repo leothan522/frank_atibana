@@ -35,7 +35,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'roles_id',
         'permisos',
-        'empresas_id',
         'token_recuperacion',
         'times_recuperacion'
     ];
@@ -97,14 +96,19 @@ class User extends Authenticatable implements MustVerifyEmail
             ;
     }
 
-    public function chatusers(): HasMany
+    public function chats(): HasMany
     {
         return $this->hasMany(ChatUser::class, 'users_id', 'id');
     }
 
-    public function chatmessages(): HasMany
+    public function messages(): HasMany
     {
         return $this->hasMany(ChatMessage::class, 'users_id', 'id');
+    }
+
+    public function fcm(): HasMany
+    {
+        return $this->hasMany(Fcm::class, 'users_id', 'id');
     }
 
 }

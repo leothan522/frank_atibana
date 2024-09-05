@@ -11,14 +11,14 @@ class Chat extends Model
     use HasFactory;
 
     protected $table = "chats";
-    protected $fillable = ['tipo'];
+    protected $fillable = ['tipo', 'rowquid'];
 
-    public function chatusers(): HasMany
+    public function users(): HasMany
     {
         return $this->hasMany(ChatUser::class, 'chats_id', 'id');
     }
 
-    public function chatmessages(): HasMany
+    public function messages(): HasMany
     {
         return $this->hasMany(ChatMessage::class, 'chats_id', 'id');
     }

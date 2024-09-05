@@ -19,10 +19,13 @@ class ChatComponent extends Component
 {
     use LivewireAlert;
 
-    public $chats_id, $tipo, $fecha, $count, $new = 0;
-    public $chatusers_id, $vistos, $mensaje, $ultimo_mensaje;
+    public $tipo, $fecha, $count, $new = 0;
+    public $vistos, $mensaje, $ultimo_mensaje;
     protected $messaging;
     public $modal_nombre, $modal_email, $modal_telefono, $modal_mensajes, $modal_fecha, $modal_imagen;
+
+    #[Locked]
+    public $chats_id, $chatusers_id;
 
     public function mount()
     {
@@ -34,12 +37,14 @@ class ChatComponent extends Component
             if (!$chat) {
                 $chat = new Chat();
                 $chat->id = 1;
+                $chat->rowquid = generarStringAleatorio(16);
                 $chat->save();
             }
 
             $chatuser = new ChatUser();
             $chatuser->users_id = auth()->id();
             $chatuser->chats_id = $chat->id;
+            $chatuser->rowquid = generarStringAleatorio(16);
             $chatuser->save();
 
         }
@@ -89,6 +94,7 @@ class ChatComponent extends Component
         $chatmessage->chats_id = $this->chats_id;
         $chatmessage->users_id = auth()->id();
         $chatmessage->message = $this->mensaje;
+        $chatmessage->rowquid = generarStringAleatorio(16);
         $chatmessage->save();
 
         $this->count = ChatMessage::where('chats_id', $this->chats_id)->count();
@@ -97,7 +103,7 @@ class ChatComponent extends Component
         $chatUser->mensajes_vistos = $this->count;
         $chatUser->save();
 
-        $this->sendMessage(ucwords($chatmessage->user->name), $chatmessage->message);
+        //$this->sendMessage(ucwords($chatmessage->user->name), $chatmessage->message);
 
         $this->reset('mensaje');
         $this->new = 0;
@@ -129,12 +135,6 @@ class ChatComponent extends Component
         }
     }
 
-    #[On('downScroll')]
-    public function downScroll($i)
-    {
-        //JS
-    }
-
     public function show()
     {
         $this->count = ChatMessage::where('chats_id', $this->chats_id)->count();
@@ -149,16 +149,26 @@ class ChatComponent extends Component
         $this->dispatch('downScroll', i: $ultimo->id);
     }
 
-    public function showModal($id)
+    public function showModal($rowquid)
     {
-        $user = User::find($id);
-        $this->modal_nombre = $user->name;
-        $this->modal_email = $user->email;
-        $this->modal_telefono = $user->telefono;
-        $this->modal_imagen = $user->profile_photo_path;
-        $this->modal_mensajes = ChatMessage::where('chats_id', $this->chats_id)->where('users_id', $user->id)->count();;
-        $chat = ChatUser::find($this->chatusers_id);
-        $this->modal_fecha = Carbon::create($chat->created_at)->diffForHumans();
+        $this->reset(['modal_nombre', 'modal_email', 'modal_telefono', 'modal_imagen', 'modal_mensajes', 'modal_fecha']);
+        $message = ChatMessage::where('rowquid', $rowquid)->first();
+        if ($message){
+            $user = User::find($message->users_id);
+            if ($user){
+                $this->modal_nombre = $user->name;
+                $this->modal_email = $user->email;
+                $this->modal_telefono = $user->telefono;
+                $this->modal_imagen = $user->profile_photo_path;
+                $this->modal_mensajes = ChatMessage::where('chats_id', $this->chats_id)->where('users_id', $user->id)->count();
+                $chat = ChatUser::find($this->chatusers_id);
+                $this->modal_fecha = Carbon::create($chat->created_at)->diffForHumans();
+            }else{
+                $this->dispatch('cerrarModal');
+            }
+        }else{
+            $this->dispatch('cerrarModal');
+        }
     }
 
     #[On('refresh')]
@@ -169,5 +179,18 @@ class ChatComponent extends Component
             $this->new = $count - $this->count;
         }
     }
+
+    #[On('downScroll')]
+    public function downScroll($i)
+    {
+        //JS
+    }
+
+    #[On('cerrarModal')]
+    public function cerrarModal()
+    {
+        //JS
+    }
+
 
 }

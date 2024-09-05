@@ -6,21 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ChatUser extends Model
+class Fcm extends Model
 {
     use HasFactory;
-
-    protected $table = "chats_users";
-    protected $fillable = ['users_id', 'chats_id', 'default', 'mensajes_vistos', 'rowquid'];
-
-    public function chat(): BelongsTo
-    {
-        return $this->belongsTo(Chat::class, 'chats_id', 'id');
-    }
+    protected $table = 'fcm_tokens';
+    protected $fillable = ['users_id', 'token', 'rowquid'];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'users_id', 'id');
     }
-
 }
