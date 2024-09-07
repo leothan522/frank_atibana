@@ -239,7 +239,7 @@ class PlanificacionComponent extends Component
             $planificacion = new Planificacion();
             $planificacion->empresas_id = $this->empresas_id;
             $planificacion->codigo = $this->codigo;
-            $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".verFecha($semana[1], 'd-m')." al ".verFecha($semana[7], 'd-m').")";
+            $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".getFecha($semana[1], 'd-m')." al ".getFecha($semana[7], 'd-m').")";
             $planificacion->fecha = $this->fecha;
             $planificacion->save();
 
@@ -618,7 +618,7 @@ class PlanificacionComponent extends Component
             if ($procesar){
 
                 $semana = getSemana($this->fecha);
-                $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".verFecha($semana[1], 'd-m')." al ".verFecha($semana[7], 'd-m').")";
+                $planificacion->descripcion = "Semana $semana[0]-$semana[8] (del ".getFecha($semana[1], 'd-m')." al ".getFecha($semana[7], 'd-m').")";
                 $planificacion->save();
 
                 //************** Detalles *********************

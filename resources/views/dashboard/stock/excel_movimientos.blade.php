@@ -6,10 +6,18 @@
 @endphp
 <table>
     <thead>
-    <tr><th colspan="9">Empresa: {{ mb_strtoupper($empresa->nombre, 'utf8') }}</th></tr>
-    <tr><th colspan="9">R.I.F: {{ mb_strtoupper($empresa->rif, 'utf8') }}</th></tr>
-    <tr><th colspan="9" style="text-align: center; font-weight: bold;">MOVIMIENTOS DEL ALMACEN</th></tr>
-    <tr><th colspan="9">{{ mb_strtoupper($almacen->nombre, 'utf8') }}</th></tr>
+    <tr>
+        <th colspan="9">Empresa: {{ mb_strtoupper($empresa->nombre, 'utf8') }}</th>
+    </tr>
+    <tr>
+        <th colspan="9">R.I.F: {{ mb_strtoupper($empresa->rif, 'utf8') }}</th>
+    </tr>
+    <tr>
+        <th colspan="9" style="text-align: center; font-weight: bold;">MOVIMIENTOS DEL ALMACEN</th>
+    </tr>
+    <tr>
+        <th colspan="9">{{ mb_strtoupper($almacen->nombre, 'utf8') }}</th>
+    </tr>
     <tr>
         <th style="{{ $color }}{{ $border }}{{ $centro }} {{ $title }}">Tipo</th>
         <th style="{{ $color }}{{ $border }}{{ $centro }} {{ $title }}">Modulo</th>
@@ -29,7 +37,7 @@
                 <td style="{{ $border }}">{{ mb_strtoupper($detalle['tipo'], 'utf8') }}</td>
                 <td style="{{ $border }}">{{ mb_strtoupper($movimientos['tabla'], 'utf8') }}</td>
                 <td style="{{ $border }}">{{ mb_strtoupper($movimientos['codigo'], 'utf8') }}</td>
-                <td style="{{ $border }}">{{ verFecha($movimientos['fecha'], 'd/m/Y H:i') }}</td>
+                <td style="{{ $border }}">{{ getFecha($movimientos['fecha'], 'd/m/Y H:i') }}</td>
                 <td style="{{ $border }}">{{ mb_strtoupper($movimientos['segmento'], 'utf8') }}</td>
                 <td style="{{ $border }}">{{ mb_strtoupper($detalle['codigo'], 'utf8') }}</td>
                 <td style="{{ $border }}">{{ mb_strtoupper($detalle['articulo'], 'utf8') }}</td>

@@ -2,11 +2,19 @@
     <thead>
     <tr>
         <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center;">ID</th>
-        <th style=" border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center;">NOMBRE</th>
-        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center;">EMAIL</th>
-        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center; ">ROL</th>
-        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center; ">ESTATUS</th>
-        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center; ">REGISTRO</th>
+        <th style=" border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center;">
+            NOMBRE
+        </th>
+        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center;">EMAIL
+        </th>
+        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center; ">ROL
+        </th>
+        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center; ">
+            ESTATUS
+        </th>
+        <th style="border: 1px solid #000000;background-color: #00B0F0; font-weight: bold; text-align: center; ">
+            REGISTRO
+        </th>
     </tr>
     </thead>
     <tbody>
@@ -17,7 +25,7 @@
             <td style="border: 1px solid #000000; text-align: center">{{ $user->email }}</td>
             <td style="border: 1px solid #000000; text-align: center">{{ verRole($user->role, $user->roles_id) }}</td>
             <td style="border: 1px solid #000000; text-align: center">{!! verEstatusUsuario($user->estatus)  !!}</td>
-            <td style="border: 1px solid #000000; text-align: center">{{ verFecha($user->created_at) }}</td>
+            <td style="border: 1px solid #000000; text-align: center">{{ getFecha($user->created_at) }}</td>
         </tr>
     @endforeach
     </tbody>

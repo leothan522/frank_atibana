@@ -33,10 +33,10 @@
             <tr>
                 <td colspan="{{ $columnas + 3 }}" style="text-align: center;">
                     @if($desde)
-                        Desde: {{ verFecha($desde) }} &nbsp;
+                        Desde: {{ getFecha($desde) }} &nbsp;
                     @endif
                     @if($hasta)
-                        Hasta: {{ verFecha($hasta) }} &nbsp;
+                        Hasta: {{ getFecha($hasta) }} &nbsp;
                     @endif
                 </td>
             </tr>
@@ -147,7 +147,9 @@
                         (*Anulado)
                     @endif
                 </td>
-                <td style="{{ $border }}">@if($ajuste->segmentos_id) {{ $ajuste->segmentos->descripcion }} @endif</td>
+                <td style="{{ $border }}">@if($ajuste->segmentos_id)
+                        {{ $ajuste->segmentos->descripcion }}
+                    @endif</td>
                 <td style="{{ $border }}">{{ \Carbon\Carbon::parse($ajuste->fecha)->format('d-m-Y h:i a') }}</td>
             </tr>
         @endforeach
@@ -185,10 +187,10 @@
             <tr>
                 <td colspan="{{ $columnas + 3 }}" style="text-align: center;">
                     @if($desde)
-                        Desde: {{ verFecha($desde) }} &nbsp;
+                        Desde: {{ getFecha($desde) }} &nbsp;
                     @endif
                     @if($hasta)
-                        Hasta: {{ verFecha($hasta) }} &nbsp;
+                        Hasta: {{ getFecha($hasta) }} &nbsp;
                     @endif
                 </td>
             </tr>
@@ -310,11 +312,11 @@
                         @endif
                     </td>
                     <td style="{{ $border }}">
-						@if($detalle->ajustes->segmentos_id)
+                        @if($detalle->ajustes->segmentos_id)
                             {{ $detalle->ajustes->segmentos->descripcion }}
                         @endif
-					</td>
-                    <td style="{{ $border }}">{{ verFecha($detalle->ajustes->fecha, 'd/m/Y h:i a') }}</td>
+                    </td>
+                    <td style="{{ $border }}">{{ getFecha($detalle->ajustes->fecha, 'd/m/Y h:i a') }}</td>
                     <td style="{{ $border }}">{{ $detalle->tipo->codigo }}</td>
                     <td style="{{ $border }}">{{ $detalle->almacen->codigo }}</td>
                     <td style="{{ $border }}">

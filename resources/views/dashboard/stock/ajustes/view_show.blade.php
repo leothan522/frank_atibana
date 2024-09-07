@@ -10,7 +10,7 @@
             <label>Fecha:</label>
         </div>
         <div class="col-md-3">
-            <span class="border badge-pill text-nowrap">{{ verFecha($fecha, 'd/m/Y h:i a') }}</span>
+            <span class="border badge-pill text-nowrap">{{ getFecha($fecha, 'd/m/Y h:i a') }}</span>
         </div>
     </div>
 
@@ -34,14 +34,17 @@
             <div class="card-header p-0 pt-1 border-bottom-0">
                 <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="custom-tabs-three-home-tab" data-toggle="pill" href="#tabs_datos_basicos" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">Detalles</a>
+                        <a class="nav-link active" id="custom-tabs-three-home-tab" data-toggle="pill"
+                           href="#tabs_datos_basicos" role="tab" aria-controls="custom-tabs-three-home"
+                           aria-selected="true">Detalles</a>
                     </li>
                 </ul>
             </div>
 
             <div class="card-body">
                 <div class="tab-content" id="custom-tabs-three-tabContent">
-                    <div class="tab-pane fade active show" id="tabs_datos_basicos" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+                    <div class="tab-pane fade active show" id="tabs_datos_basicos" role="tabpanel"
+                         aria-labelledby="custom-tabs-three-home-tab">
 
 
                         <div class="row table-responsive p-0">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>ViewPDF | Planificación</title>
 
     <style>
@@ -107,11 +107,12 @@
                 <table>
                     <tr>
                         <td class="title">
-                            <img src="{{ verImagen('img/logo.png') }}" style="width: 100px;" />
+                            <img src="{{ verImagen('img/logo.png') }}" style="width: 100px;"/>
                         </td>
 
                         <td>
-                            Código: <strong style="font-weight: bold;color: red;">{{ $planificacion->codigo }}</strong><br />
+                            Código: <strong
+                                    style="font-weight: bold;color: red;">{{ $planificacion->codigo }}</strong><br/>
                             Semana: {{ $semana[0]."-".$semana[8] }}
                         </td>
                     </tr>
@@ -133,7 +134,7 @@
 
         @if($lunes->isNotEmpty())
             <tr>
-                <td colspan="2">Lunes: {{ verFecha($semana[1], "d-m-Y") }}</td>
+                <td colspan="2">Lunes: {{ getFecha($semana[1], "d-m-Y") }}</td>
             </tr>
             <tr class="heading">
                 <td>Receta</td>
@@ -155,7 +156,7 @@
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">Martes: {{ verFecha($semana[2], "d-m-Y") }}</td>
+                <td colspan="2">Martes: {{ getFecha($semana[2], "d-m-Y") }}</td>
             </tr>
             <tr class="heading">
                 <td>Receta</td>
@@ -177,7 +178,7 @@
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">Miercoles: {{ verFecha($semana[2], "d-m-Y") }}</td>
+                <td colspan="2">Miercoles: {{ getFecha($semana[2], "d-m-Y") }}</td>
             </tr>
             <tr class="heading">
                 <td>Receta</td>
@@ -199,7 +200,7 @@
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">Jueves: {{ verFecha($semana[2], "d-m-Y") }}</td>
+                <td colspan="2">Jueves: {{ getFecha($semana[2], "d-m-Y") }}</td>
             </tr>
             <tr class="heading">
                 <td>Receta</td>
@@ -221,7 +222,7 @@
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">Viernes: {{ verFecha($semana[2], "d-m-Y") }}</td>
+                <td colspan="2">Viernes: {{ getFecha($semana[2], "d-m-Y") }}</td>
             </tr>
             <tr class="heading">
                 <td>Receta</td>
@@ -243,7 +244,7 @@
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">Sabado: {{ verFecha($semana[2], "d-m-Y") }}</td>
+                <td colspan="2">Sabado: {{ getFecha($semana[2], "d-m-Y") }}</td>
             </tr>
             <tr class="heading">
                 <td>Receta</td>
@@ -265,7 +266,7 @@
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">Domingo: {{ verFecha($semana[2], "d-m-Y") }}</td>
+                <td colspan="2">Domingo: {{ getFecha($semana[2], "d-m-Y") }}</td>
             </tr>
             <tr class="heading">
                 <td>Receta</td>

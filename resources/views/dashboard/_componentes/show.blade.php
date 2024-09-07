@@ -5,7 +5,8 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <span class="nav-link">
-                        Cedula <span class="float-right text-bold text-uppercase">{{ is_numeric($cedula) ? formatoMillares($cedula,0) : $cedula }}</span>
+                        Cedula <span
+                                class="float-right text-bold text-uppercase">{{ is_numeric($cedula) ? formatoMillares($cedula,0) : $cedula }}</span>
                     </span>
                 </li>
                 <li class="nav-item">
@@ -35,12 +36,12 @@
                 </li>
                 <li class="nav-item">
                     <span class="nav-link">
-                        Instalación <span class="float-right text-bold">{{ verFecha($instalacion) }}</span>
+                        Instalación <span class="float-right text-bold">{{ getFecha($instalacion) }}</span>
                     </span>
                 </li>
                 <li class="nav-item">
                     <span class="nav-link">
-                        Fecha Pago <span class="float-right text-bold">{{ verFecha($pago) }}</span>
+                        Fecha Pago <span class="float-right text-bold">{{ getFecha($pago) }}</span>
                     </span>
                 </li>
                 <li class="nav-item">

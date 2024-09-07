@@ -11,7 +11,7 @@
             <label>Fecha:</label>
         </div>
         <div class="col-md-3">
-            <span class="border badge-pill">{{ verFecha($fecha) }}</span>
+            <span class="border badge-pill">{{ getFecha($fecha) }}</span>
         </div>
     </div>
 

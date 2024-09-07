@@ -26,13 +26,16 @@
                                 @endif
 
                                 <label class="col-12"><span
-                                        class="text-muted">Codigo:</span>&nbsp;&nbsp;<span class="text-uppercase">{{ $modalArticulo->codigo ?? '' }}</span>
+                                            class="text-muted">Codigo:</span>&nbsp;&nbsp;<span
+                                            class="text-uppercase">{{ $modalArticulo->codigo ?? '' }}</span>
                                 </label>
                                 <label class="col-12"><span
-                                        class="text-muted">Categoria:</span>&nbsp;&nbsp;<span class="text-uppercase">{{ $modalArticulo->categoria->nombre ?? '' }}</span>
+                                            class="text-muted">Categoria:</span>&nbsp;&nbsp;<span
+                                            class="text-uppercase">{{ $modalArticulo->categoria->nombre ?? '' }}</span>
                                 </label>
                                 <label class="col-12"><span
-                                        class="text-muted">Unidad Mostrada:</span>&nbsp;&nbsp;<span class="text-uppercase">{{ $modalUnidad->nombre ?? '' }}</span>
+                                            class="text-muted">Unidad Mostrada:</span>&nbsp;&nbsp;<span
+                                            class="text-uppercase">{{ $modalUnidad->nombre ?? '' }}</span>
                                 </label>
 
                                 <hr>
@@ -63,7 +66,9 @@
                                             <tr>
                                                 <td>
                                                     <span class="text-uppercase">{{ $stock->almacen->nombre }}</span><br>
-                                                    <em class="text-xs text-muted"><i class="fas fa-history"></i> {{ verFecha($stock->updated_at, 'd/m/Y h:t a') }}</em>
+                                                    <em class="text-xs text-muted"><i
+                                                                class="fas fa-history"></i> {{ getFecha($stock->updated_at, 'd/m/Y h:t a') }}
+                                                    </em>
                                                 </td>
                                                 <td class="text-right">
                                                     {{ formatoMillares($stock->actual, 3) }}
@@ -74,7 +79,9 @@
                                             @php($total = $total + $stock->actual)
                                         @endforeach
                                         <tr>
-                                            <th colspan="2" class="text-right"><span class="text-muted mr-3">Total:</span><span class="text-navy">{{ formatoMillares($total, 3) }}</span></th>
+                                            <th colspan="2" class="text-right"><span
+                                                        class="text-muted mr-3">Total:</span><span
+                                                        class="text-navy">{{ formatoMillares($total, 3) }}</span></th>
                                         </tr>
                                     @endif
                                     </tbody>
@@ -89,7 +96,8 @@
 
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default btn-sm" wire:click="verArticulo({{ $modalArticulo->id ?? 0 }}, {{ $modalUnidad->id ?? 0 }})">
+                <button type="button" class="btn btn-default btn-sm"
+                        wire:click="verArticulo({{ $modalArticulo->id ?? 0 }}, {{ $modalUnidad->id ?? 0 }})">
                     <i class="fas fa-sync"></i> Actualizar
                 </button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">{{ __('Close') }}</button>
