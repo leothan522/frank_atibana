@@ -8,6 +8,7 @@ use App\Models\ChatUser;
 use App\Models\User;
 use App\Services\FirebaseCloudMessagingService;
 use Carbon\Carbon;
+use Illuminate\Support\Sleep;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
@@ -167,6 +168,7 @@ class ChatComponent extends Component
                 $this->dispatch('cerrarModal');
             }
         }else{
+            Sleep::for(500)->millisecond();
             $this->dispatch('cerrarModal');
         }
     }
@@ -191,6 +193,5 @@ class ChatComponent extends Component
     {
         //JS
     }
-
 
 }

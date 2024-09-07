@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard;
 use App\Models\Parametro;
 use App\Models\User;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -67,22 +68,20 @@ class RolesComponent extends Component
         if ($this->roles_id){
             //editar
             $parametro = Parametro::find($this->roles_id);
-            if ($parametro->rowquid){
-                $rowquid = $parametro->rowquid;
-            }else{
-                $rowquid = generarStringAleatorio(16);
-            }
         }else{
             //nuevo
             $parametro = new Parametro();
-            $rowquid = generarStringAleatorio(16);
+            do{
+                $rowquid = generarStringAleatorio(16);
+                $existe = Parametro::where('rowquid', $rowquid)->first();
+            }while($existe);
+            $parametro->rowquid = $rowquid;
         }
 
         if ($parametro){
 
             $parametro->nombre = $nombre;
             $parametro->tabla_id = -1;
-            $parametro->rowquid = $rowquid;
             $parametro->save();
 
             if ($this->roles_id){
@@ -176,19 +175,19 @@ class RolesComponent extends Component
     #[On('addRolList')]
     public function addRoleList($id, $nombre, $rows)
     {
-        //agrego rol nuevo al right-sidebar
+        //JS
     }
 
     #[On('setRolList')]
     public function setRolList($id, $nombre)
     {
-        //edito nombre a un rol rol nuevo en el right-sidebar
+        //JS
     }
 
     #[On('removeRolList')]
     public function removeRolList($id, $rows)
     {
-        //elimino a un rol del right-sidebar
+        //JS
     }
 
     public function setPermisos($permiso)

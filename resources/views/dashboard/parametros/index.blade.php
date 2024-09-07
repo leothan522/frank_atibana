@@ -39,9 +39,8 @@
     <script>
 
         Livewire.on('cerrarModal', () => {
-            $('#btn_modal_default').click();
+            $("#btn_modal_default").click();
         });
-
         console.log('Hi!');
     </script>
 @endsection

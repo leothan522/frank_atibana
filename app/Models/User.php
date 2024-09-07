@@ -71,7 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     //AdminLTE
-    public function adminlte_image()
+    public function adminlte_image(): string
     {
         //return 'https://picsum.photos/300/300';
         //return "https://ui-avatars.com/api/?name=".Auth::user()->name."&color=7F9CF5&background=EBF4FF";
@@ -79,12 +79,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return verImagen(Auth::user()->profile_photo_path, true);
     }
 
-    public function adminlte_desc()
+    public function adminlte_desc(): string
     {
-        return Auth::user()->email." [".verRole(Auth::user()->role, Auth::user()->roles_id)."]";
+        $user = Auth::user();
+        $role = '';
+        if (!empty(verRole($user->role, $user->roles_id))){
+            $role = " [".verRole($user->role, $user->roles_id)."]";
+        }
+        return $user->email . $role;
     }
 
-    public function adminlte_profile_url()
+    public function adminlte_profile_url(): string
     {
         return 'dashboard/perfil';
     }

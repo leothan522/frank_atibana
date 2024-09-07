@@ -3,8 +3,10 @@
 namespace App\Livewire\Dashboard;
 
 use App\Models\Parametro;
+use Illuminate\Support\Sleep;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -81,16 +83,15 @@ class ParametrosComponent extends Component
             //nuevo
             $parametro = new Parametro();
             $message = "Parametro Creado.";
-            $rowquid = generarStringAleatorio(16);
+            do{
+                $rowquid = generarStringAleatorio(16);
+                $existe = Parametro::where('rowquid', '=', $rowquid)->first();
+            }while($existe);
+            $parametro->rowquid = $rowquid;
         }else{
             //editar
             $parametro = Parametro::find($this->parametros_id);
             $message = "Parametro Actualizado.";
-            if ($parametro->rowquid){
-                $rowquid = $parametro->rowquid;
-            }else{
-                $rowquid = generarStringAleatorio(16);
-            }
         }
 
         if ($parametro){
@@ -99,7 +100,6 @@ class ParametrosComponent extends Component
                 $parametro->tabla_id = $this->tabla_id;
             }
             $parametro->valor = $this->valor;
-            $parametro->rowquid = $rowquid;
             $parametro->save();
 
             if ($message == "Parametro Creado."){
@@ -122,7 +122,11 @@ class ParametrosComponent extends Component
             $this->valor = $parametro->valor;
             $this->rowquid = $parametro->rowquid;
             $this->view = "edit";
+        }else{
+            Sleep::for(500)->millisecond();
+            $this->dispatch('cerrarModal');
         }
+
     }
 
     #[On('buscar')]
@@ -159,7 +163,7 @@ class ParametrosComponent extends Component
     #[On('cerrarModal')]
     public function cerrarModal()
     {
-        //JV
+        //JS
     }
 
     public function cerrarBusqueda()

@@ -7,7 +7,7 @@
                     <i class="fas fa-times-circle"></i>
                 </button>
             @else
-                Usuarios [ <b class="text-warning">{{ $rowsUsuarios }}</b> ]
+                Registrados [ <b class="text-warning">{{ $rowsUsuarios }}</b> ]
             @endif
         </h3>
 
@@ -55,7 +55,7 @@
                     <tr>
                         <td class="text-center">
                             @if($user->plataforma)
-                                <i class="fas fa-mobile"></i>
+                                <i class="fas fa-mobile-alt"></i>
                             @else
                                 <i class="fas fa-desktop"></i>
                             @endif
@@ -81,10 +81,6 @@
                                         data-toggle="modal" data-target="#modal-user-permisos" @if(!comprobarPermisos() || ($user->role == 1 && auth()->user()->role != 100)) disabled @endif>
                                     <i class="fas fa-user-cog"></i>
                                 </button>
-                                {{--<button wire:click="destroy({{ $user->id }})" class="btn btn-primary btn-sm"
-                                        @if(!comprobarPermisos('usuarios.destroy') || !($user->role != 1 || ($user->role == 1 && comprobarPermisos())) || ($user->id == auth()->id())) disabled @endif >
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>--}}
                             </div>
                         </td>
                     </tr>

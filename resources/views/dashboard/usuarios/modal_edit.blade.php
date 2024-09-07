@@ -20,7 +20,13 @@
                                             <img class="profile-user-img img-fluid img-circle img_circular" src="{{ verImagen($photo, true) }}" alt="User profile picture">
                                         </div>
 
-                                        <h3 class="profile-username text-center">{{ ucwords($edit_name) }}</h3>
+                                        <h3 class="profile-username text-center">
+                                            @if($edit_name)
+                                                {{ ucwords($edit_name) }}
+                                            @else
+                                                &nbsp;
+                                            @endif
+                                        </h3>
 
                                         <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
@@ -38,13 +44,17 @@
                                             <li class="list-group-item">
                                                 <b>Estatus</b>
                                                 <a class="float-right text-danger">
-                                                    {!! $this->getEstatusUsuario($estatus) !!}
+                                                    @if($rowquid)
+                                                        {!! $this->getEstatusUsuario($estatus) !!}
+                                                    @endif
                                                 </a>
                                             </li>
                                             <li class="list-group-item">
                                                 <b>Creado</b>
                                                 <a class="float-right">
-                                                    {{ verFecha($created_at) }}
+                                                    @if($created_at)
+                                                        {{ getFecha($created_at) }}
+                                                    @endif
                                                 </a>
                                             </li>
                                             @if($edit_password)
@@ -55,29 +65,45 @@
                                             @endif
                                         </ul>
 
-                                        @if($edit_role != 100)
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    @if ($estatus)
-                                                        @php($clase = "btn-danger")
-                                                        @php($texto = "Suspender <br> Usuario")
-                                                    @else
-                                                        @php($clase = "btn-success")
-                                                        @php($texto = "Reactivar <br> Usuario")
-                                                    @endif
-                                                    <button type="button" wire:click="cambiarEstatus('{{ $rowquid }}')" class="btn {{ $clase }} btn-block"
+
+                                        <div class="row">
+                                            <div class="col-6">
+                                                @if ($estatus)
+                                                    @php($clase = "btn-danger")
+                                                    @php($texto = "Suspender <br> Usuario")
+                                                @else
+                                                    @php($clase = "btn-success")
+                                                    @php($texto = "Reactivar <br> Usuario")
+                                                @endif
+                                                @if($edit_role != 100)
+                                                    <button type="button"
+                                                            wire:click="cambiarEstatus('{{ $rowquid }}')"
+                                                            class="btn {{ $clase }} btn-block"
                                                             @if(!comprobarPermisos('usuarios.estatus')) disabled @endif>
                                                         <b>{!! $texto !!}</b>
                                                     </button>
-                                                </div>
-                                                <div class="col-6">
-                                                    <button type="button" wire:click="restablecerClave('{{ $rowquid }}')" class="btn btn-block btn-secondary"
+                                                @else
+                                                    <button type="button" class="btn {{ $clase }} btn-block" disabled>
+                                                        <b>{!! $texto !!}</b>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                            <div class="col-6">
+                                                @if($edit_role != 100)
+                                                    <button type="button"
+                                                            wire:click="restablecerClave('{{ $rowquid }}')"
+                                                            class="btn btn-block btn-secondary"
                                                             @if(!comprobarPermisos('usuarios.password')) disabled @endif>
                                                         <b>Restablecer <br> Contraseña</b>
                                                     </button>
-                                                </div>
+                                                @else
+                                                    <button type="button" class="btn btn-block btn-secondary" disabled>
+                                                        <b>Restablecer <br> Contraseña</b>
+                                                    </button>
+                                                @endif
                                             </div>
-                                        @endif
+                                        </div>
+
 
                                     </div>
                                 </div>
@@ -85,7 +111,7 @@
 
                             <div class="col-md-12 col-lg-6">
 
-                                <div class="card card-navy" >
+                                <div class="card card-navy">
 
                                     <div class="card-header">
                                         <h3 class="card-title">Editar Usuario</h3>
@@ -134,16 +160,16 @@
                                             </div>
                                         </div>
 
-                                        @if($edit_role != 100)
 
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">{{ __('Role') }}</label>
-                                                <div class="input-group mb-3">
-                                                    <div class="input-group-prepend">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">{{ __('Role') }}</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
                                                     <span class="input-group-text">
                                                         <i class="fas fa-user-cog"></i>
                                                     </span>
-                                                    </div>
+                                                </div>
+                                                @if($edit_role != 100 && $rowquid)
                                                     <select class="custom-select" wire:model="edit_role">
                                                         <option value="0">Estandar</option>
                                                         @foreach($listarRoles as $role)
@@ -154,31 +180,22 @@
                                                             <option value="1">Administrador</option>
                                                         @endif
                                                     </select>
-                                                    @error('edit_role')
-                                                    <span class="col-sm-12 text-sm text-bold text-danger">
+                                                @else
+                                                    <label class="form-control">{{ verRole($edit_role, $edit_roles_id) }}</label>
+                                                @endif
+                                                @error('edit_role')
+                                                <span class="col-sm-12 text-sm text-bold text-danger">
                                                     <i class="icon fas fa-exclamation-triangle"></i>
                                                     {{ $message }}
                                                 </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                        @endif
-
-                                        <div class="form-group" >
-                                            <label>Acceso a Empresas</label>
-                                            <p class="col-md-12 text-sm text-bold text-primary">
-                                                {!! $ver_empresas !!}
-                                            </p>
-                                            <div wire:ignore>
-                                                <select class="form-control" multiple="multiple" {{--wire:model.live="select_empresas"--}}
-                                                data-placeholder="Seleccione las Empresas" id="select_acceso_empresas">
-                                                </select>
+                                                @enderror
                                             </div>
                                         </div>
 
+
                                         <div class="form-group text-right">
-                                            <input type="submit" class="btn btn-block btn-primary" value="Guardar Cambios">
+                                            <input type="submit" class="btn btn-block btn-primary"
+                                                   value="Guardar Cambios">
                                         </div>
 
                                     </div>
@@ -197,7 +214,8 @@
                             @if(!comprobarPermisos('usuarios.destroy') || !($edit_role != 1 || ($edit_role == 1 && comprobarPermisos())) || ($users_id == auth()->id())) disabled @endif >
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiar" id="button_edit_modal_cerrar">
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiar"
+                            id="button_edit_modal_cerrar">
                         {{ __('Close') }}
                     </button>
                 </div>
