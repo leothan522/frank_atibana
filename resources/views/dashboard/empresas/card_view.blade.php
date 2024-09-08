@@ -1,4 +1,4 @@
-<div class="card card-navy d-none d-sm-block" xmlns:wire="http://www.w3.org/1999/xhtml">
+<div class="card card-navy d-none d-sm-block">
     <div class="card-header">
         <h3 class="card-title">
             {{ $title }}
@@ -14,8 +14,7 @@
                 </button>
             @endif
             @if($btn_cancelar)
-                @if($empresas_id) @php($x = $empresas_id) @else @php($x = $empresa_default) @endif
-                <button type="button" class="btn btn-tool" wire:click="show({{ $x }})">
+                <button type="button" class="btn btn-tool" wire:click="btnCancelar">
                     <i class="fas fa-ban"></i> Cancelar
                 </button>
             @endif
@@ -32,19 +31,18 @@
 
             @if(!$verDefault)
                 @if(auth()->user()->role == 100)
-                    <button type="button" class="btn btn-default btn-sm mr-1" wire:click="destroy({{ $empresas_id }})"
+                    <button type="button" class="btn btn-default btn-sm mr-1" wire:click="destroy"
                             @if(!comprobarPermisos('empresas.destroy')) disabled @endif>
                         <i class="fas fa-trash-alt"></i> Borrar Empresa
                     </button>
                 @endif
-                <button type="button" class="btn btn-default btn-sm mr-1"
-                        wire:click="convertirDefault({{ $empresas_id }})"
+                <button type="button" class="btn btn-default btn-sm mr-1" wire:click="convertirDefault"
                         @if(!comprobarPermisos('empresas.edit')) disabled @endif>
                     <i class="fas fa-certificate"></i> Convertir en Default
                 </button>
             @endif
 
-            <button type="button" class="btn btn-default btn-sm" wire:click="verHorario"
+            <button type="button" class="btn btn-default btn-sm" wire:click="btnHorario"
                     @if(!comprobarPermisos('empresas.horario')) disabled @endif>
                 <i class="fas fa-clock"></i> Horario
             </button>
@@ -58,7 +56,7 @@
     @endif
 
     <div class="overlay-wrapper" wire:loading wire:target="limpiar, create, show, save, edit, convertirDefault,
-                destroy, verHorario, botonHorario, {{--diasActivos,--}} storeHoras, actualizar">
+                destroy, btnHorario, setHorario, {{--diasActivos,--}} storeHoras, actualizar, btnCancelar, btnBorrarImagen">
         <div class="overlay">
             <div class="spinner-border text-navy" role="status">
                 <span class="sr-only">Loading...</span>

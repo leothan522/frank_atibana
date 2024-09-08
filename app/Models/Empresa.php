@@ -25,7 +25,8 @@ class Empresa extends Model
         'detail',
         'cart',
         'banner',
-        'permisos'
+        'permisos',
+        'rowquid'
     ];
 
     public function scopeBuscar($query, $keyword)
@@ -34,44 +35,5 @@ class Empresa extends Model
             ->orWhere('nombre', 'LIKE', "%$keyword%");
     }
 
-    public function precio(): HasMany
-    {
-        return $this->hasMany(Precio::class, 'precios_id', 'id');
-    }
-
-    public function stock(): HasMany
-    {
-        return $this->hasMany(Stock::class, 'empresas_id', 'id');
-    }
-
-    public function almacen(): HasMany
-    {
-        return $this->hasMany(Almacen::class, 'empresas_id', 'id');
-    }
-
-    public function ajustes(): HasMany
-    {
-        return $this->hasMany(Ajuste::class, 'empresas_id', 'id');
-    }
-
-    public function articulos(): HasMany
-    {
-        return $this->hasMany(Articulo::class, 'empresas_id', 'id');
-    }
-
-    public function recetas(): HasMany
-    {
-        return $this->hasMany(Receta::class, 'empresas_id', 'id');
-    }
-
-    public function planificaciones(): HasMany
-    {
-        return $this->hasMany(Planificacion::class, 'empresas_id', 'id');
-    }
-
-    public function despachos(): HasMany
-    {
-        return $this->hasMany(Despacho::class, 'empresas_id', 'id');
-    }
 
 }

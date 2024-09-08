@@ -249,34 +249,56 @@ function nextCodigo($parametros_nombre, $parametros_tabla_id, $nombre_formato = 
 
 }
 
-function crearMiniaturas($imagen_data, $path_data): array
+function crearMiniaturas($imagen_data, $path_data, $opcion = 'mini'): array
 {
     //ejemplo de path
     //$miniatura = 'storage/productos/size_'.$nombreImagen;
 
     //definir tamaños
-    $sizes = [
-        'mini' => [
-            'width' => 320,
-            'height' => 320,
-            'path' => str_replace('size_', 'mini_', $path_data)
-        ]/*,
-        'detail' => [
-            'width' => 540,
-            'height' => 560,
-            'path' => str_replace('size_', 'detail_', $path_data)
-        ],
-        'cart' => [
-            'width' => 101,
-            'height' => 100,
-            'path' => str_replace('size_', 'cart_', $path_data)
-        ],
-        'banner' => [
-            'width' => 570,
-            'height' => 270,
-            'path' => str_replace('size_', 'banner_', $path_data)
-        ]*/
-    ];
+    switch ($opcion){
+        case 'mini':
+            $sizes = [
+                'mini' => [
+                    'width' => 320,
+                    'height' => 320,
+                    'path' => str_replace('size_', 'mini_', $path_data)
+                ]
+            ];
+            break;
+        case 'temporal':
+            $sizes = [
+                'temporal' => [
+                    'width' => 320,
+                    'height' => 320,
+                    'path' => strtolower(str_replace(' ', '', $path_data))
+                ]
+            ];
+            break;
+        default:
+            $sizes = [
+                'mini' => [
+                    'width' => 320,
+                    'height' => 320,
+                    'path' => str_replace('size_', 'mini_', $path_data)
+                ],
+                'detail' => [
+                    'width' => 540,
+                    'height' => 560,
+                    'path' => str_replace('size_', 'detail_', $path_data)
+                ],
+                'cart' => [
+                    'width' => 101,
+                    'height' => 100,
+                    'path' => str_replace('size_', 'cart_', $path_data)
+                ],
+                'banner' => [
+                    'width' => 570,
+                    'height' => 270,
+                    'path' => str_replace('size_', 'banner_', $path_data)
+                ]
+            ];
+            break;
+    }
 
     $respuesta = array();
 
@@ -297,6 +319,14 @@ function crearMiniaturas($imagen_data, $path_data): array
 
     return $respuesta;
 
+}
+
+function crearImagenTemporal($photo, $carpeta): string
+{
+    $path_data = "storage/$carpeta/tmp_".$photo->getClientOriginalName();
+    $imagen = $photo->temporaryUrl();
+    $miniatura = crearMiniaturas($imagen, $path_data, 'temporal');
+    return "".$miniatura['temporal'];
 }
 
 //borrar imagenes incluyendo las miniaturas

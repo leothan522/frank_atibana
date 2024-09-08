@@ -61,7 +61,18 @@
                     alwaysShowClose: true
                 });
             });
-        })
+        });
+
+        function buscar(){
+            verSpinnerOculto();
+            let input = $("#navbarSearch");
+            let keyword  = input.val();
+            if (keyword.length > 0){
+                input.blur();
+                Livewire.dispatch('buscar', { keyword: keyword });
+            }
+            return false;
+        }
 
         console.log('Hi!');
     </script>

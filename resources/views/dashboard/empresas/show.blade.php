@@ -1,4 +1,4 @@
-<div class="row justify-content-center" xmlns:wire="http://www.w3.org/1999/xhtml">
+<div class="row justify-content-center">
 
     <div class="col-md-6">
 
@@ -29,7 +29,7 @@
                     </li>
                     @if(auth()->user()->role == 100)
                         <li class="list-group-item list-group-item-dark">
-                            <span>empresas_id</span> <span class="text-bold float-right">{{ $empresas_id }}</span>
+                            <span>empresas_id</span> <span class="text-bold float-right">{{ $rowquid }}</span>
                         </li>
                     @endif
                     @if($verDefault)
@@ -66,32 +66,20 @@
                         <div class="row col-12 justify-content-center mb-3 mt-3">
                             <div class="col-8">
                                 @if($verImagen)
-                                    <a href="{{ verImagen($verImagen, false, true) }}" data-toggle="lightbox" data-title="{{ mb_strtoupper($nombre) }}">
-                                        <img class="img-thumbnail" src="{{ verImagen($verMini, false, true) }}" {{--width="101" height="100"--}}  alt="Logo Tienda"/>
+                                    <a href="{{ verImagen($verImagen, false, true) }}" data-toggle="lightbox" data-title="Ver Imagen">
+                                        <img class="img-thumbnail" src="{{ verImagen($verMini, false, true) }}"
+                                             {{--width="101" height="100"--}}  alt="Logo Empresa"/>
                                     </a>
                                 @else
-                                    <img class="img-thumbnail" src="{{ verImagen($verMini, false, true) }}" {{--width="101" height="100"--}}  alt="Logo Tienda"/>
+                                    <img class="img-thumbnail" src="{{ verImagen($verMini, false, true) }}"
+                                         {{--width="101" height="100"--}}  alt="Logo Empresa"/>
                                 @endif
                             </div>
                         </div>
 
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        @if(estatusTienda($empresas_id))
-                            <div class="alert alert-success">
-                                <h5><i class="icon fas fa-check"></i> ¡Abierto!</h5>
-                                Hora actual: <strong>{{ date('h:i a') }}</strong>. Estatus: <strong> OPEN </strong>
-                            </div>
-                        @else
-                            <div class="alert alert-danger">
-                                <h5><i class="icon fas fa-ban"></i> ¡Cerrado!</h5>
-                                Hora actual: <strong>{{ date('h:i a') }}</strong>. Estatus: <strong> CLOSED </strong>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+                @include('dashboard.empresas.estatus')
             </div>
         </div>
 
