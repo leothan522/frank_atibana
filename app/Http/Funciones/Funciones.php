@@ -436,53 +436,21 @@ function dataSelect2($rows, $text = null): array
     return $data;
 }
 
-//********************** FUNCIONES PROPIAS DEL PROYECTO ATUAL ******************************
-
-//Estado de Tienda Abierto o Cerrada
-function estatusTienda($id, $boton = false)
+function getDataSelect2($rows, $text, $id = "rowquid"): array
 {
-    //$estatus = true;
-    $estatus_tienda = Parametro::where('nombre', 'estatus_tienda')->where('tabla_id', $id)->first();
-    if ($estatus_tienda){
-
-        $estatus = $estatus_tienda->valor;
-
-        if (!$boton){
-            if ($estatus == 1){
-                $horario = Parametro::where('nombre', 'horario')->where('tabla_id', $id)->first();
-                if ($horario && $horario->valor == 1){
-
-                    $hoy = date('D');
-                    $dia = Parametro::where('nombre', "horario_$hoy")->where('tabla_id', $id)->first();
-                    $apertura = Parametro::where('nombre', 'horario_apertura')->where('tabla_id', $id)->first();
-                    $cierre = Parametro::where('nombre', 'horario_cierre')->where('tabla_id', $id)->first();
-
-                    if ($dia && $dia->valor == 1){
-
-                        if($apertura && $cierre){
-
-                            $estatus = hourIsBetween($apertura->valor, $cierre->valor, date('H:i'));
-
-                        }else{
-                            $estatus = true;
-                        }
-
-                    }else{
-                        $estatus = false;
-                    }
-
-                }
-            }
-
-        }
-
-
-    }else{
-        $estatus = false;
+    $data = [];
+    $filas = $rows->toArray();
+    foreach ($filas as $row){
+        $option = [
+            'id' => $row[$id],
+            'text' => $row[$text]
+        ];
+        $data[] = $option;
     }
-
-    return $estatus;
+    return $data;
 }
+
+//********************** FUNCIONES PROPIAS DEL PROYECTO ATUAL ******************************
 
 function getSemana($fecha): array
 {
