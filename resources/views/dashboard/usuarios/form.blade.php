@@ -9,9 +9,9 @@
             <input type="text" class="form-control" wire:model="name" placeholder="Nombre y Apellido">
             @error('name')
             <span class="col-sm-12 text-sm text-bold text-danger">
-                        <i class="icon fas fa-exclamation-triangle"></i>
-                        {{ $message }}
-                    </span>
+                <i class="icon fas fa-exclamation-triangle"></i>
+                {{ $message }}
+            </span>
             @enderror
         </div>
     </div>
@@ -25,9 +25,9 @@
             <input type="text" class="form-control" wire:model="email" placeholder="Email">
             @error('email')
             <span class="col-sm-12 text-sm text-bold text-danger">
-                        <i class="icon fas fa-exclamation-triangle"></i>
-                        {{ $message }}
-                    </span>
+                <i class="icon fas fa-exclamation-triangle"></i>
+                {{ $message }}
+            </span>
             @enderror
         </div>
     </div>
@@ -40,15 +40,15 @@
             </div>
             <input type="text" class="form-control" wire:model="password" placeholder="Contraseña">
             <span class="input-group-append">
-                        <button type="button" wire:click="generarClave" class="btn btn-info btn-flat btn-sm text-sm">
-                            <i class="fas fa-key"></i>
-                        </button>
-                    </span>
+                <button type="button" wire:click="generarClave" class="btn btn-info btn-flat btn-sm text-sm">
+                    <i class="fas fa-key"></i>
+                </button>
+            </span>
             @error('password')
             <span class="col-sm-12 text-sm text-bold text-danger">
-                        <i class="icon fas fa-exclamation-triangle"></i>
-                        {{ $message }}
-                    </span>
+                <i class="icon fas fa-exclamation-triangle"></i>
+                {{ $message }}
+            </span>
             @enderror
         </div>
     </div>
@@ -61,13 +61,15 @@
             </div>
             <select class="custom-select" wire:model="role">
                 <option value="">Seleccione</option>
-                <option value="0">Estandar</option>
+                {{--<option value="0">Estandar</option>--}}
                 @foreach($listarRoles as $role)
-                    <option value="{{ $role->id }}">{{ ucwords($role->nombre) }}</option>
+                    @if($role->tabla_id == -1 || $role->valor == 0 || auth()->user()->role == 1 || auth()->user()->role == 100)
+                        <option value="{{ $role->rowquid }}">{{ ucwords($role->nombre) }}</option>
+                    @endif
                 @endforeach
-                @if(comprobarPermisos())
+                {{--@if(comprobarPermisos())
                     <option value="1">Administrador</option>
-                @endif
+                @endif--}}
             </select>
             @error('role')
             <span class="col-sm-12 text-sm text-bold text-danger">

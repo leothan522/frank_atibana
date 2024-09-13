@@ -25,20 +25,16 @@ function generarStringAleatorio($largo = 10, $espacio = false): string
 
 function verRole($role, $roles_id): string
 {
-    $response = '';
-    $roles = [
-        '0'     => 'Estandar',
-        '1'     => 'Administrador',
-        '100'   => 'Root'
-    ];
+    $response = 'Root';
 
     if (is_null($roles_id)){
-        $response = $roles[$role];
+        $roles = Parametro::where('tabla_id', '-2')->where('valor', $role)->first();
     }else{
-        $roles = Parametro::where('tabla_id', '-1')->where('id', $roles_id)->first();
-        if ($roles){
-            $response = ucwords($roles->nombre);
-        }
+        $roles = Parametro::where('id', $roles_id)->first();
+    }
+
+    if ($roles){
+        $response = ucwords($roles->nombre);
     }
     return $response;
 }

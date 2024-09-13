@@ -38,7 +38,7 @@
                                             <li class="list-group-item">
                                                 <b>Rol</b>
                                                 <a class="float-right">
-                                                    {{ verRole($edit_role, $edit_roles_id) }}
+                                                    {{ $rol_nombre }}
                                                 </a>
                                             </li>
                                             <li class="list-group-item">
@@ -75,7 +75,7 @@
                                                     @php($clase = "btn-success")
                                                     @php($texto = "Reactivar <br> Usuario")
                                                 @endif
-                                                @if($edit_role != 100)
+                                                @if(($edit_role && $edit_roles_id >= auth()->user()->role) || ($edit_role && auth()->user()->role == 100) || $edit_roles_id == 0)
                                                     <button type="button"
                                                             wire:click="cambiarEstatus('{{ $rowquid }}')"
                                                             class="btn {{ $clase }} btn-block"
@@ -89,7 +89,11 @@
                                                 @endif
                                             </div>
                                             <div class="col-6">
-                                                @if($edit_role != 100)
+                                                @if(
+                                                    ($edit_role && $edit_roles_id >= auth()->user()->role) ||
+                                                    ($edit_role && auth()->user()->role == 100) ||
+                                                    $edit_roles_id == 0
+                                                    )
                                                     <button type="button"
                                                             wire:click="restablecerClave('{{ $rowquid }}')"
                                                             class="btn btn-block btn-secondary"
@@ -169,19 +173,20 @@
                                                         <i class="fas fa-user-cog"></i>
                                                     </span>
                                                 </div>
-                                                @if($edit_role != 100 && $rowquid)
+                                                @if($edit_role && $rowquid)
                                                     <select class="custom-select" wire:model="edit_role">
-                                                        <option value="0">Estandar</option>
+                                                        {{--<option value="0">Estandar</option>--}}
                                                         @foreach($listarRoles as $role)
-                                                            <option
-                                                                value="{{ $role->id }}">{{ ucwords($role->nombre) }}</option>
+                                                            @if($role->tabla_id == -1 || $role->valor == 0 || auth()->user()->role == 1 || auth()->user()->role == 100)
+                                                                <option value="{{ $role->rowquid }}">{{ ucwords($role->nombre) }}</option>
+                                                            @endif
                                                         @endforeach
-                                                        @if(comprobarPermisos())
+                                                        {{--@if(comprobarPermisos())
                                                             <option value="1">Administrador</option>
-                                                        @endif
+                                                        @endif--}}
                                                     </select>
                                                 @else
-                                                    <label class="form-control">{{ verRole($edit_role, $edit_roles_id) }}</label>
+                                                    <label class="form-control">{{ $rol_nombre }}</label>
                                                 @endif
                                                 @error('edit_role')
                                                 <span class="col-sm-12 text-sm text-bold text-danger">
@@ -194,8 +199,7 @@
 
 
                                         <div class="form-group text-right">
-                                            <input type="submit" class="btn btn-block btn-primary"
-                                                   value="Guardar Cambios">
+                                            <input type="submit" class="btn btn-block btn-primary" value="Guardar Cambios">
                                         </div>
 
                                     </div>
@@ -207,18 +211,22 @@
 
                 </div>
 
-                {!! verSpinner() !!}
-
                 <div class="modal-footer {{--row col-12--}} justify-content-between">
                     <button type="button" class="btn btn-danger btn-sm" wire:click="destroy('{{ $rowquid }}')"
-                            @if(!comprobarPermisos('usuarios.destroy') || !($edit_role != 1 || ($edit_role == 1 && comprobarPermisos())) || ($users_id == auth()->id())) disabled @endif >
+                            @if(
+                                !comprobarPermisos('usuarios.destroy') ||
+                                is_null($edit_role) ||
+                                ($edit_roles_id < auth()->user()->role && auth()->user()->role != 100) ||
+                                $users_id == auth()->id()
+                                ) disabled @endif >
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiar"
-                            id="button_edit_modal_cerrar">
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" wire:click="limpiar" id="button_edit_modal_cerrar">
                         {{ __('Close') }}
                     </button>
                 </div>
+
+                {!! verSpinner() !!}
 
             </div>
         </div>

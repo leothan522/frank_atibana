@@ -35,7 +35,7 @@ class UsuariosComponent extends Component
 
     public function render()
     {
-        $roles = Parametro::where('tabla_id', '-1')->get();
+        $roles = $this->getRoles();
 
         $users = User::buscar($this->keyword)
             ->orderBy('created_at', 'DESC')
@@ -112,22 +112,29 @@ class UsuariosComponent extends Component
 
     public function save()
     {
-        $this->validate($this->rules($this->users_id));
-
         if (is_null($this->users_id)) {
+
+            $parametro = $this->getRol($this->role);
+            if ($parametro){
+                if ($parametro->tabla_id == -2){
+                    $this->role = intval($parametro->valor) ?? 0;
+                }
+            }else{
+                $this->reset('role');
+            }
+
+            $this->validate($this->rules());
+
             //nuevo
             $usuarios = new User();
             $usuarios->name = ucwords($this->name);
             $usuarios->email = strtolower($this->email);
             $usuarios->password = Hash::make($this->password);
 
-            if ($this->role > 1) {
+            if (!is_int($this->role)) {
                 $usuarios->role = 2;
-                $usuarios->roles_id = $this->role;
-                $role = Parametro::where('tabla_id', '-1')->where('id', $this->role)->first();
-                if ($role) {
-                    $usuarios->permisos = $role->valor;
-                }
+                $usuarios->roles_id = $parametro->id;
+                $usuarios->permisos = $parametro->valor;
             } else {
                 $usuarios->role = $this->role;
                 $usuarios->roles_id = null;
@@ -145,24 +152,32 @@ class UsuariosComponent extends Component
             $this->dispatch('cerrarModal', selector: 'btn_modal_default_create');
             $this->alert('success', 'Usuario Creado.');
         } else {
+
+            $this->validate($this->rules($this->users_id));
+
             //editar
             $usuarios = User::find($this->users_id);
             if ($usuarios){
                 $usuarios->name = ucwords($this->edit_name);
                 $usuarios->email = strtolower($this->edit_email);
-
-                if ($this->edit_role > 1 && $this->edit_role < 100) {
-                    $usuarios->role = 2;
-                    $usuarios->roles_id = $this->edit_role;
-                    $role = Parametro::where('tabla_id', '-1')->where('id', $this->edit_role)->first();
-                    if ($role) {
-                        $usuarios->permisos = $role->valor;
+                if (!is_null($this->edit_role)){
+                    $parametro = $this->getRol($this->edit_role);
+                    if ($parametro){
+                        if ($parametro->tabla_id == -2){
+                            $usuarios->role = intval($parametro->valor) ?? 0;
+                            $usuarios->roles_id = null;
+                            $usuarios->permisos = null;
+                        }else{
+                            $usuarios->role = 2;
+                            $usuarios->roles_id = $parametro->id;
+                            $usuarios->permisos = $parametro->valor;
+                        }
+                    }else{
+                        $usuarios->role = 0;
+                        $usuarios->roles_id = null;
+                        $usuarios->permisos = null;
                     }
-                } else {
-                    $usuarios->role = $this->edit_role;
-                    $usuarios->roles_id = null;
                 }
-
                 $usuarios->save();
                 $this->edit($usuarios->rowquid);
                 $this->alert('success', 'Usuario Actualizado.');
@@ -180,12 +195,21 @@ class UsuariosComponent extends Component
             $this->users_id = $usuario->id;
             $this->edit_name = $usuario->name;
             $this->edit_email = $usuario->email;
-            if ($usuario->roles_id) {
-                $this->edit_role = $usuario->roles_id;
-            }else{
-                $this->edit_role = $usuario->role;
+            $this->edit_role = null;
+            if ($usuario->role != 100){
+                if ($usuario->roles_id) {
+                    $parametro = Parametro::find($usuario->roles_id);
+                    if ($parametro){
+                        $this->edit_role = $parametro->rowquid;
+                    }
+                }else{
+                    $parametro = Parametro::where('tabla_id', -2)->where('valor', $usuario->role)->first();
+                    if ($parametro){
+                        $this->edit_role = $parametro->rowquid;
+                    }
+                }
             }
-            $this->edit_roles_id = $usuario->roles_id;
+            $this->edit_roles_id = $usuario->role;
             $this->estatus = $usuario->estatus;
             $this->created_at = $usuario->created_at;
             $this->photo = $usuario->profile_photo_path;
@@ -356,6 +380,38 @@ class UsuariosComponent extends Component
     protected function getUser($rowquid): ?User
     {
         return User::where('rowquid', $rowquid)->first();
+    }
+
+    protected function getRoles()
+    {
+        $parametro = Parametro::where('tabla_id', '-2')->get();
+        if ($parametro->isEmpty()){
+            $this->setRoles('Administrador', 1);
+            $this->setRoles('Público', 0);
+        }
+        return Parametro::where('tabla_id', '-1')
+            ->orWhere('tabla_id', -2)
+            ->orderBy('valor', 'ASC')
+            ->get();
+    }
+
+    protected function setRoles($nombre, $valor): void
+    {
+        $parametro = new Parametro();
+        $parametro->nombre = $nombre;
+        $parametro->tabla_id = -2;
+        $parametro->valor = $valor;
+        do{
+            $rowquid =  generarStringAleatorio(16);
+            $existe = Parametro::where('rowquid', $rowquid)->first();
+        }while($existe);
+        $parametro->rowquid = $rowquid;
+        $parametro->save();
+    }
+
+    protected function getRol($rowquid): ?Parametro
+    {
+        return Parametro::where('rowquid', $rowquid)->first();
     }
 
 }
