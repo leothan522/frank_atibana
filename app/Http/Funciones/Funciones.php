@@ -153,21 +153,21 @@ function formatoMillares($cantidad, $decimal = 2): string
     return number_format($cantidad, $decimal, ',', '.');
 }
 
-function QRCodeGenerate($string = 'Hello World!', $path = false, $size = 100, $margin = 1): string
+function qrCodeGenerate($string = 'Hello World!', $size = 100, $filename = 'qrcode', $path = false, $margin = 0): string
 {
     $renderer = new \BaconQrCode\Renderer\ImageRenderer(
         new \BaconQrCode\Renderer\RendererStyle\RendererStyle($size,$margin),
-        new \BaconQrCode\Renderer\Image\SvgImageBackEnd()
+        new \BaconQrCode\Renderer\Image\SvgImageBackEnd(),
     );
     $writer = new \BaconQrCode\Writer($renderer);
-    $writer->writeFile($string, 'storage/qrcode.svg', '');
+    $writer->writeFile($string, "storage/{$filename}.svg");
 
     if ($path){
-        return asset('storage/qrcode.svg');
+        return asset("storage/{$filename}.svg");
     }
 
-    if (file_exists(public_path('storage/qrcode.svg'))){
-        return '<img src="'.asset('storage/qrcode.svg').'" alt="QRCode">';
+    if (file_exists(public_path("storage/{$filename}.svg"))){
+        return '<img src="'.asset("storage/{$filename}.svg").'" alt="QRCode">';
     }
     return "QRCode";
 }
@@ -370,7 +370,7 @@ function verUtf8($string, $safeNull = false): string
         $text = '';
     }
     if (!is_null($string)){
-        $response = mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8');
+        $response = mb_convert_encoding($string, 'UTF-8');
     }
     if (!is_null($response)){
         $text = "$response";
