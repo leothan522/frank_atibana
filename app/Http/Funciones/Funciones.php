@@ -446,6 +446,12 @@ function getDataSelect2($rows, $text, $id = "rowquid"): array
     return $data;
 }
 
+function borrarQR(): void
+{
+    $path = public_path('storage');;
+    File::delete(File::glob($path.'/*.svg'));
+}
+
 //********************** FUNCIONES PROPIAS DEL PROYECTO ATUAL ******************************
 
 function getSemana($fecha): array
