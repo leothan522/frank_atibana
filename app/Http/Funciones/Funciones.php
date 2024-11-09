@@ -93,7 +93,7 @@ function numRowsPaginate(): int
     $num = 15;
     $parametro = Parametro::where("nombre", "numRowsPaginate")->first();
     if ($parametro) {
-        if (is_int($parametro->valor)) {
+        if (intval($parametro->valor)) {
             $num = intval($parametro->valor);
         }
     }
